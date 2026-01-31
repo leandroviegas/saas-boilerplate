@@ -1,0 +1,22 @@
+{
+    "required": "{field} is required.",
+    "additionalProperties": "{field} has additional properties that are not allowed.",
+    "type": "{field} must be of type '{type}'.",
+    "format": "{field} must match the format '{format}'.",
+    "pattern": "{field} must match the pattern '{pattern}'.",
+    "minimum": "{field} must be greater than or equal to {limit}.",
+    "maximum": "{field} must be less than or equal to {limit}.",
+    "minLength": "{field} must have a minimum length of {limit} {character}.",
+    "maxLength": "{field} must have a maximum length of {limit} {character}.",
+    "minItems": "{field} must have at least {limit} {item}.",
+    "maxItems": "{field} must have at most {limit} {item}.",
+    "enum": "{field} must be one of {allowedValues}.",
+    "const": "{field} must be exactly '{allowedValue}'.",
+    "multipleOf": "{field} must be a multiple of {multiple}.",
+    "uniqueItems": "{field} must have unique items.",
+    "generic": "The field {field} is invalid.",
+    "P2002": "{field} must be unique.",
+    "P2003": "Provided ID does not exist in the related table.",
+    "P2011": "This field cannot be null.",
+    "validation": "Invalid data provided."
+}

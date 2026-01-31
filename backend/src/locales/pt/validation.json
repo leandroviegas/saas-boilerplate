@@ -1,0 +1,22 @@
+{
+  "required": "{field} é obrigatório.",
+  "additionalProperties": "{field} possui propriedades adicionais que não são permitidas.",
+  "type": "{field} deve ser do tipo '{type}'.",
+  "format": "{field} deve corresponder ao formato '{format}'.",
+  "pattern": "{field} deve corresponder ao padrão '{pattern}'.",
+  "minimum": "{field} deve ser maior ou igual a {limit}.",
+  "maximum": "{field} deve ser menor ou igual a {limit}.",
+  "minLength": "{field} deve ter pelo menos {limit} {caracter}.",
+  "maxLength": "{field} deve ter no máximo {limit} {caracter}.",
+  "minItems": "{field} deve ter pelo menos {limit} {item}.",
+  "maxItems": "{field} deve ter no máximo {limit} {item}.",
+  "enum": "{field} deve ser um de {allowedValues}.",
+  "const": "{field} deve ser exatamente '{allowedValue}'.",
+  "multipleOf": "{field} deve ser um múltiplo de {multiple}.",
+  "uniqueItems": "{field} deve ter itens únicos.",
+  "generic": "O campo {field} é inválido.",
+  "P2002": "{field} deve ser único.",
+  "P2003": "O ID fornecido não existe na tabela relacionada.",
+  "P2011": "Este campo não pode ser nulo.",
+  "validation": "Dados inválidos fornecidos."
+}

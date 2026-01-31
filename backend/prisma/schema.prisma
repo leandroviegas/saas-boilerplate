@@ -1,0 +1,271 @@
+generator client {
+  provider      = "prisma-client-js"
+  engineType    = "library"
+  binaryTargets = ["native"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+  USER
+}
+
+model User {
+  id               String   @id @default(cuid())
+  email            String   @unique
+  name             String
+  username         String   @unique
+  provider         String?
+  image            String?
+  role             Role     @default(USER)
+  emailVerified    Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  preferences      String?
+  stripeCustomerId String?  @unique
+  twoFactorEnabled Boolean? @default(false)
+  displayUsername  String?
+
+  accounts      Account[]
+  sessions      Session[]
+  twoFactors    TwoFactor[]
+  notifications Notification[]
+  subscriptions Subscription[]
+  transactions  Transaction[]
+
+  @@map("user")
+}
+
+model Notification {
+  id          String    @id @default(cuid())
+  userId      String
+  title       String
+  message     String
+  type        String
+  link        String?
+  sent        DateTime?
+  emailSentId String?
+  read        Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  emailSent EmailSent? @relation(fields: [emailSentId], references: [id])
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("notification")
+}
+
+model EmailSent {
+  id            String         @id @default(cuid())
+  to            String
+  subject       String
+  body          String
+  sentAt        DateTime       @default(now())
+  notifications Notification[]
+
+  @@map("email_sent")
+}
+
+model EmailBodyTemplate {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  subject   String
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("email_body_template")
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  userId                String
+  providerId            String
+  accountId             String
+  password              String?
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Session {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  expiresAt DateTime
+  token     String   @unique
+
+  ipAddress String?
+  userAgent String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("session")
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+model Jwks {
+  id         String    @id @default(cuid())
+  publicKey  String
+  privateKey String
+  createdAt  DateTime  @default(now())
+  expiresAt  DateTime?
+
+  @@map("jwks")
+}
+
+model TwoFactor {
+  id          String @id @default(cuid())
+  secret      String
+  backupCodes String
+  userId      String
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([secret])
+  @@index([userId])
+  @@map("twoFactor")
+}
+
+enum PriceInterval {
+  DAY
+  WEEK
+  MONTH
+  YEAR
+}
+
+enum Currency {
+  USD
+  EUR
+  BRL
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  PAST_DUE
+  INCOMPLETE
+  TRIALING
+  INCOMPLETE_EXPIRED
+  UNPAID
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
+
+model Product {
+  id              String   @id @default(cuid())
+  name            String
+  description     String?
+  features        String[] @default([])
+  active          Boolean  @default(true)
+  archived        Boolean  @default(false)
+  stripeProductId String?  @unique
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  prices        ProductPrice[]
+  subscriptions Subscription[]
+
+  @@map("product")
+}
+
+model ProductPrice {
+  id            String        @id @default(cuid())
+  productId     String
+  product       Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
+  intervalType  PriceInterval @default(MONTH)
+  intervalValue Int           @default(1)
+  amount        Float
+  currency      Currency      @default(USD)
+  stripePriceId String?       @unique
+  active        Boolean       @default(true)
+  archived      Boolean       @default(false)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@map("product_price")
+}
+
+model Coupon {
+  id             String       @id @default(cuid())
+  code           String       @unique
+  discountType   DiscountType
+  value          Float
+  expiresAt      DateTime?
+  usageLimit     Int?
+  usageCount     Int          @default(0)
+  active         Boolean      @default(true)
+  stripeCouponId String?      @unique
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@map("coupon")
+}
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  userId               String
+  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId            String
+  product              Product            @relation(fields: [productId], references: [id])
+  status               SubscriptionStatus @default(INCOMPLETE)
+  currentPeriodStart   DateTime
+  currentPeriodEnd     DateTime
+  cancelAtPeriodEnd    Boolean            @default(false)
+  stripeSubscriptionId String?            @unique
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  @@index([userId])
+  @@map("subscription")
+}
+
+model Transaction {
+  id                    String   @id @default(cuid())
+  userId                String
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount                Float
+  currency              String   @default("USD")
+  status                String
+  paymentMethod         String?
+  stripePaymentIntentId String?  @unique
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([userId])
+  @@map("transaction")
+}
