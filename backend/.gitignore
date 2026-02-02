@@ -6,7 +6,6 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 pnpm-error.log*
-pnpm-lock.yaml
 
 # Dependency directories
 node_modules/
