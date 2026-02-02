@@ -1,0 +1,11 @@
+node_modules
+pnpm-lock.yaml
+.next
+*.log
+.env
+.env.local
+.env.*.local
+*.tsbuildinfo
+.gitignore
+README.md
+.DS_Store
