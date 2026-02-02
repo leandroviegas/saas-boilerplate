@@ -104,7 +104,7 @@ export default function CheckoutPage() {
           <CardDescription>{t('review_your_product_details')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="rounded-lg bg-muted p-4">
+          <div className="rounded-lg bg-muted p-4 mt-4">
             <div className="flex justify-between items-start mb-4">
               <div>
                 <h3 className="font-bold text-lg">{product.name}</h3>
@@ -143,7 +143,7 @@ export default function CheckoutPage() {
             </div>
           </div>
         </CardContent>
-        <CardFooter className="flex flex-col gap-4">
+        <CardFooter className="flex flex-col gap-4 mt-6">
           <Button 
             className="w-full py-6 text-lg" 
             onClick={handleCheckout} 

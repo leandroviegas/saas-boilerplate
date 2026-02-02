@@ -39,15 +39,75 @@ export default function CouponList() {
     const List = () => (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {coupons.map((coupon) => (
-                <div key={coupon.id} className="border border-border rounded-xl p-4">
-                    <h3 className="font-bold">{coupon.code}</h3>
-                    <p>{coupon.discountType} - {coupon.value}{coupon.discountType === 'PERCENTAGE' ? '%' : ' ' + t('currency')}</p>
-                    <p>{t('active')}: {coupon.active ? t('yes') : t('no')}</p>
-                    <p>{t('usage')}: {coupon.usageCount}/{coupon.usageLimit || t('unlimited')}</p>
-                    {coupon.expiresAt && <p>{t('expires')}: {new Date(coupon.expiresAt).toLocaleDateString()}</p>}
-                    <Button onClick={() => incrementUsage.mutate(coupon.id)} className='mt-2' disabled={incrementUsage.isPending}>
-                        {t('increment_usage')}
-                    </Button>
+                <div
+                    key={coupon.id}
+                    className="group relative border border-border rounded-lg bg-card text-card-foreground shadow-sm hover:shadow-md transition-all duration-200 hover:border-primary/50 flex flex-col"
+                >
+                    {/* Content wrapper - takes available space */}
+                    <div className="p-6 flex-1 flex flex-col">
+                        {/* Header */}
+                        <div className="flex items-start justify-between mb-4">
+                            <div className="flex-1">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                    <h3 className="font-semibold text-lg tracking-tight mb-1">
+                                        {coupon.code}
+                                    </h3>
+                                    <span
+                                        className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${coupon.active
+                                            ? 'bg-green-50 text-green-700 ring-green-600/20 dark:bg-green-500/10 dark:text-green-400 dark:ring-green-500/20'
+                                            : 'bg-red-50 text-red-700 ring-red-600/20 dark:bg-red-500/10 dark:text-red-400 dark:ring-red-500/20'
+                                            }`}
+                                    >
+                                        {coupon.active ? t('active') : t('inactive')}
+                                    </span>
+                                </div>
+                                <div className="pt-2">
+                                    <span className="inline-flex items-center rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary ring-1 ring-inset ring-primary/20">
+                                        {coupon.discountType === 'PERCENTAGE'
+                                            ? `${coupon.value}%`
+                                            : `${coupon.value} ${t('currency')}`}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Details - flex-1 pushes actions to bottom */}
+                        <div className="space-y-2 flex-1">
+                            <div className="flex items-center justify-between text-sm">
+                                <span className="text-muted-foreground">{t('usage')}:</span>
+                                <span className="font-medium">
+                                    {coupon.usageCount}/{coupon.usageLimit || t('unlimited')}
+                                </span>
+                            </div>
+
+                            {coupon.expiresAt && (
+                                <div className="flex items-center justify-between text-sm">
+                                    <span className="text-muted-foreground">{t('expires')}:</span>
+                                    <span className="font-medium">
+                                        {new Date(coupon.expiresAt).toLocaleDateString()}
+                                    </span>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Actions - pinned to bottom */}
+                    <div className="flex gap-2 p-6 pt-0">
+                        <Button
+                            onClick={() => incrementUsage.mutate(coupon.id)}
+                            variant="outline"
+                            size="sm"
+                            className="flex-1"
+                            disabled={incrementUsage.isPending}
+                        >
+                            {t('increment_usage')}
+                        </Button>
+                        <Link href={`/dashboard/coupons/${coupon.id}`}>
+                            <Button size="sm" variant="secondary">
+                                <FaPencilAlt className="h-4 w-4" />
+                            </Button>
+                        </Link>
+                    </div>
                 </div>
             ))}
         </div>
@@ -76,12 +136,14 @@ export default function CouponList() {
                 meta={meta}
                 onPageChange={(page, perPage) => { setFilters(prevFilters => ({ ...prevFilters, page, perPage })) }}
                 actions={(coupon: GetAdminCoupons200AllOfTwoDataItem) => (
-                    <div className='flex gap-2'>
-                        <Button onClick={() => incrementUsage.mutate(coupon.id)} className='bg-blue-500 px-3 py-2 rounded' disabled={incrementUsage.isPending}>
+                    <div className='flex gap-2 mt-auto'>
+                        <Button variant="outline" className='flex-1' onClick={() => incrementUsage.mutate(coupon.id)} disabled={incrementUsage.isPending}>
                             {t('increment_usage')}
                         </Button>
-                        <Link href={`/dashboard/coupons/${coupon.id}`} className='bg-amber-500 px-3 py-2 rounded'>
-                            <FaPencilAlt />
+                        <Link className='flex-1' href={`/dashboard/coupons/${coupon.id}`}>
+                            <Button variant="secondary" size="sm" className="w-full">
+                                <FaPencilAlt className="h-4 w-4" />
+                            </Button>
                         </Link>
                     </div>
                 )} />
