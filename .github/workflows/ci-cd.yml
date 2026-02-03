@@ -120,3 +120,4 @@ jobs:
         with:
           sarif_file: trivy-results-frontend.sarif
           category: "/frontend"
+ 
