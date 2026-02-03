@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: newchatbot-backend
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - APP_NAME=New chatbot
+      - APP_DESCRIPTION=Boilerplate application
+      - PORT=3000
+      - HOST=0.0.0.0
+      - PROTOCOL=http
+      - CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/newchatbot
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=
+      - BETTER_AUTH_SECRET=test-secret-key-change-in-production
+      - BETTER_AUTH_URL=http://localhost:3001/api/v1/auth
+      - EVOLUTION_API_URL=
+      - EVOLUTION_API_KEY=
+      - S3_ACCESS_KEY_ID=PuCYvtZOlfUizHVgDI9n
+      - S3_SECRET_ACCESS_KEY=nwLcuDhrJTt7YWqM8pHdySZIfaEGRg6j5XCiK2O3
+      - S3_REGION=us-east-1
+      - S3_BUCKET_NAME=chatbot
+      - S3_FORCE_PATH_STYLE=true
+      - S3_ENDPOINT=http://main-rustfs-df7692-84-247-134-38.traefik.me
+      - STRIPE_SECRET_KEY=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
+      - STRIPE_WEBHOOK_SECRET=whsec_edfdd0f0b78c223133c3ef1e3a2760f7e7e925181f4586aed44f4efcf4426936
+      - STRIPE_SUCCESS_URL=
+      - STRIPE_CANCEL_URL=
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - newchatbot-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: newchatbot-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - APP_NAME=New chatbot
+      - NEXT_PUBLIC_API_URL=http://localhost:3001
+      - NEXT_PUBLIC_SOCKET_URL=ws://localhost:3001
+      - NEXT_PUBLIC_STATIC_URL=
+      - NEXT_PUBLIC_BETTER_AUTH_URL=http://localhost:3001/api/v1/auth
+    depends_on:
+      - backend
+    networks:
+      - newchatbot-network
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: newchatbot-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=newchatbot
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - newchatbot-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: newchatbot-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - newchatbot-network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  newchatbot-network:
+    driver: bridge

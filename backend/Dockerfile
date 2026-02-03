@@ -1,55 +1,40 @@
-# Backend Dockerfile
+# ---------- Builder ----------
 FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Install pnpm
-RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN apk add --no-cache openssl
 
-# Copy package files
+RUN npm install -g pnpm
+
 COPY package.json pnpm-lock.yaml ./
-
-# Install dependencies
-RUN pnpm install --frozen-lockfile
-
-# Copy source code
 COPY prisma.config.ts ./
 COPY prisma ./prisma/
-COPY src ./src/
 
-# Generate Prisma client
+RUN pnpm install --no-frozen-lockfile
 RUN npx prisma generate
 
-# Build the application
+COPY . .
+
 RUN pnpm build
 
-# Production stage
+
+# ---------- Production ----------
 FROM node:20-alpine AS production
 
 WORKDIR /app
 
-# Install pnpm
-RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN npm install -g pnpm
 
-# Copy package files for production dependencies
 COPY package.json pnpm-lock.yaml ./
-
-# Install production dependencies only
-RUN pnpm install --frozen-lockfile --prod
-
-# Copy built files from builder stage
+COPY prisma ./prisma/
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/src/locales ./src/locales
 
-# Generate Prisma client in production
+RUN pnpm install --no-frozen-lockfile
 RUN npx prisma generate
 
-# Expose port
+
+ENV NODE_ENV=production
 EXPOSE 3001
 
-# Set environment
-ENV NODE_ENV=production
-
-# Start the application
 CMD ["node", "dist/server.js"]
