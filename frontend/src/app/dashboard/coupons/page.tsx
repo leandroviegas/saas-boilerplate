@@ -13,7 +13,7 @@ export default async function AdminCouponsPage() {
   return (
     <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">{t('admin_coupons')}</h1>
+        <h1 className="text-2xl font-bold">{t('manage_coupons')}</h1>
         <Link href={`/dashboard/coupons/create`}>
           <Button variant="outline" size="sm">
             <Plus className="h-4 w-4" />

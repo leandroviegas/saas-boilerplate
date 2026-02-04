@@ -10,7 +10,6 @@ import { FaPencilAlt, FaTrash, FaSearch } from 'react-icons/fa';
 import { useQueryStates, parseAsInteger, parseAsString } from "nuqs";
 import { Button } from '@/components/ui/button';
 import { useProducts, useDeleteProduct } from '@/hooks/queries/useProducts';
-import { Edit } from 'lucide-react';
 
 export default function ProductList() {
     const { t } = useTranslation();
@@ -40,9 +39,7 @@ export default function ProductList() {
                     key={product.id}
                     className="group relative border border-border rounded-lg bg-card text-card-foreground shadow-sm hover:shadow-lg transition-all duration-200 hover:border-primary/50 flex flex-col"
                 >
-                    {/* Content wrapper - takes available space */}
                     <div className="p-6 flex-1 flex flex-col">
-                        {/* Header */}
                         <div className="flex justify-between items-start gap-4 mb-4">
                             <div className="space-y-2 flex-1">
                                 <div className="flex items-center gap-2 flex-wrap">
@@ -51,8 +48,8 @@ export default function ProductList() {
                                     </h3>
                                     <span
                                         className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${product.active
-                                                ? 'bg-green-50 text-green-700 ring-green-600/20 dark:bg-green-500/10 dark:text-green-400 dark:ring-green-500/20'
-                                                : 'bg-muted text-muted-foreground ring-muted-foreground/20'
+                                            ? 'bg-green-50 text-green-700 ring-green-600/20 dark:bg-green-500/10 dark:text-green-400 dark:ring-green-500/20'
+                                            : 'bg-muted text-muted-foreground ring-muted-foreground/20'
                                             }`}
                                     >
                                         {product.active ? t('active') : t('inactive')}
@@ -66,7 +63,6 @@ export default function ProductList() {
                             </div>
                         </div>
 
-                        {/* Details - flex-1 pushes actions to bottom */}
                         <div className="space-y-4 flex-1">
                             {product.features && product.features.length > 0 && (
                                 <div className="space-y-2">
@@ -96,8 +92,8 @@ export default function ProductList() {
                                             <span
                                                 key={index}
                                                 className={`inline-flex items-center rounded-md px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${price.active
-                                                        ? 'bg-green-50 text-green-700 ring-green-600/20 dark:bg-green-500/10 dark:text-green-400 dark:ring-green-500/20'
-                                                        : 'bg-amber-50 text-amber-700 ring-amber-600/20 dark:bg-amber-500/10 dark:text-amber-400 dark:ring-amber-500/20'
+                                                    ? 'bg-green-50 text-green-700 ring-green-600/20 dark:bg-green-500/10 dark:text-green-400 dark:ring-green-500/20'
+                                                    : 'bg-amber-50 text-amber-700 ring-amber-600/20 dark:bg-amber-500/10 dark:text-amber-400 dark:ring-amber-500/20'
                                                     }`}
                                             >
                                                 {price.amount} {price.currency} ({price.intervalValue} {price.intervalType})
@@ -109,7 +105,6 @@ export default function ProductList() {
                         </div>
                     </div>
 
-                    {/* Actions - pinned to bottom */}
                     <div className="flex gap-2 p-6 border-t border-border mt-auto">
                         <Link className="flex-1" href={`/dashboard/products/${product.id}`}>
                             <Button variant="secondary" size="sm" className="w-full">

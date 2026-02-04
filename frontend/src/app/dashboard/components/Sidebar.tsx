@@ -5,9 +5,11 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { FiHome, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { RiCoupon2Fill } from "react-icons/ri";
 import { useTranslation } from '@/hooks/useTranslation';
 import { useAuth } from '@/hooks/useAuth';
 import { rolesEnum } from '@/context/AuthContext';
+import { Package } from 'lucide-react';
 
 interface SidebarItem {
   name: string;
@@ -39,7 +41,7 @@ const Sidebar: React.FC<{ className?: string; isOpen?: boolean; isMinimized?: bo
     {
       name: t('products'),
       href: '/dashboard/billing',
-      icon: FiHome,
+      icon: Package,
       type: 'item',
     },
     {
@@ -50,14 +52,14 @@ const Sidebar: React.FC<{ className?: string; isOpen?: boolean; isMinimized?: bo
     {
       name: t('manage products'),
       href: '/dashboard/products',
-      icon: FiHome,
+      icon: Package,
       type: 'item',
       access: [rolesEnum.ADMIN].includes(userRole)
     },
     {
-      name: t('coupons'),
+      name: t('manage coupons'),
       href: '/dashboard/coupons',
-      icon: FiHome,
+      icon: RiCoupon2Fill,
       type: 'item',
       access: [rolesEnum.ADMIN].includes(userRole)
     },

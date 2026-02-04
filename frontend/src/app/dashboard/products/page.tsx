@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Package, Plus } from "lucide-react";
 import ProductList from "./components/product-list";
 import { getTranslation } from "@/utils/server/translation";
 
@@ -13,7 +13,7 @@ export default async function AdminProductsPage() {
   return (
     <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">{t('admin_products')}</h1>
+        <h1 className="text-2xl font-bold">{t('manage_product')}</h1>
         <Link href={`/dashboard/products/create`}>
           <Button variant="outline" size="sm">
             <Plus className="h-4 w-4" />
