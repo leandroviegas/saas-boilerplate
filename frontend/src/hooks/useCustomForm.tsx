@@ -1,4 +1,3 @@
-import { showError } from "@/utils/client/toast";
 import { useState } from "react";
 
 export type FieldMessageT<TField extends string> = {
@@ -23,9 +22,6 @@ export const useCustomForm = () => {
             setIsLoading(false);
             return resp;
         } catch (error: any) {
-            const message = error.response?.data?.message || error.message || "An unexpected error occurred";
-            showError(message);
-
             if (error.response?.data?.validations)
                 error.response.data.validations?.map((fieldMessage: FieldMessageT<string>) => {
                     setError(fieldMessage.field, {

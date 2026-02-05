@@ -36,9 +36,7 @@ export class CouponService extends AbstractService {
   }
 
   findAll(pagination: PaginationType) {
-    return this.prisma.coupon.paginate({
-      where: { active: true },
-    }, pagination);
+    return this.prisma.coupon.paginate({}, pagination);
   }
 
   findById(id: string) {
@@ -48,8 +46,32 @@ export class CouponService extends AbstractService {
   }
 
   async create(data: Prisma.CouponCreateInput) {
-    return await this.prisma.coupon.create({ data }).then(async coupon => {
-      const stripeCouponId = await stripeProvider.createCoupon({
+    const coupon = await this.prisma.coupon.create({ data });
+
+    const stripeCouponId = await stripeProvider.createCoupon({
+      id: coupon.id,
+      code: coupon.code,
+      discountType: coupon.discountType,
+      value: coupon.value,
+      expiresAt: coupon.expiresAt?.toISOString(),
+      usageLimit: coupon.usageLimit || undefined,
+      active: coupon.active,
+    });
+
+    return await this.prisma.coupon.update({
+      where: { id: coupon.id },
+      data: { stripeCouponId },
+    });
+  }
+
+  async update(id: string, data: Prisma.CouponUpdateInput) {
+    const coupon = await this.prisma.coupon.update({
+      where: { id },
+      data
+    });
+
+    if (coupon.stripeCouponId) {
+      await stripeProvider.updateCoupon(coupon.stripeCouponId, {
         id: coupon.id,
         code: coupon.code,
         discountType: coupon.discountType,
@@ -58,32 +80,8 @@ export class CouponService extends AbstractService {
         usageLimit: coupon.usageLimit || undefined,
         active: coupon.active,
       });
-
-      return await this.prisma.coupon.update({
-        where: { id: coupon.id },
-        data: { stripeCouponId },
-      });
-    });
-  }
-
-  async update(id: string, data: Prisma.CouponUpdateInput) {
-    return await this.prisma.coupon.update({
-      where: { id },
-      data
-    }).then(async coupon => {
-      if (coupon.stripeCouponId) {
-        await stripeProvider.updateCoupon(coupon.stripeCouponId, {
-          id: coupon.id,
-          code: coupon.code,
-          discountType: coupon.discountType,
-          value: coupon.value,
-          expiresAt: coupon.expiresAt?.toISOString(),
-          usageLimit: coupon.usageLimit || undefined,
-          active: coupon.active,
-        });
-      }
-      return coupon;
-    });
+    }
+    return coupon;
   }
 
   async delete(id: string) {

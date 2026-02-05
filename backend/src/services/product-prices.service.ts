@@ -31,7 +31,7 @@ export class ProductPriceService extends AbstractService {
             data,
         });
 
-        await stripeProvider.createProductPrice(data.productId, {
+        const stripePriceId = await stripeProvider.createProductPrice(data.productId, {
             id: productPrice.id,
             amount: productPrice.amount,
             currency: productPrice.currency,
@@ -40,21 +40,31 @@ export class ProductPriceService extends AbstractService {
             intervalType: productPrice.intervalType
         });
 
-        return productPrice;
+        return await this.prisma.productPrice.update({
+            where: { id: productPrice.id },
+            data: { stripePriceId },
+        });
     }
 
     async delete(id: string) {
-        return this.prisma.productPrice.delete({
+        let productPrice = await this.prisma.productPrice.findFirstOrThrow({
             where: { id },
-        }).then(async productPrice => {
-            await stripeProvider.deleteProductPrice(productPrice.id);
-            return productPrice;
+        })
+
+        if (productPrice.stripePriceId) {
+            await stripeProvider.deleteProductPrice(productPrice.stripePriceId);
+        }
+
+        await this.prisma.productPrice.delete({
+            where: { id },
         });
+
+        return productPrice;
     }
 
     async update(id: string, data: UpdateProductPriceBodyType) {
         let productPrice = await this.prisma.productPrice.findFirstOrThrow({
-            where: { id, stripePriceId: { not: null } },
+            where: { id },
         });
 
         productPrice = await this.prisma.productPrice.update({
@@ -62,36 +72,38 @@ export class ProductPriceService extends AbstractService {
             data
         })
 
-        await stripeProvider.updateProductPrice(productPrice.id, {
-            id: productPrice.id,
-            amount: productPrice.amount,
-            currency: productPrice.currency,
-            active: productPrice.active,
-            intervalValue: productPrice.intervalValue,
-            intervalType: productPrice.intervalType
-        });
+        if (productPrice.stripePriceId) {
+            await stripeProvider.updateProductPrice(productPrice.stripePriceId, {
+                id: productPrice.id,
+                amount: productPrice.amount,
+                currency: productPrice.currency,
+                active: productPrice.active,
+                intervalValue: productPrice.intervalValue,
+                intervalType: productPrice.intervalType
+            });
+        }
 
         return productPrice;
     }
 
     async switchActive(id: string) {
-        return this.findById(id).then(async productPrice => {
-            await this.prisma.productPrice.update({
-                where: { id },
-                data: { active: !productPrice.active },
-            });
+        const prevProductPrice = await this.prisma.productPrice.findFirstOrThrow({
+            where: { id },
+            select: { active: true, stripePriceId: true }
+        });
+
+        const newActive = !prevProductPrice.active;
+
+        if (prevProductPrice.stripePriceId) {
+            await stripeProvider.switchProductPriceActive(prevProductPrice.stripePriceId, newActive);
+        }
+
+        const productPrice = await this.prisma.productPrice.update({
+            where: { id },
+            data: { active: newActive },
+        });
 
 
-            await stripeProvider.updateProductPrice(productPrice.id, {
-                id: productPrice.id,
-                amount: productPrice.amount,
-                currency: productPrice.currency,
-                active: !productPrice.active,
-                intervalValue: productPrice.intervalValue,
-                intervalType: productPrice.intervalType
-            });
-
-            return productPrice;
-        })
+        return productPrice;
     }
 }

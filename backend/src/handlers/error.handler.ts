@@ -6,6 +6,7 @@ import { handleValidationError } from "./validation.handler";
 interface ErrorResponse {
   validations?: ValidationMessageI[];
   code: string;
+  message?: string;
 }
 
 export interface ValidationMessageI {
@@ -33,8 +34,8 @@ export async function errorHandler(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
-  const response: ErrorResponse = {
-    code: "INTERNAL_SERVER_ERROR",
+  let response: ErrorResponse = {
+    code: "INTERNAL_SERVER_ERROR"
   };
 
   if (error instanceof AppError) {
@@ -64,6 +65,11 @@ export async function errorHandler(
     response.code = code;
     reply.status(status).send(response);
     return;
+  }
+
+  response = {
+    ...response,
+    message: error.message
   }
 
   request.log.error({

@@ -10,7 +10,7 @@ export async function responseMessageHandler(request: FastifyRequest, reply: Fas
 
         if (parsed && typeof parsed === 'object' && 'code' in parsed && typeof parsed.code === 'string') {
             const locale = request.lang;
-            parsed.message = translate(locale, parsed.code);
+            parsed.message = translate(locale, parsed.message ?? parsed.code);
         }
 
         return JSON.stringify(parsed);

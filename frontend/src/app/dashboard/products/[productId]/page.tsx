@@ -16,7 +16,7 @@ interface PageProps {
 export default function ProductDetailPage({ params }: PageProps) {
   const { t } = useTranslation();
   const { productId } = use(params);
-  const { data: product, isLoading, error } = useProduct(productId);
+  const { data: product, isLoading, error, refetch } = useProduct(productId);
 
   if (isLoading) {
     return (
@@ -45,7 +45,7 @@ export default function ProductDetailPage({ params }: PageProps) {
         </Link>
       </div>
 
-      <ProductForm product={product} />
+      <ProductForm product={product} onUpsertSuccess={() => refetch()} />
     </div>
   );
 }

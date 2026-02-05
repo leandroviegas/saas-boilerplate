@@ -1,4 +1,5 @@
 import Axios, { AxiosRequestConfig } from 'axios';
+import { toast } from 'sonner';
 export const AXIOS_INSTANCE = Axios.create({ baseURL: process.env.NEXT_PUBLIC_API_URL, withCredentials: true });
 
 AXIOS_INSTANCE.interceptors.response.use(
@@ -9,6 +10,15 @@ AXIOS_INSTANCE.interceptors.response.use(
         window.location.href = '/auth';
       }
     }
+
+    console.log(error)
+
+    let message = error.response?.data?.message; 
+
+    if (message) {
+      toast.error(message);
+    }
+
     return Promise.reject(error);
   }
 );

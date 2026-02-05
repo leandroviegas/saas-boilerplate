@@ -2,7 +2,6 @@ import { ProductPriceType } from "../payment-provider.interface";
 import { StripeAbstractService } from "./stripe-abstract.service";
 
 export class StripePriceService extends StripeAbstractService {
-
   async createProductPrice(productId: string, price: ProductPriceType): Promise<string> {
     const product = await this.prisma.product.findUnique({
       where: { id: productId },
@@ -22,11 +21,12 @@ export class StripePriceService extends StripeAbstractService {
           productId: product.id,
         },
       });
+
       stripeProductId = stripeProduct.id;
 
       await this.prisma.product.update({
         where: { id: productId },
-        data: { stripeProductId: stripeProductId },
+        data: { stripeProductId },
       });
     }
 
@@ -39,28 +39,16 @@ export class StripePriceService extends StripeAbstractService {
         interval_count: price.intervalValue,
       },
       metadata: {
-        productPriceId: price.id || "",
+        productPriceId: price.id
       },
     });
 
     return stripePrice.id;
   }
 
-  async updateProductPrice(priceId: string, price: ProductPriceType): Promise<string> {
-    const existingPrice = await this.prisma.productPrice.findUnique({
-      where: { id: priceId },
-    });
-
-    if (!existingPrice) {
-      throw new Error("Price not found");
-    }
-
-    if (!existingPrice.stripePriceId) {
-      throw new Error("Price not found in Stripe");
-    }
-
+  async updateProductPrice(stripePriceId: string, price: ProductPriceType): Promise<string> {
     const stripePrice = await this.stripe.prices.update(
-      existingPrice.stripePriceId,
+      stripePriceId,
       {
         active: price.active,
         currency_options: {
@@ -69,7 +57,7 @@ export class StripePriceService extends StripeAbstractService {
           },
         },
         metadata: {
-          productPriceId: price.id || "",
+          productPriceId: price.id
         },
       }
     );
@@ -77,9 +65,11 @@ export class StripePriceService extends StripeAbstractService {
     return stripePrice.id;
   }
 
+  async switchProductPriceActive(stripePriceId: string, active: boolean): Promise<void> {
+    await this.stripe.prices.update(stripePriceId, { active });
+  }
+
   async deleteProductPrice(stripePriceId: string): Promise<void> {
-    await this.stripe.prices.update(stripePriceId, {
-      active: false,
-    });
+    throw new Error("cannot-delete-product-price-from-stripe");
   }
 }

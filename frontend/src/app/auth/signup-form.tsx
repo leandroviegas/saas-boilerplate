@@ -10,20 +10,19 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { useAuth } from '@/hooks/useAuth';
 import { useCustomForm } from "@/hooks/useCustomForm";
 import { z } from "zod";
-import { username } from "better-auth/plugins";
 
 const signUpSchema = z.object({
-  name: z.string().min(1, "first name is required"),
-  lastName: z.string().min(1, "last name is required"),
-  email: z.string().email("invalid email address"),
+  name: z.string().min(1),
+  lastName: z.string().min(1),
+  email: z.string().email(),
   username: z.string().optional(),
   password: z.string()
-    .min(8, "password must be at least 8 characters")
-    .regex(/[A-Z]/, "password must contain at least one uppercase letter")
-    .regex(/[a-z]/, "password must contain at least one lowercase letter")
-    .regex(/[0-9]/, "password must contain at least one number")
-    .regex(/[^A-Za-z0-9]/, "password must contain at least one special character"),
-  confirmPassword: z.string().min(1, "please confirm your password"),
+    .min(8)
+    .regex(/[A-Z]/)
+    .regex(/[a-z]/)
+    .regex(/[0-9]/)
+    .regex(/[^A-Za-z0-9]/),
+  confirmPassword: z.string().min(1),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "passwords don't match",
   path: ["confirmPassword"],

@@ -1,8 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getProducts } from '@/api/generated/products/products';
 import type {
-  GetAdminProducts200AllOfTwoDataItem,
-  GetAdminProductsId200AllOfTwoData,
   GetAdminProductsParams,
   PostAdminProductsBody,
   PutAdminProductsIdBody,
@@ -102,6 +100,6 @@ export function useSwitchProductActive() {
       if (data.id) {
         queryClient.invalidateQueries({ queryKey: productKeys.detail(data.id) });
       }
-    },
+    }
   });
 }

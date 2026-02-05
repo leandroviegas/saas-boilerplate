@@ -83,12 +83,10 @@ export function ProductForm({ product, onUpsertSuccess }: ProductFormProps) {
 
   return (
     <div className="space-y-6">
-      {/* Main Product Information Card */}
       <Card>
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              {/* Basic Information Section */}
               <div className="space-y-4">
                 <FormField
                   control={form.control}
@@ -97,10 +95,10 @@ export function ProductForm({ product, onUpsertSuccess }: ProductFormProps) {
                     <FormItem>
                       <FormLabel className="text-base font-semibold">{t('name')}</FormLabel>
                       <FormControl>
-                        <Input 
-                          placeholder={t('product_name_placeholder')} 
+                        <Input
+                          placeholder={t('product_name_placeholder')}
                           className="h-11"
-                          {...field} 
+                          {...field}
                         />
                       </FormControl>
                       <FormMessage />
@@ -115,10 +113,10 @@ export function ProductForm({ product, onUpsertSuccess }: ProductFormProps) {
                     <FormItem>
                       <FormLabel className="text-base font-semibold">{t('description')}</FormLabel>
                       <FormControl>
-                        <Textarea 
-                          placeholder={t('product_description_placeholder')} 
+                        <Textarea
+                          placeholder={t('product_description_placeholder')}
                           className="min-h-[100px] resize-none"
-                          {...field} 
+                          {...field}
                         />
                       </FormControl>
                       <FormMessage />
@@ -129,7 +127,6 @@ export function ProductForm({ product, onUpsertSuccess }: ProductFormProps) {
 
               <Separator />
 
-              {/* Features Section */}
               <FormField
                 control={form.control}
                 name="features"
@@ -138,13 +135,12 @@ export function ProductForm({ product, onUpsertSuccess }: ProductFormProps) {
                     <FormLabel className="text-base font-semibold">{t('features')}</FormLabel>
                     <FormControl>
                       <div className="space-y-4">
-                        {/* Feature Tags Display */}
                         {field.value && field.value.length > 0 && (
                           <div className="flex flex-wrap gap-2 p-4 rounded-lg border bg-muted/50">
                             {field.value.map((feature, index) => (
-                              <Badge 
-                                key={index} 
-                                variant="secondary" 
+                              <Badge
+                                key={index}
+                                variant="secondary"
                                 className="h-8 px-3 text-sm font-normal hover:bg-secondary/80 transition-colors"
                               >
                                 <span className="mr-1">{feature}</span>
@@ -165,7 +161,6 @@ export function ProductForm({ product, onUpsertSuccess }: ProductFormProps) {
                           </div>
                         )}
 
-                        {/* Add Feature Input */}
                         <div className="flex gap-2">
                           <Input
                             value={newFeature}
@@ -208,18 +203,17 @@ export function ProductForm({ product, onUpsertSuccess }: ProductFormProps) {
 
               <Separator />
 
-              {/* Submit Button */}
-              <Button 
-                type="submit" 
-                disabled={isSubmitting} 
+              <Button
+                type="submit"
+                disabled={isSubmitting}
                 className="w-full h-11 text-base font-semibold"
                 size="lg"
               >
                 {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {isSubmitting 
-                  ? t('saving') 
-                  : product 
-                    ? t('save_changes') 
+                {isSubmitting
+                  ? t('saving')
+                  : product
+                    ? t('save_changes')
                     : t('create_product')
                 }
               </Button>
@@ -228,7 +222,6 @@ export function ProductForm({ product, onUpsertSuccess }: ProductFormProps) {
         </CardContent>
       </Card>
 
-      {/* Pricing Section - Only show for existing products */}
       {product?.id && (
         <Card>
           <CardHeader>
@@ -239,7 +232,7 @@ export function ProductForm({ product, onUpsertSuccess }: ProductFormProps) {
                   <CardTitle>{t('prices')}</CardTitle>
                 </div>
               </div>
-              <Button 
+              <Button
                 onClick={() => {
                   const newPrice = {} as GetAdminProducts200AllOfTwoDataItemAllOfTwoPricesItem;
                   setPrices(prevPrices => ([...(prevPrices || []), newPrice]));
@@ -261,6 +254,7 @@ export function ProductForm({ product, onUpsertSuccess }: ProductFormProps) {
                       <ProductPriceForm
                         price={price}
                         productId={product.id}
+                        onUpsertSuccess={() => { if (onUpsertSuccess) onUpsertSuccess() }}
                         onDeleteSucess={() => setPrices(prevPrices => prevPrices?.filter((_, i) => i !== index))}
                       />
                     </CardContent>
@@ -274,7 +268,7 @@ export function ProductForm({ product, onUpsertSuccess }: ProductFormProps) {
                 <p className="text-sm text-muted-foreground mb-4">
                   {t('no_prices_description')}
                 </p>
-                <Button 
+                <Button
                   onClick={() => {
                     const newPrice = {} as GetAdminProducts200AllOfTwoDataItemAllOfTwoPricesItem;
                     setPrices(prevPrices => ([...(prevPrices || []), newPrice]));

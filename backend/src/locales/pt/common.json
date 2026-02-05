@@ -25,5 +25,14 @@
   "UNAUTHORIZED": "UNAUTHORIZED",
   "switch-active": "switch-active",
   "get-coupons": "get-coupons",
-  "get-coupon": "get-coupon"
+  "get-coupon": "get-coupon",
+  "RECORD_NOT_FOUND": "RECORD_NOT_FOUND",
+  "create-product-price": "create-product-price",
+  "update-product-price": "update-product-price",
+  "delete-product-price": "delete-product-price",
+  "This product cannot be deleted because it has one or more user-created prices.": "This product cannot be deleted because it has one or more user-created prices.",
+  "Operation completed successfully": "Operation completed successfully",
+  "cannot-delete-product-price-from-stripe": "cannot-delete-product-price-from-stripe",
+  "body/name must NOT have fewer than 2 characters": "body/name must NOT have fewer than 2 characters",
+  "Unexpected error": "Unexpected error"
 }

@@ -47,16 +47,25 @@ export class StripeProvider implements PaymentProvider {
     return this.productService.deleteProduct(productId);
   }
 
+  async switchActive(productId: string, active: boolean): Promise<string> {
+    return this.productService.switchActive(productId, active);
+  }
+
+
   async createProductPrice(productId: string, price: ProductPriceType): Promise<string> {
     return this.priceService.createProductPrice(productId, price);
   }
 
-  async updateProductPrice(priceId: string, price: ProductPriceType): Promise<string> {
-    return this.priceService.updateProductPrice(priceId, price);
+  async switchProductPriceActive(stripePriceId: string, active: boolean) {
+    return this.priceService.switchProductPriceActive(stripePriceId, active);
   }
 
-  async deleteProductPrice(priceId: string): Promise<void> {
-    return this.priceService.deleteProductPrice(priceId);
+  async updateProductPrice(stripePriceId: string, price: ProductPriceType): Promise<string> {
+    return this.priceService.updateProductPrice(stripePriceId, price);
+  }
+
+  async deleteProductPrice(stripePriceId: string): Promise<void> {
+    return this.priceService.deleteProductPrice(stripePriceId);
   }
 
   async createCoupon(coupon: CouponType): Promise<string> {

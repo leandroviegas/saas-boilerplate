@@ -22,7 +22,7 @@ export interface ProductType {
 }
 
 export interface ProductPriceType {
-  id?: string;
+  id: string;
   productId?: string;
   amount: number;
   currency: string;

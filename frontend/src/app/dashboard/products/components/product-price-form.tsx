@@ -16,11 +16,11 @@ import { getProductPrices } from "@/api/generated/product-prices/product-prices"
 // Define the schema for product price form validation
 const productPriceFormSchema = z.object({
   id: z.string().optional(),
-  amount: z.number().min(0, "Amount must be positive"),
+  amount: z.number().min(0),
   currency: z.enum(["USD", "EUR", "BRL"]),
   active: z.boolean(),
   intervalType: z.enum(["DAY", "WEEK", "MONTH", "YEAR"]),
-  intervalValue: z.number().min(1, "Interval value must be at least 1"),
+  intervalValue: z.number().min(1),
 });
 
 type ProductPriceFormValues = z.infer<typeof productPriceFormSchema>;
@@ -52,15 +52,18 @@ export function ProductPriceForm({ price, productId, onUpsertSuccess, onDeleteSu
 
   const onSubmit = async (data: ProductPriceFormValues) => {
     await onFormSubmit(data, async (formData) => {
-      const { id, ...formDataWithoutId } = formData;
+      let { id, ...formDataWithoutId } = formData;
+      
+      id = formData.id || price?.id;
+
       const formToSend = {
         ...formDataWithoutId,
         productId,
         archived: false,
       }
 
-      if (price?.id) {
-        await productPricesApi.putAdminProductPricesId(productId, { ...formToSend, id: id! });
+      if (id) {
+        await productPricesApi.putAdminProductPricesId(id, { ...formToSend, id });
       } else {
         await productPricesApi.postAdminProductPrices(formToSend);
       }
@@ -72,7 +75,7 @@ export function ProductPriceForm({ price, productId, onUpsertSuccess, onDeleteSu
 
   async function onDelete() {
     if (price?.id)
-      await productPricesApi.deleteAdminProductPricesId(productId);
+      await productPricesApi.deleteAdminProductPricesId(price.id);
     if (onDeleteSucess)
       onDeleteSucess()
   }

@@ -5,14 +5,7 @@ import { Prisma } from "@prisma/client";
 
 export class ProductService extends AbstractService {
   findAll(pagination: PaginationType) {
-    return this.prisma.product.paginate({
-      where: { active: true, archived: false },
-      include: {
-        prices: {
-          where: { active: true, archived: false },
-        },
-      },
-    }, pagination);
+    return this.prisma.product.paginate({}, pagination);
   }
 
   findById(id: string) {
@@ -25,65 +18,68 @@ export class ProductService extends AbstractService {
   }
 
   async create(data: Prisma.ProductCreateInput) {
-    return await this.prisma.product.create({ data }).then(async product => {
-      const stripeProductId = await stripeProvider.createProduct({
-        id: product.id,
-        name: product.name,
-        description: product.description || undefined,
-        features: product.features,
-        active: product.active,
-      });
+    const product = await this.prisma.product.create({ data });
 
-      return await this.prisma.product.update({
-        where: { id: product.id },
-        data: { stripeProductId },
-      });
+    const stripeProductId = await stripeProvider.createProduct({
+      id: product.id,
+      name: product.name,
+      description: product.description || undefined,
+      features: product.features,
+      active: product.active,
+    });
+
+    return await this.prisma.product.update({
+      where: { id: product.id },
+      data: { stripeProductId },
     });
   }
 
   async update(id: string, data: Prisma.ProductUpdateInput) {
-    return await this.prisma.product.update({
+    const product = await this.prisma.product.update({
       where: { id },
       data
-    }).then(async product => {
-      await stripeProvider.updateProduct(id, {
+    });
+
+    if (product.stripeProductId) {
+      await stripeProvider.updateProduct(product.stripeProductId, {
         id: product.id,
         name: product.name,
         description: product.description || undefined,
         features: product.features,
         active: product.active,
       });
-      return product;
-    });
+    }
+    return product;
   }
 
   async delete(id: string) {
-    return await this.prisma.product.delete({ where: { id } }).then(async product => {
-      if (product.stripeProductId) {
-        await stripeProvider.deleteProduct(product.stripeProductId);
-      }
-      return product
-    });
+    const product = await this.prisma.product.findFirstOrThrow({ where: { id } });
+
+    if (product.stripeProductId) {
+      await stripeProvider.deleteProduct(product.stripeProductId);
+    }
+
+    await this.prisma.product.delete({ where: { id } });
+
+    return product;
   }
 
   async switchActive(id: string) {
-    const currentProduct = await this.findById(id);
+    const prevProduct = await this.prisma.product.findFirstOrThrow({
+      where: { id },
+      select: { active: true, stripeProductId: true }
+    });
+    const newActive = !prevProduct.active;
 
-    const newActive = !currentProduct.active;
+    if (prevProduct.stripeProductId) {
+      await stripeProvider.switchActive(prevProduct.stripeProductId, newActive);
+    }
 
-    return await this.prisma.product.update({
+    const product = await this.prisma.product.update({
       where: { id },
       data: { active: newActive },
-    }).then(async product => {
-      await stripeProvider.updateProduct(id, {
-        id: product.id,
-        name: product.name,
-        description: product.description || undefined,
-        features: product.features,
-        active: newActive,
-      });
-
-      return product;
     });
+
+    return product;
   }
 }
