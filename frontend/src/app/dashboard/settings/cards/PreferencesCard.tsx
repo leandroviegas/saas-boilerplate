@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Sun, Moon } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
 import { useLanguage } from "@/hooks/useLanguage";
+import { LangsEnum } from "@/enums/LangsEnum";
 
 export function PreferencesCard() {
   const { t } = useTranslation();
@@ -43,7 +44,7 @@ export function PreferencesCard() {
 
         <div className="space-y-2">
           <Label htmlFor="language">{t("language")}</Label>
-          <Select defaultValue={currentLocale} onValueChange={(e) => changeLanguage(e)}>
+          <Select defaultValue={currentLocale} onValueChange={(e) => changeLanguage(e as LangsEnum)}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Select a fruit" />
             </SelectTrigger>
