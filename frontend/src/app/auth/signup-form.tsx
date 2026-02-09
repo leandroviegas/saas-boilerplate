@@ -1,7 +1,7 @@
 "use client";
 
 import { useForm, type ControllerRenderProps } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { typeboxResolver } from "@hookform/resolvers/typebox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
@@ -9,33 +9,26 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useTranslation } from "@/hooks/useTranslation";
 import { useAuth } from '@/hooks/useAuth';
 import { useCustomForm } from "@/hooks/useCustomForm";
-import { z } from "zod";
+import { Type, Static } from "@sinclair/typebox";
 
-const signUpSchema = z.object({
-  name: z.string().min(1),
-  lastName: z.string().min(1),
-  email: z.string().email(),
-  username: z.string().optional(),
-  password: z.string()
-    .min(8)
-    .regex(/[A-Z]/)
-    .regex(/[a-z]/)
-    .regex(/[0-9]/)
-    .regex(/[^A-Za-z0-9]/),
-  confirmPassword: z.string().min(1),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "passwords don't match",
-  path: ["confirmPassword"],
+const signUpSchema = Type.Object({
+  name: Type.String({ minLength: 1 }),
+  lastName: Type.String({ minLength: 1 }),
+  email: Type.String({ format: "email" }),
+  username: Type.Optional(Type.String()),
+  password: Type.String({ minLength: 8 }),
+  confirmPassword: Type.String({ minLength: 1 }),
 });
 
-export type SignUpFormValues = z.infer<typeof signUpSchema>;
+export type SignUpFormValues = Static<typeof signUpSchema>;
+
 export default function SignUpForm() {
     const { t } = useTranslation();
     const { signUp } = useAuth()
     const { onFormSubmit, isLoading } = useCustomForm()
 
     const signUpForm = useForm<SignUpFormValues>({
-        resolver: zodResolver(signUpSchema),
+        resolver: typeboxResolver(signUpSchema),
         defaultValues: {
             name: "",
             lastName: "",
@@ -47,6 +40,12 @@ export default function SignUpForm() {
     });
 
     const onRegisterSubmit = async (data: SignUpFormValues) => {
+        // Validate password match manually since TypeBox doesn't have refine equivalent
+        if (data.password !== data.confirmPassword) {
+            signUpForm.setError("confirmPassword", { message: "passwords don't match" });
+            return;
+        }
+
         const submitData = {
             ...data,
             name: `${data.name} ${data.lastName}`.trim(),

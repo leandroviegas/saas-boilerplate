@@ -40,5 +40,8 @@
   "expiresAt": "expiresAt",
   "create-coupon": "create-coupon",
   "update-coupon": "update-coupon",
-  "get-coupon": "get-coupon"
+  "get-coupon": "get-coupon",
+  "Operation completed successfully": "Operation completed successfully",
+  "cannot-delete-product-price-from-stripe": "cannot-delete-product-price-from-stripe",
+  "This product cannot be deleted because it has one or more user-created prices.": "This product cannot be deleted because it has one or more user-created prices."
 }

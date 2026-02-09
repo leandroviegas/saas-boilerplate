@@ -1,10 +1,9 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { typeboxResolver } from "@hookform/resolvers/typebox";
+import { Type, Static } from "@sinclair/typebox";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,28 +12,20 @@ import { useCustomForm } from "@/hooks/useCustomForm";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 
-const passwordSchema = z.object({
-  currentPassword: z.string().min(1, "current password is required"),
-  newPassword: z.string()
-    .min(8, "password must be at least 8 characters")
-    .regex(/[A-Z]/, "password must contain at least one uppercase letter")
-    .regex(/[a-z]/, "password must contain at least one lowercase letter")
-    .regex(/[0-9]/, "password must contain at least one number")
-    .regex(/[^A-Za-z0-9]/, "password must contain at least one special character"),
-  confirmPassword: z.string().min(1, "please confirm your password"),
-}).refine((data) => data.newPassword === data.confirmPassword, {
-  message: "passwords don't match",
-  path: ["confirmPassword"],
+const passwordSchema = Type.Object({
+  currentPassword: Type.String({ minLength: 1 }),
+  newPassword: Type.String({ minLength: 8 }),
+  confirmPassword: Type.String({ minLength: 1 }),
 });
 
-type PasswordValues = z.infer<typeof passwordSchema>;
+type PasswordValues = Static<typeof passwordSchema>;
 
 export function PasswordCard() {
   const { t } = useTranslation();
   const { onFormSubmit, isLoading } = useCustomForm();
 
   const form = useForm<PasswordValues>({
-    resolver: zodResolver(passwordSchema),
+    resolver: typeboxResolver(passwordSchema),
     defaultValues: {
       currentPassword: "",
       newPassword: "",
@@ -43,6 +34,12 @@ export function PasswordCard() {
   });
 
   const onSubmit = async (data: PasswordValues) => {
+    // Validate password match manually since TypeBox doesn't have refine equivalent
+    if (data.newPassword !== data.confirmPassword) {
+      form.setError("confirmPassword", { message: "passwords don't match" });
+      return;
+    }
+
     const changePasswordAction = async (values: PasswordValues) => {
       const { error } = await authClient.changePassword({
         currentPassword: values.currentPassword,

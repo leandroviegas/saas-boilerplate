@@ -2,8 +2,8 @@
 
 import { useTranslation } from "@/hooks/useTranslation";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { typeboxResolver } from "@hookform/resolvers/typebox";
+import { Type, Static } from "@sinclair/typebox";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
@@ -13,11 +13,11 @@ import { useAuth } from '@/hooks/useAuth';
 import { useCustomForm } from "@/hooks/useCustomForm";
 import { useRouter } from "next/navigation";
 
-const verifySchema = z.object({
-  otpCode: z.string().min(6, "OTP must be 6 digits").max(6, "OTP must be 6 digits"),
+const verifySchema = Type.Object({
+  otpCode: Type.String({ minLength: 6, maxLength: 6 }),
 });
 
-type VerifyFormValues = z.infer<typeof verifySchema>;
+type VerifyFormValues = Static<typeof verifySchema>;
 
 export default function TwoFactorPage() {
   const { t } = useTranslation();
@@ -26,7 +26,7 @@ export default function TwoFactorPage() {
   const { onFormSubmit, isLoading } = useCustomForm();
 
   const form = useForm<VerifyFormValues>({
-    resolver: zodResolver(verifySchema),
+    resolver: typeboxResolver(verifySchema),
     defaultValues: {
       otpCode: "",
     },

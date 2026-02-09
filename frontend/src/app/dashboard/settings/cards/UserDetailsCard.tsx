@@ -1,8 +1,8 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { typeboxResolver } from "@hookform/resolvers/typebox";
+import { Type, Static } from "@sinclair/typebox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -17,14 +17,14 @@ import { getUsers } from "@/api/generated/users/users";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LuTrash2, LuUpload } from "react-icons/lu";
 
-const userDetailsSchema = z.object({
-  name: z.string().min(1, "name is required"),
-  username: z.string().min(3, "username must be at least 3 characters"),
-  email: z.string().email("invalid email address"),
-  image: z.string().optional(),
+const userDetailsSchema = Type.Object({
+  name: Type.String({ minLength: 1 }),
+  username: Type.String({ minLength: 3 }),
+  email: Type.String({ format: "email" }),
+  image: Type.Optional(Type.String()),
 });
 
-type UserDetailsValues = z.infer<typeof userDetailsSchema>;
+type UserDetailsValues = Static<typeof userDetailsSchema>;
 
 export function UserDetailsCard() {
   const { t } = useTranslation();
@@ -63,7 +63,7 @@ export function UserDetailsCard() {
   };
 
   const form = useForm<UserDetailsValues>({
-    resolver: zodResolver(userDetailsSchema),
+    resolver: typeboxResolver(userDetailsSchema),
     defaultValues: {
       name: user?.name || "",
       username: user?.username || "",

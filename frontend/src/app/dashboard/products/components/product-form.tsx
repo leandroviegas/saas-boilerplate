@@ -9,8 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { Type, Static } from "@sinclair/typebox";
 import { Plus, X, DollarSign, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { GetAdminProducts200AllOfTwoDataItem, GetAdminProducts200AllOfTwoDataItemAllOfTwoPricesItem } from "@/api/generated/newChatbotAPI.schemas";
@@ -18,14 +17,15 @@ import { useCustomForm } from "@/hooks/useCustomForm";
 import { ProductPriceForm } from "./product-price-form";
 import { useRouter } from "next/navigation";
 import { useCreateProduct, useUpdateProduct } from "@/hooks/queries/useProducts";
+import { typeboxResolver } from "@/lib/typebox-resolver";
 
-const productFormSchema = z.object({
-  name: z.string().min(1),
-  description: z.string().optional(),
-  features: z.array(z.string()),
+const productFormSchema = Type.Object({
+  name: Type.String({ minLength: 1 }),
+  description: Type.Optional(Type.String()),
+  features: Type.Array(Type.String()),
 });
 
-type ProductFormValues = z.infer<typeof productFormSchema>;
+type ProductFormValues = Static<typeof productFormSchema>;
 
 interface ProductFormProps {
   product?: GetAdminProducts200AllOfTwoDataItem;
@@ -33,7 +33,7 @@ interface ProductFormProps {
 }
 
 export function ProductForm({ product, onUpsertSuccess }: ProductFormProps) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const router = useRouter();
   const createProduct = useCreateProduct();
   const updateProduct = useUpdateProduct();
@@ -43,7 +43,7 @@ export function ProductForm({ product, onUpsertSuccess }: ProductFormProps) {
   const [newFeature, setNewFeature] = useState("");
 
   const form = useForm<ProductFormValues>({
-    resolver: zodResolver(productFormSchema),
+    resolver: typeboxResolver(productFormSchema, { locale }),
     defaultValues: {
       name: product?.name || "",
       description: product?.description || "",
@@ -115,7 +115,7 @@ export function ProductForm({ product, onUpsertSuccess }: ProductFormProps) {
                       <FormControl>
                         <Textarea
                           placeholder={t('product_description_placeholder')}
-                          className="min-h-[100px] resize-none"
+                          className="resize-none"
                           {...field}
                         />
                       </FormControl>

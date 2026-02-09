@@ -2,12 +2,11 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { typeboxResolver } from "@hookform/resolvers/typebox";
+import { Type, Static } from "@sinclair/typebox";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/components/ui/input-otp";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -18,16 +17,16 @@ import { useAuth } from '@/hooks/useAuth';
 import { useCustomForm } from "@/hooks/useCustomForm";
 import QRCode from "react-qr-code";
 
-const passwordSchema = z.object({
-  password: z.string().min(1, "Password is required"),
+const passwordSchema = Type.Object({
+  password: Type.String({ minLength: 1 }),
 });
 
-const verifySchema = z.object({
-  otpCode: z.string().min(6, "OTP must be 6 digits").max(6, "OTP must be 6 digits"),
+const verifySchema = Type.Object({
+  otpCode: Type.String({ minLength: 6, maxLength: 6 }),
 });
 
-type PasswordFormValues = z.infer<typeof passwordSchema>;
-type VerifyFormValues = z.infer<typeof verifySchema>;
+type PasswordFormValues = Static<typeof passwordSchema>;
+type VerifyFormValues = Static<typeof verifySchema>;
 
 interface Enable2FAModalProps {
   isOpen: boolean;
@@ -84,12 +83,12 @@ export function Enable2FAModal({ isOpen, onOpenChange }: Enable2FAModalProps) {
   const { onFormSubmit: onVerifySubmit, isLoading: verifyLoading } = useCustomForm();
 
   const passwordForm = useForm<PasswordFormValues>({
-    resolver: zodResolver(passwordSchema),
+    resolver: typeboxResolver(passwordSchema),
     defaultValues: { password: "" },
   });
 
   const verifyForm = useForm<VerifyFormValues>({
-    resolver: zodResolver(verifySchema),
+    resolver: typeboxResolver(verifySchema),
     defaultValues: { otpCode: "" },
   });
 
@@ -215,7 +214,7 @@ export function Disable2FAModal({ isOpen, onOpenChange }: Disable2FAModalProps) 
   const { onFormSubmit: onDisableSubmit, isLoading: disableLoading } = useCustomForm();
 
   const form = useForm<PasswordFormValues>({
-    resolver: zodResolver(passwordSchema),
+    resolver: typeboxResolver(passwordSchema),
     defaultValues: { password: "" },
   });
 

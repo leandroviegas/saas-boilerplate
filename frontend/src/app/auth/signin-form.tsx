@@ -2,7 +2,7 @@
 
 import { useTranslation } from "@/hooks/useTranslation";
 import { useForm, type ControllerRenderProps } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { typeboxResolver } from "@hookform/resolvers/typebox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
@@ -10,14 +10,14 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import Link from "next/link";
 import { useAuth } from '@/hooks/useAuth';
 import { useCustomForm } from "@/hooks/useCustomForm";
-import { z } from "zod";
+import { Type, Static } from "@sinclair/typebox";
 
-const signInSchema = z.object({
-  email: z.string(),
-  password: z.string(),
+const signInSchema = Type.Object({
+  email: Type.String(),
+  password: Type.String(),
 });
 
-export type SignInFormValues = z.infer<typeof signInSchema>;
+export type SignInFormValues = Static<typeof signInSchema>;
 
 export default function SignInForm() {
     const { t } = useTranslation();
@@ -25,7 +25,7 @@ export default function SignInForm() {
     const { onFormSubmit, isLoading } = useCustomForm();
 
     const signInForm = useForm<SignInFormValues>({
-        resolver: zodResolver(signInSchema),
+        resolver: typeboxResolver(signInSchema),
         defaultValues: {
             email: "",
             password: "",

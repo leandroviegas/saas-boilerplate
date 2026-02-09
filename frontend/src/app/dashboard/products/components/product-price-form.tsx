@@ -5,25 +5,24 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { z } from "zod";
 import { Trash2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useCustomForm } from "@/hooks/useCustomForm";
 import { useTranslation } from "@/hooks/useTranslation";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { typeboxResolver } from "@hookform/resolvers/typebox";
+import { Type, Static } from "@sinclair/typebox";
 import { getProductPrices } from "@/api/generated/product-prices/product-prices";
 
-// Define the schema for product price form validation
-const productPriceFormSchema = z.object({
-  id: z.string().optional(),
-  amount: z.number().min(0),
-  currency: z.enum(["USD", "EUR", "BRL"]),
-  active: z.boolean(),
-  intervalType: z.enum(["DAY", "WEEK", "MONTH", "YEAR"]),
-  intervalValue: z.number().min(1),
+const productPriceFormSchema = Type.Object({
+  id: Type.Optional(Type.String()),
+  amount: Type.Number({ minimum: 0 }),
+  currency: Type.Union([Type.Literal("USD"), Type.Literal("EUR"), Type.Literal("BRL")]),
+  active: Type.Boolean(),
+  intervalType: Type.Union([Type.Literal("DAY"), Type.Literal("WEEK"), Type.Literal("MONTH"), Type.Literal("YEAR")]),
+  intervalValue: Type.Number({ minimum: 1 }),
 });
 
-type ProductPriceFormValues = z.infer<typeof productPriceFormSchema>;
+type ProductPriceFormValues = Static<typeof productPriceFormSchema>;
 
 interface ProductPriceFormProps {
   price?: ProductPriceFormValues
@@ -39,7 +38,7 @@ export function ProductPriceForm({ price, productId, onUpsertSuccess, onDeleteSu
   const { onFormSubmit, isLoading } = useCustomForm();
 
   const form = useForm<ProductPriceFormValues>({
-    resolver: zodResolver(productPriceFormSchema),
+    resolver: typeboxResolver(productPriceFormSchema),
     defaultValues: {
       id: price?.id,
       amount: price?.amount || 0,

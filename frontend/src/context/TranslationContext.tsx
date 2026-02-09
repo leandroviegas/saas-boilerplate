@@ -3,12 +3,12 @@ import { createContext } from 'react';
 
 export interface TranslationContextProps {
     t: (arg0: string, replacements?: string[]) => string,
-    locale: string
+    locale: 'pt' | 'en'
 }
 
 export const TranslationContext = createContext<TranslationContextProps | null>(null);
 
-export const TranslationProvider = ({ children, translation, locale }: { children: React.ReactNode, translation: { [key: string]: string }, locale: string }) => {
+export const TranslationProvider = ({ children, translation, locale }: { children: React.ReactNode, translation: { [key: string]: string }, locale:  'pt' | 'en' }) => {
     const t = (key: string, replacements?: string[]): string => {
         const trasnlated = translation[key]
         if (!trasnlated) {
