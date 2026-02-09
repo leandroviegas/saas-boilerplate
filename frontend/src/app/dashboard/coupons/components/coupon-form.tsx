@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useForm } from "react-hook-form";
-import { typeboxResolver } from "@hookform/resolvers/typebox";
+import { typeboxResolver } from "@/lib/typebox-resolver";
 import { Type, Static } from "@sinclair/typebox";
 import { GetAdminCouponsId200AllOfTwoData } from "@/api/generated/newChatbotAPI.schemas";
 import { useCustomForm } from "@/hooks/useCustomForm";
@@ -31,7 +31,7 @@ interface CouponFormProps {
 }
 
 export function CouponForm({ coupon }: CouponFormProps) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const router = useRouter();
   const createCoupon = useCreateCoupon();
   const updateCoupon = useUpdateCoupon();
@@ -39,7 +39,7 @@ export function CouponForm({ coupon }: CouponFormProps) {
   const { onFormSubmit, isLoading } = useCustomForm();
 
   const form = useForm<CouponFormValues>({
-    resolver: typeboxResolver(couponFormSchema),
+    resolver: typeboxResolver(couponFormSchema, { locale }),
     defaultValues: {
       code: coupon?.code || "",
       discountType: coupon?.discountType || "PERCENTAGE",

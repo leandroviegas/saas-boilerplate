@@ -4,8 +4,9 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from './useTranslation';
 import Cookies from 'js-cookie';
+import { LangsEnum } from '@/enums/LangsEnum';
 
-const supportedLocales = ['en', 'pt'];
+const supportedLocales = Object.values(LangsEnum);
 
 export function useLanguage() {
   const { locale } = useTranslation();
@@ -16,15 +17,14 @@ export function useLanguage() {
     setCurrentLocale(locale);
   }, [locale]);
 
-  const changeLanguage = (newLocale: string) => {
+  const changeLanguage = (newLocale: LangsEnum) => {
     Cookies.set('lang', newLocale);
     setCurrentLocale(newLocale);
     router.refresh();
   };
 
   const toggleLanguage = () => {
-    const newLocale = currentLocale === 'en' ? 'pt' : 'en';
-    changeLanguage(newLocale);
+    changeLanguage(currentLocale);
   };
 
   return {

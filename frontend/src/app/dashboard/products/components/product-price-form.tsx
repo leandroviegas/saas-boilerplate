@@ -9,7 +9,7 @@ import { Trash2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useCustomForm } from "@/hooks/useCustomForm";
 import { useTranslation } from "@/hooks/useTranslation";
-import { typeboxResolver } from "@hookform/resolvers/typebox";
+import { typeboxResolver } from "@/lib/typebox-resolver";
 import { Type, Static } from "@sinclair/typebox";
 import { getProductPrices } from "@/api/generated/product-prices/product-prices";
 
@@ -34,11 +34,11 @@ interface ProductPriceFormProps {
 const productPricesApi = getProductPrices();
 
 export function ProductPriceForm({ price, productId, onUpsertSuccess, onDeleteSucess }: ProductPriceFormProps) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const { onFormSubmit, isLoading } = useCustomForm();
 
   const form = useForm<ProductPriceFormValues>({
-    resolver: typeboxResolver(productPriceFormSchema),
+    resolver: typeboxResolver(productPriceFormSchema, { locale }),
     defaultValues: {
       id: price?.id,
       amount: price?.amount || 0,

@@ -2,7 +2,7 @@
 
 import { useTranslation } from "@/hooks/useTranslation";
 import { useForm, type ControllerRenderProps } from "react-hook-form";
-import { typeboxResolver } from "@hookform/resolvers/typebox";
+import { typeboxResolver } from "@/lib/typebox-resolver";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
@@ -20,12 +20,12 @@ const signInSchema = Type.Object({
 export type SignInFormValues = Static<typeof signInSchema>;
 
 export default function SignInForm() {
-    const { t } = useTranslation();
+    const { t, locale } = useTranslation();
     const { signIn } = useAuth();
     const { onFormSubmit, isLoading } = useCustomForm();
 
     const signInForm = useForm<SignInFormValues>({
-        resolver: typeboxResolver(signInSchema),
+        resolver: typeboxResolver(signInSchema, { locale }),
         defaultValues: {
             email: "",
             password: "",

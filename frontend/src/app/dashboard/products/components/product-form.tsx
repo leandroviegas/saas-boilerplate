@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useForm } from "react-hook-form";
+import { typeboxResolver } from "@/lib/typebox-resolver";
 import { Type, Static } from "@sinclair/typebox";
 import { Plus, X, DollarSign, Loader2 } from "lucide-react";
 import { useState } from "react";
@@ -17,7 +18,7 @@ import { useCustomForm } from "@/hooks/useCustomForm";
 import { ProductPriceForm } from "./product-price-form";
 import { useRouter } from "next/navigation";
 import { useCreateProduct, useUpdateProduct } from "@/hooks/queries/useProducts";
-import { typeboxResolver } from "@/lib/typebox-resolver";
+
 
 const productFormSchema = Type.Object({
   name: Type.String({ minLength: 1 }),

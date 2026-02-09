@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { typeboxResolver } from "@hookform/resolvers/typebox";
+import { typeboxResolver } from "@/lib/typebox-resolver";
 import { Type, Static } from "@sinclair/typebox";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -74,7 +74,7 @@ export function TwoFactorCard() {
 }
 
 export function Enable2FAModal({ isOpen, onOpenChange }: Enable2FAModalProps) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const { updateSession } = useAuth();
   const [qrCode, setQrCode] = useState("");
   const [step, setStep] = useState<"password" | "verify">("password");
@@ -83,12 +83,12 @@ export function Enable2FAModal({ isOpen, onOpenChange }: Enable2FAModalProps) {
   const { onFormSubmit: onVerifySubmit, isLoading: verifyLoading } = useCustomForm();
 
   const passwordForm = useForm<PasswordFormValues>({
-    resolver: typeboxResolver(passwordSchema),
+    resolver: typeboxResolver(passwordSchema, { locale }),
     defaultValues: { password: "" },
   });
 
   const verifyForm = useForm<VerifyFormValues>({
-    resolver: typeboxResolver(verifySchema),
+    resolver: typeboxResolver(verifySchema, { locale }),
     defaultValues: { otpCode: "" },
   });
 

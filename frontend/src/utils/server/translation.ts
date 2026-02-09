@@ -1,28 +1,24 @@
 import { cookies, headers } from 'next/headers';
 import acceptLanguageParser from 'accept-language-parser';
+import { LangsEnum } from '@/enums/LangsEnum';
 
-export enum languageEnum {
-    PT = 'pt',
-    EN = 'en'
-}
-
-const locales = Object.values(languageEnum)
+const locales = Object.values(LangsEnum)
 
 export async function getTranslation() {
     const cookiesList = await cookies();
     const headersList = await headers();
 
-    let lang = languageEnum.EN;
+    let lang = LangsEnum.EN;
 
     let cookieLang = cookiesList.get('lang')?.value;
     let acceptLanguage = headersList.get("accept-language");
 
     if (cookieLang) {
-        lang = cookieLang as languageEnum;
+        lang = cookieLang as LangsEnum;
     } else if (acceptLanguage) {
         const languages = acceptLanguageParser.parse(acceptLanguage);
-        if (Object.values(languageEnum).includes(languages[0]?.code as languageEnum)) {
-            lang = languages[0]?.code as languageEnum;
+        if (Object.values(LangsEnum).includes(languages[0]?.code as LangsEnum)) {
+            lang = languages[0]?.code as LangsEnum;
         }
     }
 

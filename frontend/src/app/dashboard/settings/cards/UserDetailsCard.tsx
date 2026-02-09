@@ -1,7 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { typeboxResolver } from "@hookform/resolvers/typebox";
+import { typeboxResolver } from "@/lib/typebox-resolver";
 import { Type, Static } from "@sinclair/typebox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,7 +27,7 @@ const userDetailsSchema = Type.Object({
 type UserDetailsValues = Static<typeof userDetailsSchema>;
 
 export function UserDetailsCard() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const { user, updateSession } = useAuth();
   const { onFormSubmit, isLoading } = useCustomForm();
   const usersApi = getUsers();
@@ -63,7 +63,7 @@ export function UserDetailsCard() {
   };
 
   const form = useForm<UserDetailsValues>({
-    resolver: typeboxResolver(userDetailsSchema),
+    resolver: typeboxResolver(userDetailsSchema, { locale }),
     defaultValues: {
       name: user?.name || "",
       username: user?.username || "",

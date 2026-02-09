@@ -1,7 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { typeboxResolver } from "@hookform/resolvers/typebox";
+import { typeboxResolver } from "@/lib/typebox-resolver";
 import { Type, Static } from "@sinclair/typebox";
 import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/components/ui/password-input";
@@ -21,11 +21,11 @@ const passwordSchema = Type.Object({
 type PasswordValues = Static<typeof passwordSchema>;
 
 export function PasswordCard() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const { onFormSubmit, isLoading } = useCustomForm();
 
   const form = useForm<PasswordValues>({
-    resolver: typeboxResolver(passwordSchema),
+    resolver: typeboxResolver(passwordSchema, { locale }),
     defaultValues: {
       currentPassword: "",
       newPassword: "",
@@ -34,7 +34,6 @@ export function PasswordCard() {
   });
 
   const onSubmit = async (data: PasswordValues) => {
-    // Validate password match manually since TypeBox doesn't have refine equivalent
     if (data.newPassword !== data.confirmPassword) {
       form.setError("confirmPassword", { message: "passwords don't match" });
       return;

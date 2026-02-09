@@ -1,9 +1,10 @@
-import { Type, TSchema, Static } from '@sinclair/typebox';
+import { LangsEnum } from '@/enums/LangsEnum';
+import { TSchema, Static } from '@sinclair/typebox';
 import { Value } from '@sinclair/typebox/value';
 import { FieldErrors, FieldValues, ResolverResult } from 'react-hook-form';
 
 interface TypeboxResolverOptions {
-  locale?: 'en' | 'pt' | string;
+  locale?: LangsEnum;
 }
 
 interface ErrorMessages {
@@ -66,14 +67,12 @@ function translateError(
   error: any,
   path: string,
   messages: ErrorMessages,
-  locale: string
+  locale: LangsEnum
 ): string {
   const field = getFieldName(path);
   
-  // Map TypeBox error types to our message keys
   let errorType = 'generic';
   
-  // Check the error message or type to determine the validation that failed
   if (error.type === 52 || error.message?.includes('Expected string length greater')) {
     errorType = 'minLength';
   } else if (error.type === 53 || error.message?.includes('Expected string length less')) {
@@ -86,17 +85,28 @@ function translateError(
     errorType = 'minItems';
   } else if (error.type === 57 || error.message?.includes('Expected array length less')) {
     errorType = 'maxItems';
+  } else if (error.type === 58 || error.message?.includes('Expected number to be a multiple')) {
+    errorType = 'multipleOf';
+  } else if (error.type === 59 || error.message?.includes('Expected array to contain unique')) {
+    errorType = 'uniqueItems';
+  } else if (error.type === 60 || error.message?.includes('Expected value to match')) {
+    errorType = 'const';
+  } else if (error.type === 61 || (error.message?.includes('Expected') && error.message?.includes('to match'))) {
+    errorType = 'enum';
   } else if (error.type === 62 || error.message?.includes('Expected string to match pattern')) {
     errorType = 'pattern';
-  } else if (error.message?.includes('Required property')) {
+  } else if (error.type === 63 || error.message?.includes('Expected string to match format')) {
+    errorType = 'format';
+  } else if (error.type === 50 || error.message?.includes('Expected') && error.message?.includes('type')) {
+    errorType = 'type';
+  } else if (error.type === 51 || error.message?.includes('Required property')) {
     errorType = 'required';
-  } else if (error.message?.includes('Expected') && error.message?.includes('to match')) {
-    errorType = 'enum';
+  } else if (error.type === 64 || error.message?.includes('Unexpected property')) {
+    errorType = 'additionalProperties';
   }
   
   let template = messages[errorType] || messages.generic;
   
-  // Extract the limit value from the schema
   let limit: number | undefined;
   if (error.schema) {
     limit = error.schema.minLength ?? 
@@ -116,7 +126,7 @@ function translateError(
     multiple: error.schema?.multipleOf,
     allowedValues: error.schema?.enum?.join(', '),
     allowedValue: error.schema?.const,
-    character: locale === 'pt' ? 
+    character: locale === LangsEnum.PT ? 
       (limit === 1 ? 'caractere' : 'caracteres') : 
       (limit === 1 ? 'character' : 'characters'),
     item: limit === 1 ? 'item' : 'items',
@@ -133,7 +143,7 @@ export function typeboxResolver<T extends TSchema>(
   type FormValues = Static<T> & FieldValues;
   
   return async (values: FormValues): Promise<ResolverResult<FormValues>> => {
-    const locale = options.locale || 'en';
+    const locale = options.locale || LangsEnum.EN;
     const messages = defaultMessages[locale] || defaultMessages.en;
     
     // Validate the values against the schema

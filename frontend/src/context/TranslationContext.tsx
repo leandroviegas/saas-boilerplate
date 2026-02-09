@@ -1,14 +1,15 @@
 'use client';
+import { LangsEnum } from '@/enums/LangsEnum';
 import { createContext } from 'react';
 
 export interface TranslationContextProps {
     t: (arg0: string, replacements?: string[]) => string,
-    locale: 'pt' | 'en'
+    locale: LangsEnum
 }
 
 export const TranslationContext = createContext<TranslationContextProps | null>(null);
 
-export const TranslationProvider = ({ children, translation, locale }: { children: React.ReactNode, translation: { [key: string]: string }, locale:  'pt' | 'en' }) => {
+export const TranslationProvider = ({ children, translation, locale }: { children: React.ReactNode, translation: { [key: string]: string }, locale: LangsEnum }) => {
     const t = (key: string, replacements?: string[]): string => {
         const trasnlated = translation[key]
         if (!trasnlated) {
