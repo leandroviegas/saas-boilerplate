@@ -41,7 +41,7 @@ export default async function RootLayout({
 
   return (
     <html className={theme == 'dark' ? theme : ''} lang={lang}>
-      <body className="bg-background text-foreground">
+      <body className="bg-background text-foreground overflow-hidden">
         <NuqsAdapter>
         <QueryProvider>
         <AuthProvider user={user}>
