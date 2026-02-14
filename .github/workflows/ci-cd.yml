@@ -11,14 +11,25 @@ env:
   REGISTRY: ${{ secrets.REGISTRY }}
   BACKEND_REGISTRY: ${{ secrets.REGISTRY }}/saas-boilerplate-api
   FRONTEND_REGISTRY: ${{ secrets.REGISTRY }}/saas-boilerplate-web
-  VERSION: ${{ github.sha }}
 
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      short_sha: ${{ steps.slug.outputs.sha_short }}
+    steps:
+      - name: Calculate short SHA
+        id: slug
+        run: echo "sha_short=$(echo ${{ github.sha }} | cut -c1-6)" >> $GITHUB_OUTPUT
+
   backend:
+    needs: prepare
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
+    env:
+      VERSION: ${{ needs.prepare.outputs.short_sha }}
 
     steps:
       - name: Checkout repository
@@ -54,10 +65,13 @@ jobs:
           cache-to: type=gha,mode=max
 
   frontend:
+    needs: prepare
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
+    env:
+      VERSION: ${{ needs.prepare.outputs.short_sha }}
 
     steps:
       - name: Checkout repository
