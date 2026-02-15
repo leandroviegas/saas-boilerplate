@@ -1,6 +1,7 @@
+import { env } from "@/lib/config";
 import { io } from "socket.io-client";
 
-const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL, {
+const socket = io(env.NEXT_PUBLIC_SOCKET_URL, {
   autoConnect: true,
   withCredentials: true,
   path: '/ws',

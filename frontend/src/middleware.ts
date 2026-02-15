@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { env } from './lib/config';
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -12,7 +13,7 @@ export async function middleware(request: NextRequest) {
     !pathname.startsWith("/images")
   ) {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/get-session`, {
+      const res = await fetch(`${env.NEXT_PUBLIC_API_URL}/api/v1/auth/get-session`, {
         headers: request.headers,
         credentials: "include",
       });

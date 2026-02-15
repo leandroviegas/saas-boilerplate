@@ -1,6 +1,7 @@
+import { env } from '@/lib/config';
 import Axios, { AxiosRequestConfig } from 'axios';
 import { toast } from 'sonner';
-export const AXIOS_INSTANCE = Axios.create({ baseURL: process.env.NEXT_PUBLIC_API_URL, withCredentials: true });
+export const AXIOS_INSTANCE = Axios.create({ baseURL: env.NEXT_PUBLIC_API_URL, withCredentials: true });
 
 AXIOS_INSTANCE.interceptors.response.use(
   (response) => response,
