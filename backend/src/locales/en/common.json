@@ -31,9 +31,6 @@
   "description": "description",
   "features": "features",
   "characters": "characters",
-  "field_required": "{field} is required.",
-  "field_min_length": "{field} must have a minimum length of {limit} {characters}.",
-  "field_max_length": "{field} must have a maximum length of {limit} {characters}.",
   "mark-notification-read": "mark-notification-read",
   "switch-active": "switch-active",
   "get-coupons": "get-coupons",
@@ -43,5 +40,6 @@
   "get-coupon": "get-coupon",
   "Operation completed successfully": "Operation completed successfully",
   "cannot-delete-product-price-from-stripe": "cannot-delete-product-price-from-stripe",
-  "This product cannot be deleted because it has one or more user-created prices.": "This product cannot be deleted because it has one or more user-created prices."
+  "This product cannot be deleted because it has one or more user-created prices.": "This product cannot be deleted because it has one or more user-created prices.",
+  "Invalid email or password": "Invalid email or password"
 }

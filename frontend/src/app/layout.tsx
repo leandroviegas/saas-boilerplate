@@ -40,9 +40,7 @@ export default async function RootLayout({
 
   const theme = getTheme(cookiesList.get('theme')?.value, headersList);
 
-  const publicEnv: Record<string, string | undefined> = Object.fromEntries(
-    Object.entries(process.env).filter(([key]) => key.startsWith('NEXT_PUBLIC_'))
-  );
+  const publicEnv: Record<string, string | undefined> = Object.fromEntries(Object.entries(process.env).filter(([key]) => key.startsWith('NEXT_PUBLIC_')));
 
   return (
     <html className={theme == 'dark' ? theme : ''} lang={lang}>
