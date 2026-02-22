@@ -1,6 +1,7 @@
 import { ProductType } from "../payment-provider.interface";
 import { StripeAbstractService } from "./stripe-abstract.service";
 
+
 export class StripeProductService extends StripeAbstractService {
 
   async createProduct(product: ProductType): Promise<string> {

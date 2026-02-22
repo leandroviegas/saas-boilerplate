@@ -2,6 +2,7 @@ import Stripe from "stripe";
 import { CouponType } from "../payment-provider.interface";
 import { StripeAbstractService } from "./stripe-abstract.service";
 
+
 export class StripeCouponService extends StripeAbstractService {
   async createCoupon(coupon: CouponType): Promise<string> {
     const stripeCouponData: Stripe.CouponCreateParams = {

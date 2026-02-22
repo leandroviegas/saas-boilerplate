@@ -1,5 +1,6 @@
 export interface CreateCheckoutSessionOptions {
   userId: string;
+  organizationId: string;
   email: string;
   priceId: string;
   successUrl: string;

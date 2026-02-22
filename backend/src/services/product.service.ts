@@ -17,6 +17,27 @@ export class ProductService extends AbstractService {
     });
   }
 
+  findActiveProductsByOrganizationId(organizationId: string) {
+    const now = new Date();
+    return this.prisma.product.findMany({
+      where: {
+        active: true,
+        archived: false,
+        subscriptions: {
+          some: {
+            organizationId: organizationId,
+            currentPeriodStart: {
+              lte: now,
+            },
+            currentPeriodEnd: {
+              gte: now,
+            }
+          }
+        }
+      }
+    });
+  }
+
   async create(data: Prisma.ProductCreateInput) {
     const product = await this.prisma.product.create({ data });
 

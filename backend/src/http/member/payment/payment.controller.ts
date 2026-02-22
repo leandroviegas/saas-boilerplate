@@ -11,7 +11,7 @@ export async function paymentController(fastify: FastifyInstance) {
     },
     async (request: FastifyRequest<{ Querystring: GetProductsQueryType }>, reply: FastifyReply) => {
       const { data, meta } = await productService.findAll(request.query);
-      
+
       return reply.code(200).send({
         code: "get-products",
         data,
@@ -29,7 +29,7 @@ export async function paymentController(fastify: FastifyInstance) {
       request: FastifyRequest<{ Body: CreateCheckoutSessionBodyType }>,
       reply: FastifyReply
     ) => {
-      const session = await paymentService.createCheckoutSession(request.user.id, request.body);
+      const session = await paymentService.createCheckoutSession(request.user.id, request.member.organizationId, request.body);
 
       return reply.code(200).send({
         code: "create-checkout-session",
@@ -44,7 +44,7 @@ export async function paymentController(fastify: FastifyInstance) {
       schema: routesSchema.getSubscription,
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
-      const subscription = await paymentService.getSubscription(request.user.id);
+      const subscription = await paymentService.getSubscription(request.member.organizationId);
 
       return reply.code(200).send({
         code: "get-subscription",
@@ -58,8 +58,8 @@ export async function paymentController(fastify: FastifyInstance) {
     {
       schema: routesSchema.cancelSubscription,
     },
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      await paymentService.cancelSubscription(request.user.id);
+    async (request: FastifyRequest, reply: FastifyReply) => { 
+      await paymentService.cancelSubscription(request.member.organizationId);
 
       return reply.code(200).send({
         code: "cancel-subscription",

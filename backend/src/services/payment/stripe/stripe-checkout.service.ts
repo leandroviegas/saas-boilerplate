@@ -3,6 +3,7 @@ import { ExtendedPrismaClient } from "@/plugins/prisma";
 import { StripeAbstractService } from "./stripe-abstract.service";
 import { StripeCustomerService } from "./stripe-customer.service";
 
+
 export class StripeCheckoutService extends StripeAbstractService {
   private customerService: StripeCustomerService;
 
@@ -28,6 +29,7 @@ export class StripeCheckoutService extends StripeAbstractService {
       cancel_url: options.cancelUrl,
       metadata: {
         userId: options.userId,
+        organization: options.organizationId,
         ...options.metadata,
       },
       allow_promotion_codes: true,

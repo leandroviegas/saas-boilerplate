@@ -17,7 +17,7 @@ export const ProductPriceSchema = Type.Object({
   id: Type.String(),
   productId: Type.String(),
   amount: Type.Number(),
-  currency: CurrencySchema,
+  currencyCode: CurrencySchema,
   stripePriceId: Type.Optional(Type.String()),
   active: Type.Boolean(),
   archived: Type.Boolean(),
@@ -34,6 +34,7 @@ export const ProductSchema = Type.Object({
   features: Type.Array(Type.String()),
   active: Type.Boolean(),
   archived: Type.Boolean(),
+  permissions: Type.Record(Type.String(), Type.Array(Type.String())),
   createdAt: Type.String({ format: "date-time" }),
   updatedAt: Type.String({ format: "date-time" }),
 });

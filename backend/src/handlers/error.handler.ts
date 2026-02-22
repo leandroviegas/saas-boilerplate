@@ -30,7 +30,7 @@ export class AppError extends Error {
 }
 
 export async function errorHandler(
-  error: ValidationError | PrismaClientKnownRequestError | PrismaClientValidationError | Error,
+  error: Error | ValidationError | PrismaClientKnownRequestError | PrismaClientValidationError,
   request: FastifyRequest,
   reply: FastifyReply
 ) {

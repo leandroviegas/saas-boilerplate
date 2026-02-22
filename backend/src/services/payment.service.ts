@@ -14,7 +14,7 @@ export class PaymentService extends AbstractService {
     this.provider = provider;
   }
 
-  async createCheckoutSession(userId: string, data: CreateCheckoutSessionBodyType) {
+  async createCheckoutSession(userId: string, organizationId: string, data: CreateCheckoutSessionBodyType) {
     const user = await this.prisma.user.findUniqueOrThrow({
       where: { id: userId },
     });
@@ -26,6 +26,7 @@ export class PaymentService extends AbstractService {
 
     return await this.provider.createCheckoutSession({
       userId,
+      organizationId,
       email: user.email,
       priceId: productPrice.stripePriceId!,
       successUrl: stripeConfig.successUrl,
@@ -38,9 +39,9 @@ export class PaymentService extends AbstractService {
     return await this.provider.handleWebhook(payload, signature);
   }
 
-  async cancelSubscription(userId: string) {
+  async cancelSubscription(organizationId: string) {
     const subscription = await this.prisma.subscription.findFirst({
-      where: { userId, status: "ACTIVE" },
+      where: { organizationId, status: "ACTIVE" },
     });
 
     if (!subscription || !subscription.stripeSubscriptionId) {
@@ -50,19 +51,19 @@ export class PaymentService extends AbstractService {
     return await this.provider.cancelSubscription(subscription.stripeSubscriptionId);
   }
 
-  async getSubscription(userId: string) {
+  async getSubscription(organizationId: string) {
     return await this.prisma.subscription.findFirstOrThrow({
-      where: { userId },
+      where: { organizationId },
       include: { product: true },
       orderBy: { createdAt: "desc" },
     });
   }
 
   async getTransactions(userId: string, pagination: PaginationType) {
-      return await this.prisma.transaction.paginate({
-          where: { userId },
-          orderBy: { createdAt: "desc" },
-      }, pagination);
+    return await this.prisma.transaction.paginate({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+    }, pagination);
   }
 
 }

@@ -4,23 +4,7 @@ import { jwt, twoFactor, username, multiSession } from "better-auth/plugins";
 import { prisma } from "./plugins/prisma";
 import { notificationService } from "@/services";
 import { organization } from "better-auth/plugins";
-import { createAccessControl } from "better-auth/plugins/access";
 import { corsConfig } from "./config";
-
-export const allAccess = {
-  billing: ["create", "update", "delete", "view"],
-  member: ["create", "update", "delete", "view"]
-};
-
-const ac = createAccessControl(allAccess);
-
-const roles = {
-  admin: ac.newRole(allAccess),
-  member: ac.newRole({
-    billing: ["view"],
-    member: []
-  })
-};
 
 export const auth = betterAuth({
   trustedOrigins: corsConfig.origin,
@@ -30,10 +14,9 @@ export const auth = betterAuth({
   }),
   user: {
     additionalFields: {
-      role: {
+      roleSlug: {
         type: "string",
         required: false,
-        defaultValue: "USER",
         input: false
       },
       username: {
@@ -77,22 +60,20 @@ export const auth = betterAuth({
               userId: session.userId,
               title: "Welcome back!",
               message: `Hello ${user?.name || 'there'}! You've successfully signed in to your account.`,
-              type: "success",
+              type: "success"
             });
           } catch (error) {
             console.error("Failed to create login notification:", error);
           }
-          return {
-            data: session,
-          };
+          return { data: session };
         },
       },
-    },
+    }
   },
   plugins: [
     jwt(),
     twoFactor({
-      issuer: process.env.APP_NAME,
+      issuer: process.env.APP_NAME
     }),
     username({
       usernameValidator: (username) => {
@@ -101,8 +82,7 @@ export const auth = betterAuth({
     }),
     multiSession(),
     organization({
-      ac,
-      roles,
+      creatorRole: "owner",
       defaultRole: "member",
       allowUserToCreateOrganization: true
     })
@@ -110,5 +90,6 @@ export const auth = betterAuth({
   trustHost: true,
 });
 
-export type AuthUser = typeof auth.$Infer.Session.user;
-export type AuthSession = typeof auth.$Infer.Session.session;
+export type Session = typeof auth.$Infer.Session;
+export type AuthUser = Session["user"];
+export type AuthSession = Session["session"];

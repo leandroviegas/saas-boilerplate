@@ -8,21 +8,5 @@ export class AuthService extends AbstractService {
     const headers = parseHeaders(reqHeaders);
     return await auth.api.getSession({ headers });
   }
-
-  async hasPermission(reqHeaders: IncomingHttpHeaders, area: string, permissions: string[]) {
-    const headers = parseHeaders(reqHeaders);
-    const hasAccess = await auth.api.hasPermission({
-      headers,
-      body: {
-        permission: {
-          [area]: permissions
-        }
-      }
-    });
-
-    if (!hasAccess) {
-      throw new Error("Unauthorized");
-    }
-  }
-
+  
 }

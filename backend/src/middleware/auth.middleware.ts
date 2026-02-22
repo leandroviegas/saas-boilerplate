@@ -1,12 +1,13 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { authService } from "@/services";
 import { AuthUser, AuthSession } from "@/auth";
-import { prisma } from '@/plugins/prisma';
 import { languageEnum } from '@/enums/languageEnum';
+import { Member } from '@prisma/client';
 
 declare module 'fastify' {
   interface FastifyRequest {
     user: AuthUser;
+    member: Member;
     session: AuthSession;
     lang: languageEnum;
   }

@@ -1,5 +1,4 @@
 import logger from './logger';
-import { FastifyInstance } from 'fastify';
 import { Server as SocketIOServer } from 'socket.io';
 import { createAdapter } from '@socket.io/redis-adapter';
 import { pubClient, subClient } from './ioredis';
@@ -7,7 +6,7 @@ import { authService } from '@/services';
 import { WsTo, WsData } from '@/services/websockets.service';
 import { wsEventEnum, wsTypeEnum } from '@/enums/websocketsEnum';
 
-export const socketio = (io: SocketIOServer, fastify: FastifyInstance) => {
+export const socketio = (io: SocketIOServer) => {
   io.adapter(createAdapter(pubClient, subClient));
 
   subClient.subscribe(...Object.values(wsEventEnum));

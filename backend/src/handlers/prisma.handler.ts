@@ -33,9 +33,6 @@ const PRISMA_ERROR_MAP: Record<string, Omit<ErrorResponse, "validations">> = {
   P2025: { code: "RECORD_NOT_FOUND", status: 404 },
 };
 
-/**
- * Extracts field names from Prisma Driver Adapter or Standard metadata
- */
 const extractFields = (meta: any): string[] => {
   const adapterFields = meta?.driverAdapterError?.cause?.constraint?.fields;
   if (Array.isArray(adapterFields)) {

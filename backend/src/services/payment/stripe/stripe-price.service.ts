@@ -1,6 +1,7 @@
 import { ProductPriceType } from "../payment-provider.interface";
 import { StripeAbstractService } from "./stripe-abstract.service";
 
+
 export class StripePriceService extends StripeAbstractService {
   async createProductPrice(productId: string, price: ProductPriceType): Promise<string> {
     const product = await this.prisma.product.findUnique({

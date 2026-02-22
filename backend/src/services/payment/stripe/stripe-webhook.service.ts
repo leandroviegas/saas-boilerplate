@@ -34,13 +34,13 @@ export class StripeWebhookService extends StripeAbstractService {
   }
 
   private async handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
-    const userId = session.metadata?.userId;
+    const organizationId = session.metadata?.organizationId;
     const stripeSubscriptionId =
       typeof session.subscription === 'string'
         ? session.subscription
         : session.subscription?.id;
 
-    if (!userId || !stripeSubscriptionId) return;
+    if (!organizationId || !stripeSubscriptionId) return;
 
     const stripeSubscription = await this.stripe.subscriptions.retrieve(stripeSubscriptionId);
     const subscriptionItem = stripeSubscription.items.data[0];
@@ -56,7 +56,7 @@ export class StripeWebhookService extends StripeAbstractService {
     await this.prisma.subscription.upsert({
       where: { stripeSubscriptionId },
       create: {
-        userId,
+        organizationId,
         productId: productPrice.productId,
         stripeSubscriptionId,
         status: "ACTIVE",
@@ -74,6 +74,7 @@ export class StripeWebhookService extends StripeAbstractService {
   private async handleInvoicePaymentSucceeded(invoice: Stripe.Invoice) {
     const sub = invoice.lines.data[0].subscription;
     const stripeSubscriptionId = typeof sub === 'string' ? sub : sub?.id;
+    let userId = invoice.lines.data[0].metadata?.userId;
 
     if (!stripeSubscriptionId)
       throw new Error("Subscription not found");
@@ -96,9 +97,22 @@ export class StripeWebhookService extends StripeAbstractService {
 
     const subscription = await this.prisma.subscription.findUnique({
       where: { stripeSubscriptionId },
+      include: {
+        organization: {
+          include: {
+            members: {
+              where: {
+                role: "owner"
+              }
+            }
+          },
+        }
+      }
     });
 
     if (!subscription) return;
+
+    userId = userId ?? subscription.organization.members[0].userId;
 
     const stripeSubscription = await this.stripe.subscriptions.retrieve(stripeSubscriptionId);
     const subscriptionItem = stripeSubscription.items.data[0];
@@ -112,12 +126,20 @@ export class StripeWebhookService extends StripeAbstractService {
       },
     });
 
+    await this.prisma.currency.upsert({
+      where: { code: invoice.currency.toLocaleUpperCase() },
+      create: {
+        code: invoice.currency.toLocaleUpperCase(),
+        name: invoice.currency.toLocaleUpperCase(),
+      },
+      update: {},
+    });
 
     await this.prisma.transaction.create({
       data: {
-        userId: subscription.userId,
+        userId,
         amount: invoice.amount_paid / 100,
-        currency: invoice.currency,
+        currencyCode: invoice.currency,
         status: "SUCCEEDED",
         stripePaymentIntentId: paymentIntentId,
       },

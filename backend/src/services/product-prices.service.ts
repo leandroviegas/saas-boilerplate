@@ -34,7 +34,7 @@ export class ProductPriceService extends AbstractService {
         const stripePriceId = await stripeProvider.createProductPrice(data.productId, {
             id: productPrice.id,
             amount: productPrice.amount,
-            currency: productPrice.currency,
+            currency: productPrice.currencyCode,
             active: productPrice.active,
             intervalValue: productPrice.intervalValue,
             intervalType: productPrice.intervalType
@@ -76,7 +76,7 @@ export class ProductPriceService extends AbstractService {
             await stripeProvider.updateProductPrice(productPrice.stripePriceId, {
                 id: productPrice.id,
                 amount: productPrice.amount,
-                currency: productPrice.currency,
+                currency: productPrice.currencyCode,
                 active: productPrice.active,
                 intervalValue: productPrice.intervalValue,
                 intervalType: productPrice.intervalType

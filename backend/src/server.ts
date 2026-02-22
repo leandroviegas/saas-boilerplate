@@ -30,7 +30,7 @@ const server = Fastify({
     customOptions: {
       allErrors: true,
     },
-    plugins: [ajvErrors],
+    plugins: [ajvErrors as any],
   },
   connectionTimeout: 20000,
   keepAliveTimeout: 30000,
@@ -111,7 +111,7 @@ async function main() {
 
   const io = new SocketIOServer(server.server, { cors: corsConfig, path: '/ws' })
 
-  socketio(io, server)
+  socketio(io)
 
   server.log.info(`Swagger docs at ${serverConfig.protocol}://${serverConfig.host}:${serverConfig.port}/docs`);
   await server.listen({ port: serverConfig.port, host: serverConfig.host });
