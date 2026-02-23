@@ -9,8 +9,8 @@ on:
 env:
   PROJECT_NAME: saas-boilerplate
   REGISTRY: ${{ secrets.REGISTRY }}
-  BACKEND_REGISTRY: ${{ secrets.REGISTRY }}/saas-boilerplate-api
-  FRONTEND_REGISTRY: ${{ secrets.REGISTRY }}/saas-boilerplate-web
+  API_REGISTRY: ${{ secrets.REGISTRY }}/saas-boilerplate-api
+  WEB_REGISTRY: ${{ secrets.REGISTRY }}/saas-boilerplate-web
 
 jobs:
   prepare:
@@ -22,7 +22,7 @@ jobs:
         id: slug
         run: echo "sha_short=$(echo ${{ github.sha }} | cut -c1-6)" >> $GITHUB_OUTPUT
 
-  backend:
+  api:
     needs: prepare
     runs-on: ubuntu-latest
     permissions:
@@ -49,22 +49,22 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.BACKEND_REGISTRY }}
+          images: ${{ env.API_REGISTRY }}
           tags: |
             type=raw,value=${{ env.VERSION }}
             type=ref,event=branch
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
 
-      - name: Build and push Backend Docker image
+      - name: Build and push Api Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./backend
+          context: ./api
           push: ${{ github.event_name == 'push' }}
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  frontend:
+  web:
     needs: prepare
     runs-on: ubuntu-latest
     permissions:
@@ -91,16 +91,16 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.FRONTEND_REGISTRY }}
+          images: ${{ env.WEB_REGISTRY }}
           tags: |
             type=raw,value=${{ env.VERSION }}
             type=ref,event=branch
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
 
-      - name: Build and push Frontend Docker image
+      - name: Build and push WEB Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./frontend
+          context: ./web
           push: ${{ github.event_name == 'push' }}
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=gha

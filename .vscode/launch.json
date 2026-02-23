@@ -2,18 +2,18 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Backend",
+      "name": "Api",
       "type": "node-terminal",
       "request": "launch",
       "command": "pnpm dev",
-      "cwd": "${workspaceFolder}/backend"
+      "cwd": "${workspaceFolder}/api"
     },
     {
-      "name": "Frontend",
+      "name": "Web",
       "type": "node-terminal",
       "request": "launch",
       "command": "pnpm dev",
-      "cwd": "${workspaceFolder}/frontend",
+      "cwd": "${workspaceFolder}/web",
       "serverReadyAction": {
         "pattern": "- Local:.+(https?://.+)",
         "uriFormat": "%s",
@@ -30,8 +30,8 @@
   ],
   "compounds": [
     {
-      "name": "Fullstack: Frontend + Backend",
-      "configurations": ["Backend", "Frontend"]
+      "name": "Fullstack: Web + Api",
+      "configurations": ["Api", "Web"]
     }
   ]
 }
