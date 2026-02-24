@@ -62,6 +62,6 @@ main()
         // @ts-ignore
         process.exit(1);
     })
-    .finally(async () => {
-        await prisma.$disconnect();
+    .finally(() => {
+        prisma.$disconnect();
     });

@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-echo "Checking database connectivity..."
+echo "Migrating database..."
 npx prisma migrate deploy
 
 echo "Seeding database..."
