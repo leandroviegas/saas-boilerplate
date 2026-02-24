@@ -1,5 +1,5 @@
-import { prisma, ExtendedPrismaClient } from '../src/plugins/prisma';
-import { auth } from '../src/auth';
+import { prisma, ExtendedPrismaClient } from './plugins/prisma';
+import { auth } from './auth';
 import 'dotenv/config';
 
 
