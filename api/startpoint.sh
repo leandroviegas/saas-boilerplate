@@ -2,10 +2,7 @@
 set -e
 
 echo "Migrating database..."
-npx prisma migrate deploy
-
-echo "Seeding database..."
-npx prisma db seed
+npx prisma migrate dev
 
 echo "Starting application..."
 exec node dist/server.js

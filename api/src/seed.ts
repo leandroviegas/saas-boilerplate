@@ -1,9 +1,8 @@
-import { prisma, ExtendedPrismaClient } from './plugins/prisma';
 import { auth } from './auth';
+import { prisma, ExtendedPrismaClient } from './plugins/prisma';
 import 'dotenv/config';
 
-
-async function Roles(prisma: ExtendedPrismaClient) {
+async function seedRoles(prisma: ExtendedPrismaClient) {
     const roles = await prisma.role.createMany({
         data: [
             { slug: 'ADMIN', privilege: 0 },
@@ -15,7 +14,7 @@ async function Roles(prisma: ExtendedPrismaClient) {
     console.log('Created roles:', roles);
 }
 
-async function User(prisma: ExtendedPrismaClient) {
+async function seedUser(prisma: ExtendedPrismaClient) {
     const existingUser = await prisma.user.findUnique({
         where: { email: 'admin@admin.com' },
     });
@@ -46,22 +45,13 @@ async function User(prisma: ExtendedPrismaClient) {
     }
 }
 
-async function main() {
+export async function seed() {
     console.log('Starting database seeding...');
 
-    await Roles(prisma);
+    await seedRoles(prisma);
 
-    await User(prisma);
+    await seedUser(prisma);
 
     console.log('Database seeding completed successfully!');
 }
 
-main()
-    .catch((e) => {
-        console.error('Error during seeding:', e);
-        // @ts-ignore
-        process.exit(1);
-    })
-    .finally(() => {
-        prisma.$disconnect();
-    });

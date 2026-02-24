@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: Calculate short SHA
         id: slug
-        run: echo "sha_short=$(echo ${{ github.sha }} | cut -c1-6)" >> $GITHUB_OUTPUT
+        run: echo "sha_short=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
 
   api:
     needs: prepare

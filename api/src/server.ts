@@ -1,5 +1,5 @@
 import Fastify from 'fastify';
-import swagger from '@fastify/swagger'
+import swagger from '@fastify/swagger';
 import corsPlugins from '@fastify/cors';
 import cookie from '@fastify/cookie';
 import fastifyRawBody from 'fastify-raw-body';
@@ -12,6 +12,8 @@ import { socketio } from './plugins/socketio';
 import { corsConfig, serverConfig } from './config';
 import logger from './plugins/logger';
 import ajvErrors from "ajv-errors/dist";
+import { seed } from "./seed";
+
 
 const server = Fastify({
   // http2: true,
@@ -112,6 +114,8 @@ async function main() {
   const io = new SocketIOServer(server.server, { cors: corsConfig, path: '/ws' })
 
   socketio(io)
+
+  await seed();
 
   server.log.info(`Swagger docs at ${serverConfig.protocol}://${serverConfig.host}:${serverConfig.port}/docs`);
   await server.listen({ port: serverConfig.port, host: serverConfig.host });
