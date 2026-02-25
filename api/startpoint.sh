@@ -1,8 +1,8 @@
 #!/bin/sh
 set -e
 
-echo "Migrating database..."
-npx prisma migrate dev
+echo "Pushing database schema..."
+npx prisma db push --accept-data-loss
 
 echo "Starting application..."
 exec node dist/server.js
