@@ -21,6 +21,10 @@ export async function middleware(request: NextRequest) {
         console.log("[session] No API URL configured");
         code = "NO_API_URL";
       } else {
+        console.log("[session] apiBaseUrl", apiBaseUrl);
+        console.log("[session] apiBaseUrl", `${apiBaseUrl}/api/v1/auth/get-session`);
+
+
         const res = await fetch(`${apiBaseUrl}/api/v1/auth/get-session`, {
           headers: Object.fromEntries(request.headers.entries()),
           credentials: "include",
