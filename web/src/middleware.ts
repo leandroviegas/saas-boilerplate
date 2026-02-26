@@ -26,6 +26,8 @@ export async function middleware(request: NextRequest) {
           credentials: "include",
         });
 
+        console.log("[session] content: ", res);
+
         if (res.ok) {
           try {
             const content = await res.text();
