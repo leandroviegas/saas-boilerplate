@@ -13,18 +13,26 @@ export async function middleware(request: NextRequest) {
     !pathname.startsWith("/images")
   ) {
     try {
-      const res = await fetch(`${env.NEXT_PUBLIC_API_URL}/api/v1/auth/get-session`, {
-        headers: request.headers,
+      const apiBaseUrl = process.env.INTERNAL_API_URL || env.NEXT_PUBLIC_API_URL;
+      const res = await fetch(`${apiBaseUrl}/api/v1/auth/get-session`, {
+        headers: Object.fromEntries(request.headers.entries()),
         credentials: "include",
       });
 
       if (res.ok) {
         try {
           const data = await res.json();
-          if (data.user) userData = data.user;
-        } catch (e) { }
+
+          if (data.user) {
+            userData = data.user;
+          }
+        } catch (e) {
+          console.log("[session] JSON parse error:", e);
+        }
       }
+
     } catch (e: any) {
+      console.log("[session] Fetch error:", e);
       code = e?.cause?.code ?? code;
     }
   }
