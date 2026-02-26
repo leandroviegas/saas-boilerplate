@@ -13,24 +13,38 @@ export async function middleware(request: NextRequest) {
     !pathname.startsWith("/images")
   ) {
     try {
+      // Use INTERNAL_API_URL for server-to-server communication in Docker/Dokploy
+      // Fall back to NEXT_PUBLIC_API_URL if not available
       const apiBaseUrl = process.env.INTERNAL_API_URL || env.NEXT_PUBLIC_API_URL;
-      const res = await fetch(`${apiBaseUrl}/api/v1/auth/get-session`, {
-        headers: Object.fromEntries(request.headers.entries()),
-        credentials: "include",
-      });
 
-      if (res.ok) {
-        try {
-          const data = await res.json();
+      if (!apiBaseUrl) {
+        console.log("[session] No API URL configured");
+        code = "NO_API_URL";
+      } else {
+        const res = await fetch(`${apiBaseUrl}/api/v1/auth/get-session`, {
+          headers: Object.fromEntries(request.headers.entries()),
+          credentials: "include",
+        });
 
-          if (data.user) {
-            userData = data.user;
+        if (res.ok) {
+          try {
+            const content = await res.text();
+            console.log("[session] content: ", content);
+
+            const data = JSON.parse(content);
+            console.log("[session] data: ", content);
+
+            if (data.user) {
+              userData = data.user;
+              console.log("[session] user: ", data.user);
+            }
+          } catch (e) {
+            console.log("[session] JSON parse error:", e);
           }
-        } catch (e) {
-          console.log("[session] JSON parse error:", e);
+        } else {
+          console.log("[session] API returned error:", res.status, res.statusText);
         }
       }
-
     } catch (e: any) {
       console.log("[session] Fetch error:", e);
       code = e?.cause?.code ?? code;
@@ -48,15 +62,19 @@ export async function middleware(request: NextRequest) {
       path: "/",
     });
     if (['/auth'].includes(pathname)) {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
+      return NextResponse.redirect(new URL("/dashboard", request.url), {
+        status: 302,
+      });
     }
   } else {
     if (code == 'ECONNREFUSED')
       return NextResponse.rewrite(new URL("/offline", request.url));
-    
+
     response.cookies.delete("me");
     if (pathname.startsWith('/dashboard'))
-      return NextResponse.redirect(new URL("/auth", request.url));
+      return NextResponse.redirect(new URL("/auth", request.url), {
+        status: 302,
+      });
   }
 
   return response;
