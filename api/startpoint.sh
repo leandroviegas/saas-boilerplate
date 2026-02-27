@@ -6,3 +6,4 @@ npx prisma db push --accept-data-loss
 
 echo "Starting application..."
 exec node dist/server.js
+  
