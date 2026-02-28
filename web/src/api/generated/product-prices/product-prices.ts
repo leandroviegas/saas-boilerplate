@@ -26,7 +26,7 @@ const getAdminProductPrices = (
     params?: GetAdminProductPricesParams,
  options?: SecondParameter<typeof customInstance<GetAdminProductPrices200>>,) => {
       return customInstance<GetAdminProductPrices200>(
-      {url: `/api/v1/admin/product-prices/`, method: 'GET',
+      {url: `/admin/product-prices/`, method: 'GET',
         params
     },
       options);
@@ -35,7 +35,7 @@ const getAdminProductPrices = (
     postAdminProductPricesBody: PostAdminProductPricesBody,
  options?: SecondParameter<typeof customInstance<PostAdminProductPrices201>>,) => {
       return customInstance<PostAdminProductPrices201>(
-      {url: `/api/v1/admin/product-prices/`, method: 'POST',
+      {url: `/admin/product-prices/`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: postAdminProductPricesBody
     },
@@ -45,7 +45,7 @@ const getAdminProductPrices = (
     id: string,
  options?: SecondParameter<typeof customInstance<GetAdminProductPricesId200>>,) => {
       return customInstance<GetAdminProductPricesId200>(
-      {url: `/api/v1/admin/product-prices/${id}`, method: 'GET'
+      {url: `/admin/product-prices/${id}`, method: 'GET'
     },
       options);
     }
@@ -54,7 +54,7 @@ const getAdminProductPrices = (
     putAdminProductPricesIdBody: PutAdminProductPricesIdBody,
  options?: SecondParameter<typeof customInstance<PutAdminProductPricesId200>>,) => {
       return customInstance<PutAdminProductPricesId200>(
-      {url: `/api/v1/admin/product-prices/${id}`, method: 'PUT',
+      {url: `/admin/product-prices/${id}`, method: 'PUT',
       headers: {'Content-Type': 'application/json', },
       data: putAdminProductPricesIdBody
     },
@@ -64,7 +64,7 @@ const getAdminProductPrices = (
     id: string,
  options?: SecondParameter<typeof customInstance<unknown>>,) => {
       return customInstance<unknown>(
-      {url: `/api/v1/admin/product-prices/${id}`, method: 'DELETE'
+      {url: `/admin/product-prices/${id}`, method: 'DELETE'
     },
       options);
     }
@@ -72,7 +72,7 @@ const getAdminProductPrices = (
     id: string,
  options?: SecondParameter<typeof customInstance<unknown>>,) => {
       return customInstance<unknown>(
-      {url: `/api/v1/admin/product-prices/${id}/switch-active`, method: 'PATCH'
+      {url: `/admin/product-prices/${id}/switch-active`, method: 'PATCH'
     },
       options);
     }

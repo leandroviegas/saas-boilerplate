@@ -28,7 +28,7 @@ const getHealth = (
     
  options?: SecondParameter<typeof customInstance<void>>,) => {
       return customInstance<void>(
-      {url: `/api/v1/webhooks/stripe`, method: 'POST'
+      {url: `/webhooks/stripe`, method: 'POST'
     },
       options);
     }

@@ -25,7 +25,7 @@ const getMemberNotifications = (
     params?: GetMemberNotificationsParams,
  options?: SecondParameter<typeof customInstance<GetMemberNotifications200>>,) => {
       return customInstance<GetMemberNotifications200>(
-      {url: `/api/v1/member/notifications/`, method: 'GET',
+      {url: `/member/notifications/`, method: 'GET',
         params
     },
       options);
@@ -34,7 +34,7 @@ const getMemberNotifications = (
     
  options?: SecondParameter<typeof customInstance<DeleteMemberNotifications204>>,) => {
       return customInstance<DeleteMemberNotifications204>(
-      {url: `/api/v1/member/notifications/`, method: 'DELETE'
+      {url: `/member/notifications/`, method: 'DELETE'
     },
       options);
     }
@@ -42,7 +42,7 @@ const getMemberNotifications = (
     id: string,
  options?: SecondParameter<typeof customInstance<PutMemberNotificationsIdRead200>>,) => {
       return customInstance<PutMemberNotificationsIdRead200>(
-      {url: `/api/v1/member/notifications/${id}/read`, method: 'PUT'
+      {url: `/member/notifications/${id}/read`, method: 'PUT'
     },
       options);
     }
@@ -50,7 +50,7 @@ const getMemberNotifications = (
     
  options?: SecondParameter<typeof customInstance<PutMemberNotificationsReadAll200>>,) => {
       return customInstance<PutMemberNotificationsReadAll200>(
-      {url: `/api/v1/member/notifications/read-all`, method: 'PUT'
+      {url: `/member/notifications/read-all`, method: 'PUT'
     },
       options);
     }
@@ -58,7 +58,7 @@ const getMemberNotifications = (
     id: string,
  options?: SecondParameter<typeof customInstance<DeleteMemberNotificationsId204>>,) => {
       return customInstance<DeleteMemberNotificationsId204>(
-      {url: `/api/v1/member/notifications/${id}`, method: 'DELETE'
+      {url: `/member/notifications/${id}`, method: 'DELETE'
     },
       options);
     }

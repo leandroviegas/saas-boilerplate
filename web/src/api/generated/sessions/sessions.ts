@@ -21,7 +21,7 @@ const getMemberSessions = (
     
  options?: SecondParameter<typeof customInstance<GetMemberSessions200>>,) => {
       return customInstance<GetMemberSessions200>(
-      {url: `/api/v1/member/sessions/`, method: 'GET'
+      {url: `/member/sessions/`, method: 'GET'
     },
       options);
     }
@@ -29,7 +29,7 @@ const getMemberSessions = (
     id: string,
  options?: SecondParameter<typeof customInstance<DeleteMemberSessionsId200>>,) => {
       return customInstance<DeleteMemberSessionsId200>(
-      {url: `/api/v1/member/sessions/${id}`, method: 'DELETE'
+      {url: `/member/sessions/${id}`, method: 'DELETE'
     },
       options);
     }

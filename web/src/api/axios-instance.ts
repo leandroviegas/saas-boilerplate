@@ -32,7 +32,7 @@ export const customInstance = async <T>(
 
   let headers: {[key:string]: any} = { ...config.headers, ...options?.headers };
 
-  // Server side cookies
+  // Comment this if when building orval client
   if (typeof window === 'undefined') {
     const { cookies } = await import('next/headers');
     headers.cookie = await cookies();

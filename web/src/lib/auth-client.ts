@@ -3,7 +3,7 @@ import { jwtClient, twoFactorClient, usernameClient, multiSessionClient } from "
 import { env } from "./config";
 
 export const authClient = createAuthClient({
-    baseURL: `${env.NEXT_PUBLIC_API_URL}/api/v1/auth`,
+    baseURL: `${env.NEXT_PUBLIC_API_URL}/auth`,
     plugins: [
         jwtClient(),
         twoFactorClient({

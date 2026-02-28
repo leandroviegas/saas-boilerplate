@@ -27,7 +27,7 @@ const getMemberPaymentsProducts = (
     params?: GetMemberPaymentsProductsParams,
  options?: SecondParameter<typeof customInstance<GetMemberPaymentsProducts200>>,) => {
       return customInstance<GetMemberPaymentsProducts200>(
-      {url: `/api/v1/member/payments/products`, method: 'GET',
+      {url: `/member/payments/products`, method: 'GET',
         params
     },
       options);
@@ -36,7 +36,7 @@ const getMemberPaymentsProducts = (
     postMemberPaymentsCheckoutBody: PostMemberPaymentsCheckoutBody,
  options?: SecondParameter<typeof customInstance<PostMemberPaymentsCheckout200>>,) => {
       return customInstance<PostMemberPaymentsCheckout200>(
-      {url: `/api/v1/member/payments/checkout`, method: 'POST',
+      {url: `/member/payments/checkout`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: postMemberPaymentsCheckoutBody
     },
@@ -46,7 +46,7 @@ const getMemberPaymentsProducts = (
     
  options?: SecondParameter<typeof customInstance<GetMemberPaymentsSubscription200>>,) => {
       return customInstance<GetMemberPaymentsSubscription200>(
-      {url: `/api/v1/member/payments/subscription`, method: 'GET'
+      {url: `/member/payments/subscription`, method: 'GET'
     },
       options);
     }
@@ -54,7 +54,7 @@ const getMemberPaymentsProducts = (
     
  options?: SecondParameter<typeof customInstance<PostMemberPaymentsSubscriptionCancel200>>,) => {
       return customInstance<PostMemberPaymentsSubscriptionCancel200>(
-      {url: `/api/v1/member/payments/subscription/cancel`, method: 'POST'
+      {url: `/member/payments/subscription/cancel`, method: 'POST'
     },
       options);
     }
@@ -62,7 +62,7 @@ const getMemberPaymentsProducts = (
     params?: GetMemberPaymentsTransactionsParams,
  options?: SecondParameter<typeof customInstance<GetMemberPaymentsTransactions200>>,) => {
       return customInstance<GetMemberPaymentsTransactions200>(
-      {url: `/api/v1/member/payments/transactions`, method: 'GET',
+      {url: `/member/payments/transactions`, method: 'GET',
         params
     },
       options);

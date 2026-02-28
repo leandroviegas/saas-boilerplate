@@ -27,7 +27,7 @@ const getAdminCoupons = (
     params?: GetAdminCouponsParams,
  options?: SecondParameter<typeof customInstance<GetAdminCoupons200>>,) => {
       return customInstance<GetAdminCoupons200>(
-      {url: `/api/v1/admin/coupons/`, method: 'GET',
+      {url: `/admin/coupons/`, method: 'GET',
         params
     },
       options);
@@ -36,7 +36,7 @@ const getAdminCoupons = (
     postAdminCouponsBody: PostAdminCouponsBody,
  options?: SecondParameter<typeof customInstance<PostAdminCoupons201>>,) => {
       return customInstance<PostAdminCoupons201>(
-      {url: `/api/v1/admin/coupons/`, method: 'POST',
+      {url: `/admin/coupons/`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: postAdminCouponsBody
     },
@@ -46,7 +46,7 @@ const getAdminCoupons = (
     id: string,
  options?: SecondParameter<typeof customInstance<GetAdminCouponsId200>>,) => {
       return customInstance<GetAdminCouponsId200>(
-      {url: `/api/v1/admin/coupons/${id}`, method: 'GET'
+      {url: `/admin/coupons/${id}`, method: 'GET'
     },
       options);
     }
@@ -55,7 +55,7 @@ const getAdminCoupons = (
     putAdminCouponsIdBody: PutAdminCouponsIdBody,
  options?: SecondParameter<typeof customInstance<PutAdminCouponsId200>>,) => {
       return customInstance<PutAdminCouponsId200>(
-      {url: `/api/v1/admin/coupons/${id}`, method: 'PUT',
+      {url: `/admin/coupons/${id}`, method: 'PUT',
       headers: {'Content-Type': 'application/json', },
       data: putAdminCouponsIdBody
     },
@@ -65,7 +65,7 @@ const getAdminCoupons = (
     id: string,
  options?: SecondParameter<typeof customInstance<PostAdminCouponsIdIncrementUsage200>>,) => {
       return customInstance<PostAdminCouponsIdIncrementUsage200>(
-      {url: `/api/v1/admin/coupons/${id}/increment-usage`, method: 'POST'
+      {url: `/admin/coupons/${id}/increment-usage`, method: 'POST'
     },
       options);
     }

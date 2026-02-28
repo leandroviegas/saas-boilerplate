@@ -19,7 +19,7 @@ export async function middleware(request: NextRequest) {
 
     try {
       const apiBaseUrl = process.env.INTERNAL_API_URL || env.NEXT_PUBLIC_API_URL;
-      const targetUrl = `${apiBaseUrl}/api/v1/auth/get-session`;
+      const targetUrl = `${apiBaseUrl}/auth/get-session`;
     
       console.log(`[Middleware] Target URL: ${targetUrl}`);
 

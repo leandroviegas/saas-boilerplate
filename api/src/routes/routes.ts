@@ -42,5 +42,5 @@ export async function routes(server: FastifyInstance) {
         server.register(memberRoutes, { prefix: "/member" });
         server.register(adminRoutes, { prefix: "/admin" });
         server.register(webhookController, { prefix: "/webhooks" });
-    }, { prefix: "/api/v1" });
+    }, { prefix: "/" });
 }

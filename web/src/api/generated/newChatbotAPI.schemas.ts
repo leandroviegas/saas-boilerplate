@@ -227,6 +227,8 @@ export type GetMemberPaymentsProducts200AllOf = {
   message: string;
 };
 
+export type GetMemberPaymentsProducts200AllOfTwoDataItemAllOfPermissions = {[key: string]: string[]};
+
 export type GetMemberPaymentsProducts200AllOfTwoDataItemAllOf = {
   id: string;
   /**
@@ -238,30 +240,31 @@ export type GetMemberPaymentsProducts200AllOfTwoDataItemAllOf = {
   features: string[];
   active: boolean;
   archived: boolean;
+  permissions: GetMemberPaymentsProducts200AllOfTwoDataItemAllOfPermissions;
   createdAt: string;
   updatedAt: string;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const GetMemberPaymentsProducts200AllOfTwoDataItemAllOfTwoPricesItemCurrency = {  USD: 'USD',
+export const GetMemberPaymentsProducts200AllOfTwoDataItemAllOfThreePricesItemCurrencyCode = {  USD: 'USD',
   EUR: 'EUR',
   BRL: 'BRL',
 } as const
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const GetMemberPaymentsProducts200AllOfTwoDataItemAllOfTwoPricesItemIntervalType = {  DAY: 'DAY',
+export const GetMemberPaymentsProducts200AllOfTwoDataItemAllOfThreePricesItemIntervalType = {  DAY: 'DAY',
   WEEK: 'WEEK',
   MONTH: 'MONTH',
   YEAR: 'YEAR',
 } as const
-export type GetMemberPaymentsProducts200AllOfTwoDataItemAllOfTwoPricesItem = {
+export type GetMemberPaymentsProducts200AllOfTwoDataItemAllOfThreePricesItem = {
   id: string;
   productId: string;
   amount: number;
-  currency: typeof GetMemberPaymentsProducts200AllOfTwoDataItemAllOfTwoPricesItemCurrency[keyof typeof GetMemberPaymentsProducts200AllOfTwoDataItemAllOfTwoPricesItemCurrency] ;
+  currencyCode: typeof GetMemberPaymentsProducts200AllOfTwoDataItemAllOfThreePricesItemCurrencyCode[keyof typeof GetMemberPaymentsProducts200AllOfTwoDataItemAllOfThreePricesItemCurrencyCode] ;
   stripePriceId?: string;
   active: boolean;
   archived: boolean;
-  intervalType: typeof GetMemberPaymentsProducts200AllOfTwoDataItemAllOfTwoPricesItemIntervalType[keyof typeof GetMemberPaymentsProducts200AllOfTwoDataItemAllOfTwoPricesItemIntervalType] ;
+  intervalType: typeof GetMemberPaymentsProducts200AllOfTwoDataItemAllOfThreePricesItemIntervalType[keyof typeof GetMemberPaymentsProducts200AllOfTwoDataItemAllOfThreePricesItemIntervalType] ;
   /**
    * @minimum 1
    * @maximum 1000
@@ -271,11 +274,11 @@ export type GetMemberPaymentsProducts200AllOfTwoDataItemAllOfTwoPricesItem = {
   updatedAt: string;
 };
 
-export type GetMemberPaymentsProducts200AllOfTwoDataItemAllOfTwo = {
-  prices?: GetMemberPaymentsProducts200AllOfTwoDataItemAllOfTwoPricesItem[];
+export type GetMemberPaymentsProducts200AllOfTwoDataItemAllOfThree = {
+  prices?: GetMemberPaymentsProducts200AllOfTwoDataItemAllOfThreePricesItem[];
 };
 
-export type GetMemberPaymentsProducts200AllOfTwoDataItem = GetMemberPaymentsProducts200AllOfTwoDataItemAllOf & GetMemberPaymentsProducts200AllOfTwoDataItemAllOfTwo;
+export type GetMemberPaymentsProducts200AllOfTwoDataItem = GetMemberPaymentsProducts200AllOfTwoDataItemAllOf & GetMemberPaymentsProducts200AllOfTwoDataItemAllOfThree;
 
 export type GetMemberPaymentsProducts200AllOfTwoMeta = {
   total: number;
@@ -337,6 +340,8 @@ export type GetMemberPaymentsSubscription200AllOf = {
   message: string;
 };
 
+export type GetMemberPaymentsSubscription200AllOfTwoDataProductPermissions = {[key: string]: string[]};
+
 export type GetMemberPaymentsSubscription200AllOfTwoDataProduct = {
   id: string;
   /**
@@ -348,6 +353,7 @@ export type GetMemberPaymentsSubscription200AllOfTwoDataProduct = {
   features: string[];
   active: boolean;
   archived: boolean;
+  permissions: GetMemberPaymentsSubscription200AllOfTwoDataProductPermissions;
   createdAt: string;
   updatedAt: string;
 };
@@ -674,6 +680,8 @@ export type GetAdminProducts200AllOf = {
   message: string;
 };
 
+export type GetAdminProducts200AllOfTwoDataItemAllOfPermissions = {[key: string]: string[]};
+
 export type GetAdminProducts200AllOfTwoDataItemAllOf = {
   id: string;
   /**
@@ -685,30 +693,31 @@ export type GetAdminProducts200AllOfTwoDataItemAllOf = {
   features: string[];
   active: boolean;
   archived: boolean;
+  permissions: GetAdminProducts200AllOfTwoDataItemAllOfPermissions;
   createdAt: string;
   updatedAt: string;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const GetAdminProducts200AllOfTwoDataItemAllOfTwoPricesItemCurrency = {  USD: 'USD',
+export const GetAdminProducts200AllOfTwoDataItemAllOfThreePricesItemCurrencyCode = {  USD: 'USD',
   EUR: 'EUR',
   BRL: 'BRL',
 } as const
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const GetAdminProducts200AllOfTwoDataItemAllOfTwoPricesItemIntervalType = {  DAY: 'DAY',
+export const GetAdminProducts200AllOfTwoDataItemAllOfThreePricesItemIntervalType = {  DAY: 'DAY',
   WEEK: 'WEEK',
   MONTH: 'MONTH',
   YEAR: 'YEAR',
 } as const
-export type GetAdminProducts200AllOfTwoDataItemAllOfTwoPricesItem = {
+export type GetAdminProducts200AllOfTwoDataItemAllOfThreePricesItem = {
   id: string;
   productId: string;
   amount: number;
-  currency: typeof GetAdminProducts200AllOfTwoDataItemAllOfTwoPricesItemCurrency[keyof typeof GetAdminProducts200AllOfTwoDataItemAllOfTwoPricesItemCurrency] ;
+  currencyCode: typeof GetAdminProducts200AllOfTwoDataItemAllOfThreePricesItemCurrencyCode[keyof typeof GetAdminProducts200AllOfTwoDataItemAllOfThreePricesItemCurrencyCode] ;
   stripePriceId?: string;
   active: boolean;
   archived: boolean;
-  intervalType: typeof GetAdminProducts200AllOfTwoDataItemAllOfTwoPricesItemIntervalType[keyof typeof GetAdminProducts200AllOfTwoDataItemAllOfTwoPricesItemIntervalType] ;
+  intervalType: typeof GetAdminProducts200AllOfTwoDataItemAllOfThreePricesItemIntervalType[keyof typeof GetAdminProducts200AllOfTwoDataItemAllOfThreePricesItemIntervalType] ;
   /**
    * @minimum 1
    * @maximum 1000
@@ -718,11 +727,11 @@ export type GetAdminProducts200AllOfTwoDataItemAllOfTwoPricesItem = {
   updatedAt: string;
 };
 
-export type GetAdminProducts200AllOfTwoDataItemAllOfTwo = {
-  prices?: GetAdminProducts200AllOfTwoDataItemAllOfTwoPricesItem[];
+export type GetAdminProducts200AllOfTwoDataItemAllOfThree = {
+  prices?: GetAdminProducts200AllOfTwoDataItemAllOfThreePricesItem[];
 };
 
-export type GetAdminProducts200AllOfTwoDataItem = GetAdminProducts200AllOfTwoDataItemAllOf & GetAdminProducts200AllOfTwoDataItemAllOfTwo;
+export type GetAdminProducts200AllOfTwoDataItem = GetAdminProducts200AllOfTwoDataItemAllOf & GetAdminProducts200AllOfTwoDataItemAllOfThree;
 
 export type GetAdminProducts200AllOfTwoMeta = {
   total: number;
@@ -748,6 +757,8 @@ export type GetAdminProducts400 = {
   validations?: GetAdminProducts400ValidationsItem[];
 };
 
+export type PostAdminProductsBodyPermissions = {[key: string]: string[]};
+
 export type PostAdminProductsBody = {
   /**
    * @minLength 2
@@ -758,12 +769,15 @@ export type PostAdminProductsBody = {
   features: string[];
   active: boolean;
   archived: boolean;
+  permissions: PostAdminProductsBodyPermissions;
 };
 
 export type PostAdminProducts201AllOf = {
   code: string;
   message: string;
 };
+
+export type PostAdminProducts201AllOfTwoDataPermissions = {[key: string]: string[]};
 
 export type PostAdminProducts201AllOfTwoData = {
   id: string;
@@ -776,6 +790,7 @@ export type PostAdminProducts201AllOfTwoData = {
   features: string[];
   active: boolean;
   archived: boolean;
+  permissions: PostAdminProducts201AllOfTwoDataPermissions;
   createdAt: string;
   updatedAt: string;
 };
@@ -802,6 +817,8 @@ export type GetAdminProductsId200AllOf = {
   message: string;
 };
 
+export type GetAdminProductsId200AllOfTwoDataAllOfPermissions = {[key: string]: string[]};
+
 export type GetAdminProductsId200AllOfTwoDataAllOf = {
   id: string;
   /**
@@ -813,30 +830,31 @@ export type GetAdminProductsId200AllOfTwoDataAllOf = {
   features: string[];
   active: boolean;
   archived: boolean;
+  permissions: GetAdminProductsId200AllOfTwoDataAllOfPermissions;
   createdAt: string;
   updatedAt: string;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const GetAdminProductsId200AllOfTwoDataAllOfTwoPricesItemCurrency = {  USD: 'USD',
+export const GetAdminProductsId200AllOfTwoDataAllOfThreePricesItemCurrencyCode = {  USD: 'USD',
   EUR: 'EUR',
   BRL: 'BRL',
 } as const
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const GetAdminProductsId200AllOfTwoDataAllOfTwoPricesItemIntervalType = {  DAY: 'DAY',
+export const GetAdminProductsId200AllOfTwoDataAllOfThreePricesItemIntervalType = {  DAY: 'DAY',
   WEEK: 'WEEK',
   MONTH: 'MONTH',
   YEAR: 'YEAR',
 } as const
-export type GetAdminProductsId200AllOfTwoDataAllOfTwoPricesItem = {
+export type GetAdminProductsId200AllOfTwoDataAllOfThreePricesItem = {
   id: string;
   productId: string;
   amount: number;
-  currency: typeof GetAdminProductsId200AllOfTwoDataAllOfTwoPricesItemCurrency[keyof typeof GetAdminProductsId200AllOfTwoDataAllOfTwoPricesItemCurrency] ;
+  currencyCode: typeof GetAdminProductsId200AllOfTwoDataAllOfThreePricesItemCurrencyCode[keyof typeof GetAdminProductsId200AllOfTwoDataAllOfThreePricesItemCurrencyCode] ;
   stripePriceId?: string;
   active: boolean;
   archived: boolean;
-  intervalType: typeof GetAdminProductsId200AllOfTwoDataAllOfTwoPricesItemIntervalType[keyof typeof GetAdminProductsId200AllOfTwoDataAllOfTwoPricesItemIntervalType] ;
+  intervalType: typeof GetAdminProductsId200AllOfTwoDataAllOfThreePricesItemIntervalType[keyof typeof GetAdminProductsId200AllOfTwoDataAllOfThreePricesItemIntervalType] ;
   /**
    * @minimum 1
    * @maximum 1000
@@ -846,11 +864,11 @@ export type GetAdminProductsId200AllOfTwoDataAllOfTwoPricesItem = {
   updatedAt: string;
 };
 
-export type GetAdminProductsId200AllOfTwoDataAllOfTwo = {
-  prices?: GetAdminProductsId200AllOfTwoDataAllOfTwoPricesItem[];
+export type GetAdminProductsId200AllOfTwoDataAllOfThree = {
+  prices?: GetAdminProductsId200AllOfTwoDataAllOfThreePricesItem[];
 };
 
-export type GetAdminProductsId200AllOfTwoData = GetAdminProductsId200AllOfTwoDataAllOf & GetAdminProductsId200AllOfTwoDataAllOfTwo;
+export type GetAdminProductsId200AllOfTwoData = GetAdminProductsId200AllOfTwoDataAllOf & GetAdminProductsId200AllOfTwoDataAllOfThree;
 
 export type GetAdminProductsId200AllOfTwo = {
   data: GetAdminProductsId200AllOfTwoData;
@@ -869,6 +887,8 @@ export type GetAdminProductsId400 = {
   validations?: GetAdminProductsId400ValidationsItem[];
 };
 
+export type PutAdminProductsIdBodyPermissions = {[key: string]: string[]};
+
 export type PutAdminProductsIdBody = {
   id: string;
   /**
@@ -880,12 +900,15 @@ export type PutAdminProductsIdBody = {
   features: string[];
   active: boolean;
   archived: boolean;
+  permissions: PutAdminProductsIdBodyPermissions;
 };
 
 export type PutAdminProductsId200AllOf = {
   code: string;
   message: string;
 };
+
+export type PutAdminProductsId200AllOfTwoDataPermissions = {[key: string]: string[]};
 
 export type PutAdminProductsId200AllOfTwoData = {
   id: string;
@@ -898,6 +921,7 @@ export type PutAdminProductsId200AllOfTwoData = {
   features: string[];
   active: boolean;
   archived: boolean;
+  permissions: PutAdminProductsId200AllOfTwoDataPermissions;
   createdAt: string;
   updatedAt: string;
 };
@@ -924,6 +948,8 @@ export type DeleteAdminProductsId200AllOf = {
   message: string;
 };
 
+export type DeleteAdminProductsId200AllOfTwoDataPermissions = {[key: string]: string[]};
+
 export type DeleteAdminProductsId200AllOfTwoData = {
   id: string;
   /**
@@ -935,6 +961,7 @@ export type DeleteAdminProductsId200AllOfTwoData = {
   features: string[];
   active: boolean;
   archived: boolean;
+  permissions: DeleteAdminProductsId200AllOfTwoDataPermissions;
   createdAt: string;
   updatedAt: string;
 };
@@ -961,6 +988,8 @@ export type PatchAdminProductsIdSwitchActive200AllOf = {
   message: string;
 };
 
+export type PatchAdminProductsIdSwitchActive200AllOfTwoDataPermissions = {[key: string]: string[]};
+
 export type PatchAdminProductsIdSwitchActive200AllOfTwoData = {
   id: string;
   /**
@@ -972,6 +1001,7 @@ export type PatchAdminProductsIdSwitchActive200AllOfTwoData = {
   features: string[];
   active: boolean;
   archived: boolean;
+  permissions: PatchAdminProductsIdSwitchActive200AllOfTwoDataPermissions;
   createdAt: string;
   updatedAt: string;
 };
@@ -1011,7 +1041,7 @@ export type GetAdminProductPrices200AllOf = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const GetAdminProductPrices200AllOfTwoDataItemCurrency = {  USD: 'USD',
+export const GetAdminProductPrices200AllOfTwoDataItemCurrencyCode = {  USD: 'USD',
   EUR: 'EUR',
   BRL: 'BRL',
 } as const
@@ -1025,7 +1055,7 @@ export type GetAdminProductPrices200AllOfTwoDataItem = {
   id: string;
   productId: string;
   amount: number;
-  currency: typeof GetAdminProductPrices200AllOfTwoDataItemCurrency[keyof typeof GetAdminProductPrices200AllOfTwoDataItemCurrency] ;
+  currencyCode: typeof GetAdminProductPrices200AllOfTwoDataItemCurrencyCode[keyof typeof GetAdminProductPrices200AllOfTwoDataItemCurrencyCode] ;
   stripePriceId?: string;
   active: boolean;
   archived: boolean;
@@ -1064,7 +1094,7 @@ export type GetAdminProductPrices400 = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const PostAdminProductPricesBodyAllOfCurrency = {  USD: 'USD',
+export const PostAdminProductPricesBodyAllOfCurrencyCode = {  USD: 'USD',
   EUR: 'EUR',
   BRL: 'BRL',
 } as const
@@ -1077,7 +1107,7 @@ export const PostAdminProductPricesBodyAllOfIntervalType = {  DAY: 'DAY',
 export type PostAdminProductPricesBodyAllOf = {
   productId: string;
   amount: number;
-  currency: typeof PostAdminProductPricesBodyAllOfCurrency[keyof typeof PostAdminProductPricesBodyAllOfCurrency] ;
+  currencyCode: typeof PostAdminProductPricesBodyAllOfCurrencyCode[keyof typeof PostAdminProductPricesBodyAllOfCurrencyCode] ;
   active: boolean;
   archived: boolean;
   intervalType: typeof PostAdminProductPricesBodyAllOfIntervalType[keyof typeof PostAdminProductPricesBodyAllOfIntervalType] ;
@@ -1100,7 +1130,7 @@ export type PostAdminProductPrices201AllOf = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const PostAdminProductPrices201AllOfTwoDataCurrency = {  USD: 'USD',
+export const PostAdminProductPrices201AllOfTwoDataCurrencyCode = {  USD: 'USD',
   EUR: 'EUR',
   BRL: 'BRL',
 } as const
@@ -1114,7 +1144,7 @@ export type PostAdminProductPrices201AllOfTwoData = {
   id: string;
   productId: string;
   amount: number;
-  currency: typeof PostAdminProductPrices201AllOfTwoDataCurrency[keyof typeof PostAdminProductPrices201AllOfTwoDataCurrency] ;
+  currencyCode: typeof PostAdminProductPrices201AllOfTwoDataCurrencyCode[keyof typeof PostAdminProductPrices201AllOfTwoDataCurrencyCode] ;
   stripePriceId?: string;
   active: boolean;
   archived: boolean;
@@ -1151,7 +1181,7 @@ export type GetAdminProductPricesId200AllOf = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const GetAdminProductPricesId200AllOfTwoDataCurrency = {  USD: 'USD',
+export const GetAdminProductPricesId200AllOfTwoDataCurrencyCode = {  USD: 'USD',
   EUR: 'EUR',
   BRL: 'BRL',
 } as const
@@ -1165,7 +1195,7 @@ export type GetAdminProductPricesId200AllOfTwoData = {
   id: string;
   productId: string;
   amount: number;
-  currency: typeof GetAdminProductPricesId200AllOfTwoDataCurrency[keyof typeof GetAdminProductPricesId200AllOfTwoDataCurrency] ;
+  currencyCode: typeof GetAdminProductPricesId200AllOfTwoDataCurrencyCode[keyof typeof GetAdminProductPricesId200AllOfTwoDataCurrencyCode] ;
   stripePriceId?: string;
   active: boolean;
   archived: boolean;
@@ -1197,7 +1227,7 @@ export type GetAdminProductPricesId400 = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const PutAdminProductPricesIdBodyCurrency = {  USD: 'USD',
+export const PutAdminProductPricesIdBodyCurrencyCode = {  USD: 'USD',
   EUR: 'EUR',
   BRL: 'BRL',
 } as const
@@ -1211,7 +1241,7 @@ export type PutAdminProductPricesIdBody = {
   id: string;
   productId: string;
   amount: number;
-  currency: typeof PutAdminProductPricesIdBodyCurrency[keyof typeof PutAdminProductPricesIdBodyCurrency] ;
+  currencyCode: typeof PutAdminProductPricesIdBodyCurrencyCode[keyof typeof PutAdminProductPricesIdBodyCurrencyCode] ;
   active: boolean;
   archived: boolean;
   intervalType: typeof PutAdminProductPricesIdBodyIntervalType[keyof typeof PutAdminProductPricesIdBodyIntervalType] ;
@@ -1228,7 +1258,7 @@ export type PutAdminProductPricesId200AllOf = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const PutAdminProductPricesId200AllOfTwoDataCurrency = {  USD: 'USD',
+export const PutAdminProductPricesId200AllOfTwoDataCurrencyCode = {  USD: 'USD',
   EUR: 'EUR',
   BRL: 'BRL',
 } as const
@@ -1242,7 +1272,7 @@ export type PutAdminProductPricesId200AllOfTwoData = {
   id: string;
   productId: string;
   amount: number;
-  currency: typeof PutAdminProductPricesId200AllOfTwoDataCurrency[keyof typeof PutAdminProductPricesId200AllOfTwoDataCurrency] ;
+  currencyCode: typeof PutAdminProductPricesId200AllOfTwoDataCurrencyCode[keyof typeof PutAdminProductPricesId200AllOfTwoDataCurrencyCode] ;
   stripePriceId?: string;
   active: boolean;
   archived: boolean;

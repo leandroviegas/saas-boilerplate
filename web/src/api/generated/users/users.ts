@@ -26,7 +26,7 @@ const getMemberUsersMe = (
     
  options?: SecondParameter<typeof customInstance<GetMemberUsersMe200>>,) => {
       return customInstance<GetMemberUsersMe200>(
-      {url: `/api/v1/member/users/me`, method: 'GET'
+      {url: `/member/users/me`, method: 'GET'
     },
       options);
     }
@@ -34,7 +34,7 @@ const getMemberUsersMe = (
     params?: GetAdminUsersParams,
  options?: SecondParameter<typeof customInstance<GetAdminUsers200>>,) => {
       return customInstance<GetAdminUsers200>(
-      {url: `/api/v1/admin/users/`, method: 'GET',
+      {url: `/admin/users/`, method: 'GET',
         params
     },
       options);
@@ -43,7 +43,7 @@ const getMemberUsersMe = (
     id: string,
  options?: SecondParameter<typeof customInstance<GetAdminUsersId200>>,) => {
       return customInstance<GetAdminUsersId200>(
-      {url: `/api/v1/admin/users/${id}`, method: 'GET'
+      {url: `/admin/users/${id}`, method: 'GET'
     },
       options);
     }
@@ -52,7 +52,7 @@ const getMemberUsersMe = (
     putAdminUsersIdBody: PutAdminUsersIdBody,
  options?: SecondParameter<typeof customInstance<PutAdminUsersId200>>,) => {
       return customInstance<PutAdminUsersId200>(
-      {url: `/api/v1/admin/users/${id}`, method: 'PUT',
+      {url: `/admin/users/${id}`, method: 'PUT',
       headers: {'Content-Type': 'application/json', },
       data: putAdminUsersIdBody
     },
@@ -62,7 +62,7 @@ const getMemberUsersMe = (
     id: string,
  options?: SecondParameter<typeof customInstance<DeleteAdminUsersId204>>,) => {
       return customInstance<DeleteAdminUsersId204>(
-      {url: `/api/v1/admin/users/${id}`, method: 'DELETE'
+      {url: `/admin/users/${id}`, method: 'DELETE'
     },
       options);
     }

@@ -28,7 +28,7 @@ const getAdminProducts = (
     params?: GetAdminProductsParams,
  options?: SecondParameter<typeof customInstance<GetAdminProducts200>>,) => {
       return customInstance<GetAdminProducts200>(
-      {url: `/api/v1/admin/products/`, method: 'GET',
+      {url: `/admin/products/`, method: 'GET',
         params
     },
       options);
@@ -37,7 +37,7 @@ const getAdminProducts = (
     postAdminProductsBody: PostAdminProductsBody,
  options?: SecondParameter<typeof customInstance<PostAdminProducts201>>,) => {
       return customInstance<PostAdminProducts201>(
-      {url: `/api/v1/admin/products/`, method: 'POST',
+      {url: `/admin/products/`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: postAdminProductsBody
     },
@@ -47,7 +47,7 @@ const getAdminProducts = (
     id: string,
  options?: SecondParameter<typeof customInstance<GetAdminProductsId200>>,) => {
       return customInstance<GetAdminProductsId200>(
-      {url: `/api/v1/admin/products/${id}`, method: 'GET'
+      {url: `/admin/products/${id}`, method: 'GET'
     },
       options);
     }
@@ -56,7 +56,7 @@ const getAdminProducts = (
     putAdminProductsIdBody: PutAdminProductsIdBody,
  options?: SecondParameter<typeof customInstance<PutAdminProductsId200>>,) => {
       return customInstance<PutAdminProductsId200>(
-      {url: `/api/v1/admin/products/${id}`, method: 'PUT',
+      {url: `/admin/products/${id}`, method: 'PUT',
       headers: {'Content-Type': 'application/json', },
       data: putAdminProductsIdBody
     },
@@ -66,7 +66,7 @@ const getAdminProducts = (
     id: string,
  options?: SecondParameter<typeof customInstance<DeleteAdminProductsId200>>,) => {
       return customInstance<DeleteAdminProductsId200>(
-      {url: `/api/v1/admin/products/${id}`, method: 'DELETE'
+      {url: `/admin/products/${id}`, method: 'DELETE'
     },
       options);
     }
@@ -74,7 +74,7 @@ const getAdminProducts = (
     id: string,
  options?: SecondParameter<typeof customInstance<PatchAdminProductsIdSwitchActive200>>,) => {
       return customInstance<PatchAdminProductsIdSwitchActive200>(
-      {url: `/api/v1/admin/products/${id}/switch-active`, method: 'PATCH'
+      {url: `/admin/products/${id}/switch-active`, method: 'PATCH'
     },
       options);
     }
