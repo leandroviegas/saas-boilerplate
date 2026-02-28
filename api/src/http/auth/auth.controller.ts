@@ -11,10 +11,9 @@ export async function authController(fastify: FastifyInstance) {
     const method = request.method;
     
     try {
-      const authOrigin = process.env.BETTER_AUTH_URL
-        ? new URL(process.env.BETTER_AUTH_URL).origin
-        : `${request.protocol}://${request.headers.host}`;
-      const url = new URL(request.url, authOrigin);
+      const authUrl = new URL(process.env.BETTER_AUTH_URL!)
+
+      const url = new URL(`${authUrl.host}${request.url}`);
 
       console.log(`[Auth-Incoming][${requestId}] --> ${method} ${url.toJSON()}`);
 
