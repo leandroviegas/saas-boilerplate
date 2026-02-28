@@ -35,6 +35,8 @@ export async function middleware(request: NextRequest) {
       if (res.ok) {
         try {
           const data = await res.json();
+            console.log(`[Middleware][${requestId}] data:`, data);
+
           if (data.user) {
             userData = data.user;
             console.log(`[Middleware][${requestId}] User Authenticated:`, userData.id || 'ID Hidden');
