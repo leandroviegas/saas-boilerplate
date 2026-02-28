@@ -6,10 +6,33 @@ import { notificationService } from "@/services";
 import { organization } from "better-auth/plugins";
 import { corsConfig } from "./config";
 
+// Derive the shared root domain from the first CORS origin so the session cookie
+// is accessible across all subdomains (e.g. api.example.com and app.example.com).
+// Returns undefined for localhost / single-label hostnames (local dev).
+function getCookieDomain(): string | undefined {
+  const firstOrigin = corsConfig.origin[0];
+  if (!firstOrigin) return undefined;
+  try {
+    const hostname = new URL(firstOrigin).hostname;
+    const parts = hostname.split(".");
+    if (parts.length < 2) return undefined;
+    return "." + parts.slice(-2).join(".");
+  } catch {
+    return undefined;
+  }
+}
+
+const cookieDomain = getCookieDomain();
 
 export const auth = betterAuth({
   trustedOrigins: corsConfig.origin,
   baseURL: process.env.BETTER_AUTH_URL,
+  advanced: {
+    crossSubDomainCookies: {
+      enabled: !!cookieDomain,
+      domain: cookieDomain
+    }
+  },
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
