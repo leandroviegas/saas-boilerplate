@@ -21,9 +21,14 @@ export async function middleware(request: NextRequest) {
       });
 
       if (res.ok) {
+        console.log("[session] response:", res);
+        console.log("--------------------------------------------");
+        console.log("--------------------------------------------");
+        console.log("--------------------------------------------");
+
         try {
           const data = await res.json();
-
+          console.log("[session] Data:", data);
           if (data.user) {
             userData = data.user;
           }
@@ -31,6 +36,10 @@ export async function middleware(request: NextRequest) {
           console.log("[session] JSON parse error:", e);
         }
       }
+
+      console.log("--------------------------------------------");
+      console.log("--------------------------------------------");
+      console.log("--------------------------------------------");
 
     } catch (e: any) {
       console.log("[session] Fetch error:", e);
@@ -54,7 +63,7 @@ export async function middleware(request: NextRequest) {
   } else {
     if (code == 'ECONNREFUSED')
       return NextResponse.rewrite(new URL("/offline", request.url));
-    
+
     response.cookies.delete("me");
     if (pathname.startsWith('/dashboard'))
       return NextResponse.redirect(new URL("/auth", request.url));

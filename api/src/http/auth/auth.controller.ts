@@ -32,7 +32,11 @@ export async function authController(fastify: FastifyInstance) {
         reply.header(key, value);
       });
 
-      return reply.send(await res.text());
+      const content = await res.text();
+
+      console.log(content)
+
+      return reply.send(content);
     } catch (error) {
       fastify.log.error(error, "Authentication Error");
       return reply.status(500).send({
