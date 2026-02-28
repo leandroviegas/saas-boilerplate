@@ -17,6 +17,9 @@ export async function authController(fastify: FastifyInstance) {
 
       console.log(`[Auth-Incoming][${requestId}] --> ${method} ${url.toJSON()}`);
 
+      console.log(`[Auth-Incoming][${requestId}] auth url --> ${process.env.BETTER_AUTH_URL}`);
+      console.log(`[Auth-Incoming][${requestId}] request url --> ${request.url}`);
+      
       // Header Transformation
       const headers = new Headers();
       Object.entries(request.headers).forEach(([key, value]) => {
@@ -27,7 +30,7 @@ export async function authController(fastify: FastifyInstance) {
         }
       });
 
-      console.log(`[Auth-Incoming][${requestId}] --> ${headers}`);
+      console.log(`[Auth-Incoming][${requestId}] --> ${JSON.stringify(Object.fromEntries(headers.entries()))}`);
       
       // Execute Auth Handler
       console.log(`[Auth-Handler][${requestId}] Executing auth.handler...`);
