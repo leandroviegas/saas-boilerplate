@@ -24,6 +24,11 @@ function getCookieDomain(): string | undefined {
 
 const cookieDomain = getCookieDomain();
 
+// Log cookie domain configuration for debugging
+console.log("[Auth-Config] Cookie Domain:", cookieDomain);
+console.log("[Auth-Config] CORS Origins:", corsConfig.origin);
+console.log("[Auth-Config] Better Auth URL:", process.env.BETTER_AUTH_URL);
+
 export const auth = betterAuth({
   trustedOrigins: corsConfig.origin,
   baseURL: process.env.BETTER_AUTH_URL,
@@ -31,7 +36,9 @@ export const auth = betterAuth({
     crossSubDomainCookies: {
       enabled: !!cookieDomain,
       domain: cookieDomain
-    }
+    },
+    disableOriginCheck: true,
+    disableCSRFCheck: true
   },
   database: prismaAdapter(prisma, {
     provider: "postgresql",

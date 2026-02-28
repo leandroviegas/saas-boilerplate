@@ -22,7 +22,26 @@ export async function authController(fastify: FastifyInstance) {
       
       // Header Transformation
       const headers = new Headers();
+      
+      // Explicitly set the origin to match what the client sent
+      // This is critical for better-auth to properly validate the request
+      const origin = request.headers.origin;
+      if (origin) {
+        headers.set("origin", origin);
+      }
+      
+      // Explicitly set the host to match the request
+      // This helps better-auth match the cookie to the request
+      const host = request.headers.host;
+      if (host) {
+        headers.set("host", host);
+      }
+      
       Object.entries(request.headers).forEach(([key, value]) => {
+        // Skip origin and host as we're setting them explicitly above
+        const lowerKey = key.toLowerCase();
+        if (lowerKey === 'origin' || lowerKey === 'host') return;
+        
         if (Array.isArray(value)) {
           value.forEach(v => headers.append(key, v));
         } else if (value) {
