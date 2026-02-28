@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Loader2, CheckCircle2 } from 'lucide-react';
-import { GetMemberPaymentsProducts200AllOfTwoDataItem, GetMemberPaymentsProducts200AllOfTwoDataItemAllOfTwoPricesItem } from '@/api/generated/newChatbotAPI.schemas';
+import { GetMemberPaymentsProducts200AllOfTwoDataItem, GetMemberPaymentsProducts200AllOfTwoDataItemAllOfThreePricesItem } from '@/api/generated/newChatbotAPI.schemas';
 
 const paymentApi = getPayment();
 
@@ -22,7 +22,7 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
   const [product, setProduct] = useState<GetMemberPaymentsProducts200AllOfTwoDataItem | null>(null);
-  const [price, setPrice] = useState<GetMemberPaymentsProducts200AllOfTwoDataItemAllOfTwoPricesItem | null>(null);
+  const [price, setPrice] = useState<GetMemberPaymentsProducts200AllOfTwoDataItemAllOfThreePricesItem | null>(null);
   const [promotionCode, setPromotionCode] = useState('');
 
   useEffect(() => {
@@ -112,7 +112,7 @@ export default function CheckoutPage() {
               </div>
               <div className="text-right">
                 <span className="text-2xl font-bold">
-                  {price.amount} {price.currency}
+                  {price.amount} {price.currencyCode}
                 </span>
                 <p className="text-xs text-muted-foreground uppercase"> {price.intervalValue} {t(price.intervalType.toLowerCase())}</p>
               </div>

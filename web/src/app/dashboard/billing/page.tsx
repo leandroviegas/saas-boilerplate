@@ -66,7 +66,7 @@ export default function MemberProductsPage() {
                     {product.prices?.map(price => (
                       <div key={price.id} className="flex justify-between items-center p-2 rounded-md bg-muted/50">
                         <div className="text-sm">
-                          <span className="font-bold">{price.amount} {price.currency}</span>
+                          <span className="font-bold">{price.amount} {price.currencyCode}</span>
                           <span className="text-muted-foreground ml-1">/ {price.intervalValue} {t(price.intervalType.toLowerCase())}</span>
                         </div>
                         <Button asChild size="sm">

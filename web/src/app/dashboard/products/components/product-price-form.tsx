@@ -12,6 +12,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { typeboxResolver } from "@/lib/typebox-resolver";
 import { Type, Static } from "@sinclair/typebox";
 import { getProductPrices } from "@/api/generated/product-prices/product-prices";
+import { GetAdminProducts200AllOfTwoDataItemAllOfThreePricesItem } from "@/api/generated/newChatbotAPI.schemas";
 
 const productPriceFormSchema = Type.Object({
   id: Type.Optional(Type.String()),
@@ -25,7 +26,7 @@ const productPriceFormSchema = Type.Object({
 type ProductPriceFormValues = Static<typeof productPriceFormSchema>;
 
 interface ProductPriceFormProps {
-  price?: ProductPriceFormValues
+  price?: GetAdminProducts200AllOfTwoDataItemAllOfThreePricesItem
   productId: string
   onUpsertSuccess?: () => void
   onDeleteSucess?: () => void
@@ -42,7 +43,7 @@ export function ProductPriceForm({ price, productId, onUpsertSuccess, onDeleteSu
     defaultValues: {
       id: price?.id,
       amount: price?.amount || 0,
-      currency: price?.currency || "USD",
+      currency: price?.currencyCode || "USD",
       active: price?.active || true,
       intervalType: price?.intervalType || "MONTH",
       intervalValue: price?.intervalValue || 1,
@@ -51,12 +52,13 @@ export function ProductPriceForm({ price, productId, onUpsertSuccess, onDeleteSu
 
   const onSubmit = async (data: ProductPriceFormValues) => {
     await onFormSubmit(data, async (formData) => {
-      let { id, ...formDataWithoutId } = formData;
+      let { id, currency, ...formDataWithoutIdAndCurrency } = formData;
       
       id = formData.id || price?.id;
 
       const formToSend = {
-        ...formDataWithoutId,
+        ...formDataWithoutIdAndCurrency,
+        currencyCode: currency,
         productId,
         archived: false,
       }

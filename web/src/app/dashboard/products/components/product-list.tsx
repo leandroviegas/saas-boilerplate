@@ -96,7 +96,7 @@ export default function ProductList() {
                                                     : 'bg-amber-50 text-amber-700 ring-amber-600/20 dark:bg-amber-500/10 dark:text-amber-400 dark:ring-amber-500/20'
                                                     }`}
                                             >
-                                                {price.amount} {price.currency} ({price.intervalValue} {price.intervalType})
+                                                {price.amount} {price.currencyCode} ({price.intervalValue} {price.intervalType})
                                             </span>
                                         ))}
                                     </div>
