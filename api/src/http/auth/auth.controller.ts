@@ -6,10 +6,16 @@ export async function authController(fastify: FastifyInstance) {
     schema: {
       hide: true
     }
-  },async (request: FastifyRequest, reply: FastifyReply) => {
+  }, async (request: FastifyRequest, reply: FastifyReply) => {
+    const requestId = request.id || Math.random().toString(36).substring(7);
+    const method = request.method;
+    
     try {
       const url = new URL(request.url, `${request.protocol}://${request.headers.host}`);
 
+      console.log(`[Auth-Incoming][${requestId}] --> ${method} ${url.pathname}`);
+
+      // Header Transformation
       const headers = new Headers();
       Object.entries(request.headers).forEach(([key, value]) => {
         if (Array.isArray(value)) {
@@ -19,14 +25,21 @@ export async function authController(fastify: FastifyInstance) {
         }
       });
 
+      // Execute Auth Handler
+      console.log(`[Auth-Handler][${requestId}] Executing auth.handler...`);
+      
       const res = await auth.handler(
         new Request(url.toString(), {
-          method: request.method,
+          method: method,
           headers,
           body: request.body ? JSON.stringify(request.body) : undefined,
         })
       );
 
+      // Log Outgoing Response Status
+      console.log(`[Auth-Handler][${requestId}] Status: ${res.status} (${res.statusText})`);
+
+      // Set headers from Auth Response to Fastify Reply
       reply.status(res.status);
       res.headers.forEach((value: string, key: string) => {
         reply.header(key, value);
@@ -34,14 +47,24 @@ export async function authController(fastify: FastifyInstance) {
 
       const content = await res.text();
 
-      console.log(content)
+      // Debugging Payload (truncated if too large)
+      const logContent = content.length > 500 ? `${content.substring(0, 500)}... [Truncated]` : content;
+      console.log(`[Auth-Payload][${requestId}] Content:`, logContent);
 
       return reply.send(content);
-    } catch (error) {
+    } catch (error: any) {
+      console.error(`[Auth-Error][${requestId}] Critical Failure:`, {
+        message: error.message,
+        stack: error.stack?.split('\n')[0],
+        path: request.url
+      });
+
       fastify.log.error(error, "Authentication Error");
+      
       return reply.status(500).send({
         error: "Internal authentication error",
-        code: "AUTH_FAILURE"
+        code: "AUTH_FAILURE",
+        requestId // Returning ID for easier log correlation
       });
     }
   });
