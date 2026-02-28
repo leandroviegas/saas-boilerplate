@@ -21,33 +21,29 @@ export async function authController(fastify: FastifyInstance) {
       console.log(`[Auth-Incoming][${requestId}] request url --> ${request.url}`);
       
       // Header Transformation
+      // Derive origin, host and x-forwarded-proto from the publicly-facing URL
+      // (built above from BETTER_AUTH_URL) so that better-auth always resolves
+      // the correct __Secure- prefixed cookies, regardless of whether the
+      // internal hop between the reverse-proxy and this container uses HTTP.
       const headers = new Headers();
-      
-      // Explicitly set the origin to match what the client sent
-      // This is critical for better-auth to properly validate the request
-      const origin = request.headers.origin;
-      if (origin) {
-        headers.set("origin", origin);
-      }
-      
-      // Explicitly set the host to match the request
-      // This helps better-auth match the cookie to the request
-      const host = request.headers.host;
-      if (host) {
-        headers.set("host", host);
-      }
-      
+
       Object.entries(request.headers).forEach(([key, value]) => {
-        // Skip origin and host as we're setting them explicitly above
         const lowerKey = key.toLowerCase();
-        if (lowerKey === 'origin' || lowerKey === 'host') return;
-        
+        // These will be overridden below with values derived from `url`
+        if (lowerKey === 'origin' || lowerKey === 'host' || lowerKey === 'x-forwarded-proto') return;
+
         if (Array.isArray(value)) {
           value.forEach(v => headers.append(key, v));
         } else if (value) {
           headers.append(key, value.toString());
         }
       });
+
+      // Set origin / host / x-forwarded-proto based on the constructed `url`
+      // so better-auth treats the request as coming from the correct scheme.
+      headers.set("origin", url.origin);
+      headers.set("host", url.host);
+      headers.set("x-forwarded-proto", url.protocol.replace(":", ""));
 
       console.log(`[Auth-Incoming][${requestId}] --> ${JSON.stringify(Object.fromEntries(headers.entries()))}`);
       
@@ -64,10 +60,18 @@ export async function authController(fastify: FastifyInstance) {
 
       // Log Outgoing Response Status
       console.log(`[Auth-Handler][${requestId}] Status: ${res.status} (${res.statusText})`);
+      
+      // Debug: Log Set-Cookie headers
+      const setCookieHeader = res.headers.get("set-cookie");
+      console.log(`[Auth-Handler][${requestId}] Set-Cookie:`, setCookieHeader);
 
       // Set headers from Auth Response to Fastify Reply
       reply.status(res.status);
       res.headers.forEach((value: string, key: string) => {
+        // Log all Set-Cookie headers for debugging
+        if (key.toLowerCase() === "set-cookie") {
+          console.log(`[Auth-Handler][${requestId}] Forwarding Set-Cookie: ${value}`);
+        }
         reply.header(key, value);
       });
 
