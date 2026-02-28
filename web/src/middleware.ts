@@ -23,6 +23,7 @@ export async function middleware(request: NextRequest) {
     
       console.log(`[Middleware] Target URL: ${targetUrl}`);
 
+      console.log(`[Middleware] headers: ${Object.fromEntries(request.headers.entries())}`);
 
       const res = await fetch(targetUrl, {
         headers: Object.fromEntries(request.headers.entries()),

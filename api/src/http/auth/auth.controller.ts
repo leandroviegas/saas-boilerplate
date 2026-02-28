@@ -13,7 +13,7 @@ export async function authController(fastify: FastifyInstance) {
     try {
       const url = new URL(request.url, `${request.protocol}://${request.headers.host}`);
 
-      console.log(`[Auth-Incoming][${requestId}] --> ${method} ${url.pathname}`);
+      console.log(`[Auth-Incoming][${requestId}] --> ${method} ${url.toJSON()}`);
 
       // Header Transformation
       const headers = new Headers();
@@ -25,6 +25,8 @@ export async function authController(fastify: FastifyInstance) {
         }
       });
 
+      console.log(`[Auth-Incoming][${requestId}] --> ${headers}`);
+      
       // Execute Auth Handler
       console.log(`[Auth-Handler][${requestId}] Executing auth.handler...`);
       
