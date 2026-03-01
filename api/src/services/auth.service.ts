@@ -8,6 +8,10 @@ export class AuthService extends AbstractService {
     const headers = new Headers();
 
     Object.entries(reqHeaders).forEach(([key, value]) => {
+      const lowerKey = key.toLowerCase();
+
+      if (lowerKey === 'origin' || lowerKey === 'host' || lowerKey === 'x-forwarded-proto' || lowerKey === 'cookie') return;
+
       if (Array.isArray(value)) {
         value.forEach(v => headers.append(key, v));
       } else if (value) {
