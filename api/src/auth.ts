@@ -1,21 +1,25 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { jwt, twoFactor, username, multiSession } from "better-auth/plugins";
+import { jwt, twoFactor, username, multiSession, organization } from "better-auth/plugins";
 import { prisma } from "./plugins/prisma";
 import { notificationService } from "@/services";
-import { organization } from "better-auth/plugins";
 import { corsConfig } from "./config";
 
-// Derive the shared root domain from the first CORS origin so the session cookie
-// is accessible across all subdomains (e.g. api.example.com and app.example.com).
-// Returns undefined for localhost / single-label hostnames (local dev).
+/**
+ * Derives the root domain for cross-subdomain support.
+ * For maximum permissiveness in local development, it returns undefined 
+ * to allow the browser to manage the default host.
+ */
 function getCookieDomain(): string | undefined {
   const firstOrigin = corsConfig.origin[0];
   if (!firstOrigin) return undefined;
   try {
     const hostname = new URL(firstOrigin).hostname;
     const parts = hostname.split(".");
-    if (parts.length < 2) return undefined;
+    // Ensure we don't apply domain formatting to IP addresses or localhost
+    if (parts.length < 2 || /^(?!0)(?!.*\.$)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(hostname)) {
+      return undefined;
+    }
     return "." + parts.slice(-2).join(".");
   } catch {
     return undefined;
@@ -24,25 +28,37 @@ function getCookieDomain(): string | undefined {
 
 const cookieDomain = getCookieDomain();
 
-// Log cookie domain configuration for debugging
-console.log("[Auth-Config] Cookie Domain:", cookieDomain);
-console.log("[Auth-Config] CORS Origins:", corsConfig.origin);
-console.log("[Auth-Config] Better Auth URL:", process.env.BETTER_AUTH_URL);
-
 export const auth = betterAuth({
+  // Permissive Origin & Host configuration
   trustedOrigins: corsConfig.origin,
   baseURL: process.env.BETTER_AUTH_URL,
+  trustHost: true, 
+
   advanced: {
+    // Permissive Cross-Origin/Subdomain Logic
     crossSubDomainCookies: {
-      enabled: !!cookieDomain,
-      domain: cookieDomain
+      enabled: true,
+      domain: cookieDomain,
     },
-    disableOriginCheck: true,
-    disableCSRFCheck: true
+    // Disabling security checks for maximum compatibility across different clients/origins
+    disableOriginCheck: true, 
+    disableCSRFCheck: true,
+    // Setting cookies to None allows them to be sent in cross-site requests (requires HTTPS)
+    cookies: {
+      sessionToken: {
+        attributes: {
+          sameSite: "none",
+          secure: true, // Required if SameSite is "none"
+          domain: cookieDomain,
+        }
+      }
+    }
   },
+
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
+  
   user: {
     additionalFields: {
       roleSlug: {
@@ -67,16 +83,21 @@ export const auth = betterAuth({
       }
     }
   },
+
   emailAndPassword: {
     enabled: true,
     autoSignIn: true,
   },
+
   session: {
     expiresIn: 60 * 60 * 24 * 30, // 30 days
     cookieCache: {
       enabled: false
-    }
+    },
+    // Ensure fresh sessions are always available across windows
+    updateAge: 0 
   },
+
   databaseHooks: {
     session: {
       create: {
@@ -101,6 +122,7 @@ export const auth = betterAuth({
       },
     }
   },
+
   plugins: [
     jwt(),
     twoFactor({
@@ -118,7 +140,6 @@ export const auth = betterAuth({
       allowUserToCreateOrganization: true
     })
   ],
-  trustHost: true,
 });
 
 export type Session = typeof auth.$Infer.Session;

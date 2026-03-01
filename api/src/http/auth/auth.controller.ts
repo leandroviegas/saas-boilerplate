@@ -29,8 +29,9 @@ export async function authController(fastify: FastifyInstance) {
 
       Object.entries(request.headers).forEach(([key, value]) => {
         const lowerKey = key.toLowerCase();
-        // These will be overridden below with values derived from `url`
-        if (lowerKey === 'origin' || lowerKey === 'host' || lowerKey === 'x-forwarded-proto') return;
+        // These will be overridden below with values derived from `url`, and
+        // the cookie header is handled separately to deduplicate same-name cookies.
+        if (lowerKey === 'origin' || lowerKey === 'host' || lowerKey === 'x-forwarded-proto' || lowerKey === 'cookie') return;
 
         if (Array.isArray(value)) {
           value.forEach(v => headers.append(key, v));
@@ -44,6 +45,25 @@ export async function authController(fastify: FastifyInstance) {
       headers.set("origin", url.origin);
       headers.set("host", url.host);
       headers.set("x-forwarded-proto", url.protocol.replace(":", ""));
+
+      // Deduplicate cookies: when the browser sends two cookies with the same
+      // name (e.g. an old __Secure-better-auth.session_token alongside a newly
+      // issued one), better-auth picks the first occurrence (the stale one),
+      // fails validation, and clears all session cookies.
+      // Keeping only the LAST value for each name ensures better-auth always
+      // sees the most-recently issued token.
+      const rawCookie = request.headers.cookie;
+      if (rawCookie) {
+        const cookieMap = new Map<string, string>();
+        rawCookie.split(";").forEach(pair => {
+          const idx = pair.indexOf("=");
+          if (idx === -1) return;
+          const name = pair.slice(0, idx).trim();
+          const value = pair.slice(idx + 1).trim();
+          cookieMap.set(name, value); // later duplicates overwrite earlier ones
+        });
+        headers.set("cookie", Array.from(cookieMap.entries()).map(([n, v]) => `${n}=${v}`).join("; "));
+      }
 
       console.log(`[Auth-Incoming][${requestId}] --> ${JSON.stringify(Object.fromEntries(headers.entries()))}`);
       
