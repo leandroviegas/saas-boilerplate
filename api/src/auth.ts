@@ -16,7 +16,6 @@ function getCookieDomain(): string | undefined {
   try {
     const hostname = new URL(firstOrigin).hostname;
     const parts = hostname.split(".");
-    // Ensure we don't apply domain formatting to IP addresses or localhost
     if (parts.length < 2 || /^(?!0)(?!.*\.$)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(hostname)) {
       return undefined;
     }
@@ -29,26 +28,21 @@ function getCookieDomain(): string | undefined {
 const cookieDomain = getCookieDomain();
 
 export const auth = betterAuth({
-  // Permissive Origin & Host configuration
   trustedOrigins: corsConfig.origin,
   baseURL: process.env.BETTER_AUTH_URL,
   trustHost: true, 
-
   advanced: {
-    // Permissive Cross-Origin/Subdomain Logic
     crossSubDomainCookies: {
       enabled: true,
       domain: cookieDomain,
     },
-    // Disabling security checks for maximum compatibility across different clients/origins
     disableOriginCheck: true, 
     disableCSRFCheck: true,
-    // Setting cookies to None allows them to be sent in cross-site requests (requires HTTPS)
     cookies: {
       sessionToken: {
         attributes: {
           sameSite: "none",
-          secure: true, // Required if SameSite is "none"
+          secure: true,
           domain: cookieDomain,
         }
       }
