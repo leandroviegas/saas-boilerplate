@@ -88,7 +88,6 @@ export const auth = betterAuth({
     cookieCache: {
       enabled: false
     },
-    // Ensure fresh sessions are always available across windows
     updateAge: 0 
   },
 
