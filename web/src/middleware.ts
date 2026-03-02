@@ -7,7 +7,6 @@ export async function middleware(request: NextRequest) {
 
   let userData, errorCode;
 
-  // 1. Filter internal/static assets
   if (
     !pathname.startsWith("/_next") &&
     !pathname.startsWith("/public") &&
@@ -26,7 +25,7 @@ export async function middleware(request: NextRequest) {
         try {
           const data = await res.json();
 
-          if (data.user) {
+          if (data?.user) {
             userData = data.user;
           }
         } catch (parseError) {

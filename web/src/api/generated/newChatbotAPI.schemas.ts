@@ -507,7 +507,7 @@ export type GetMemberUsersMe400 = {
   validations?: GetMemberUsersMe400ValidationsItem[];
 };
 
-export type GetAdminUsersParams = {
+export type GetAdminCouponsParams = {
 /**
  * @minimum 1
  */
@@ -518,150 +518,241 @@ page?: number;
 perPage?: number;
 };
 
-export type GetAdminUsers200AllOf = {
+export type GetAdminCoupons200AllOf = {
   code: string;
   message: string;
 };
 
-export type GetAdminUsers200AllOfTwoDataItem = {
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const GetAdminCoupons200AllOfTwoDataItemDiscountType = {  PERCENTAGE: 'PERCENTAGE',
+  FIXED: 'FIXED',
+} as const
+export type GetAdminCoupons200AllOfTwoDataItem = {
   id: string;
-  email: string;
-  name: string;
-  username: string;
-  provider?: string;
-  image?: string;
-  role: string;
-  emailVerified: boolean;
-  preferences?: string;
-  twoFactorEnabled?: boolean;
+  code: string;
+  discountType: typeof GetAdminCoupons200AllOfTwoDataItemDiscountType[keyof typeof GetAdminCoupons200AllOfTwoDataItemDiscountType] ;
+  value: number;
+  expiresAt?: string;
+  usageLimit?: number;
+  usageCount: number;
+  active: boolean;
+  stripeCouponId?: string;
   createdAt: string;
   updatedAt: string;
 };
 
-export type GetAdminUsers200AllOfTwoMeta = {
+export type GetAdminCoupons200AllOfTwoMeta = {
   total: number;
   page: number;
   perPage: number;
 };
 
-export type GetAdminUsers200AllOfTwo = {
-  data: GetAdminUsers200AllOfTwoDataItem[];
-  meta: GetAdminUsers200AllOfTwoMeta;
+export type GetAdminCoupons200AllOfTwo = {
+  data: GetAdminCoupons200AllOfTwoDataItem[];
+  meta: GetAdminCoupons200AllOfTwoMeta;
 };
 
-export type GetAdminUsers200 = GetAdminUsers200AllOf & GetAdminUsers200AllOfTwo;
+export type GetAdminCoupons200 = GetAdminCoupons200AllOf & GetAdminCoupons200AllOfTwo;
 
-export type GetAdminUsers400ValidationsItem = {
+export type GetAdminCoupons400ValidationsItem = {
   field: string;
   message: string;
 };
 
-export type GetAdminUsers400 = {
+export type GetAdminCoupons400 = {
   code: string;
   message: string;
-  validations?: GetAdminUsers400ValidationsItem[];
+  validations?: GetAdminCoupons400ValidationsItem[];
 };
 
-export type GetAdminUsersId200AllOf = {
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PostAdminCouponsBodyDiscountType = {  PERCENTAGE: 'PERCENTAGE',
+  FIXED: 'FIXED',
+} as const
+export type PostAdminCouponsBody = {
+  code: string;
+  discountType: typeof PostAdminCouponsBodyDiscountType[keyof typeof PostAdminCouponsBodyDiscountType] ;
+  value: number;
+  expiresAt?: string;
+  usageLimit?: number;
+  usageCount: number;
+  active: boolean;
+  stripeCouponId?: string;
+};
+
+export type PostAdminCoupons201AllOf = {
   code: string;
   message: string;
 };
 
-export type GetAdminUsersId200AllOfTwoData = {
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PostAdminCoupons201AllOfTwoDataDiscountType = {  PERCENTAGE: 'PERCENTAGE',
+  FIXED: 'FIXED',
+} as const
+export type PostAdminCoupons201AllOfTwoData = {
   id: string;
-  email: string;
-  name: string;
-  username: string;
-  provider?: string;
-  image?: string;
-  role: string;
-  emailVerified: boolean;
-  preferences?: string;
-  twoFactorEnabled?: boolean;
+  code: string;
+  discountType: typeof PostAdminCoupons201AllOfTwoDataDiscountType[keyof typeof PostAdminCoupons201AllOfTwoDataDiscountType] ;
+  value: number;
+  expiresAt?: string;
+  usageLimit?: number;
+  usageCount: number;
+  active: boolean;
+  stripeCouponId?: string;
   createdAt: string;
   updatedAt: string;
 };
 
-export type GetAdminUsersId200AllOfTwo = {
-  data: GetAdminUsersId200AllOfTwoData;
+export type PostAdminCoupons201AllOfTwo = {
+  data: PostAdminCoupons201AllOfTwoData;
 };
 
-export type GetAdminUsersId200 = GetAdminUsersId200AllOf & GetAdminUsersId200AllOfTwo;
+export type PostAdminCoupons201 = PostAdminCoupons201AllOf & PostAdminCoupons201AllOfTwo;
 
-export type GetAdminUsersId400ValidationsItem = {
+export type PostAdminCoupons400ValidationsItem = {
   field: string;
   message: string;
 };
 
-export type GetAdminUsersId400 = {
+export type PostAdminCoupons400 = {
   code: string;
   message: string;
-  validations?: GetAdminUsersId400ValidationsItem[];
+  validations?: PostAdminCoupons400ValidationsItem[];
 };
 
-export type PutAdminUsersIdBody = {
-  email: string;
-  name: string;
-  image?: string;
-  username: string;
-  preferences?: string;
-};
-
-export type PutAdminUsersId200AllOf = {
+export type GetAdminCouponsId200AllOf = {
   code: string;
   message: string;
 };
 
-export type PutAdminUsersId200AllOfTwoData = {
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const GetAdminCouponsId200AllOfTwoDataDiscountType = {  PERCENTAGE: 'PERCENTAGE',
+  FIXED: 'FIXED',
+} as const
+export type GetAdminCouponsId200AllOfTwoData = {
   id: string;
-  email: string;
-  name: string;
-  username: string;
-  provider?: string;
-  image?: string;
-  role: string;
-  emailVerified: boolean;
-  preferences?: string;
-  twoFactorEnabled?: boolean;
+  code: string;
+  discountType: typeof GetAdminCouponsId200AllOfTwoDataDiscountType[keyof typeof GetAdminCouponsId200AllOfTwoDataDiscountType] ;
+  value: number;
+  expiresAt?: string;
+  usageLimit?: number;
+  usageCount: number;
+  active: boolean;
+  stripeCouponId?: string;
   createdAt: string;
   updatedAt: string;
 };
 
-export type PutAdminUsersId200AllOfTwo = {
-  data: PutAdminUsersId200AllOfTwoData;
+export type GetAdminCouponsId200AllOfTwo = {
+  data: GetAdminCouponsId200AllOfTwoData;
 };
 
-export type PutAdminUsersId200 = PutAdminUsersId200AllOf & PutAdminUsersId200AllOfTwo;
+export type GetAdminCouponsId200 = GetAdminCouponsId200AllOf & GetAdminCouponsId200AllOfTwo;
 
-export type PutAdminUsersId400ValidationsItem = {
+export type GetAdminCouponsId400ValidationsItem = {
   field: string;
   message: string;
 };
 
-export type PutAdminUsersId400 = {
+export type GetAdminCouponsId400 = {
   code: string;
   message: string;
-  validations?: PutAdminUsersId400ValidationsItem[];
+  validations?: GetAdminCouponsId400ValidationsItem[];
 };
 
-export type DeleteAdminUsersId204AllOf = {
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PutAdminCouponsIdBodyDiscountType = {  PERCENTAGE: 'PERCENTAGE',
+  FIXED: 'FIXED',
+} as const
+export type PutAdminCouponsIdBody = {
+  code?: string;
+  discountType?: typeof PutAdminCouponsIdBodyDiscountType[keyof typeof PutAdminCouponsIdBodyDiscountType] ;
+  value?: number;
+  expiresAt?: string;
+  usageLimit?: number;
+  usageCount?: number;
+  active?: boolean;
+  stripeCouponId?: string;
+};
+
+export type PutAdminCouponsId200AllOf = {
   code: string;
   message: string;
 };
 
-export type DeleteAdminUsersId204AllOfTwo = { [key: string]: unknown };
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PutAdminCouponsId200AllOfTwoDataDiscountType = {  PERCENTAGE: 'PERCENTAGE',
+  FIXED: 'FIXED',
+} as const
+export type PutAdminCouponsId200AllOfTwoData = {
+  id: string;
+  code: string;
+  discountType: typeof PutAdminCouponsId200AllOfTwoDataDiscountType[keyof typeof PutAdminCouponsId200AllOfTwoDataDiscountType] ;
+  value: number;
+  expiresAt?: string;
+  usageLimit?: number;
+  usageCount: number;
+  active: boolean;
+  stripeCouponId?: string;
+  createdAt: string;
+  updatedAt: string;
+};
 
-export type DeleteAdminUsersId204 = DeleteAdminUsersId204AllOf & DeleteAdminUsersId204AllOfTwo;
+export type PutAdminCouponsId200AllOfTwo = {
+  data: PutAdminCouponsId200AllOfTwoData;
+};
 
-export type DeleteAdminUsersId400ValidationsItem = {
+export type PutAdminCouponsId200 = PutAdminCouponsId200AllOf & PutAdminCouponsId200AllOfTwo;
+
+export type PutAdminCouponsId400ValidationsItem = {
   field: string;
   message: string;
 };
 
-export type DeleteAdminUsersId400 = {
+export type PutAdminCouponsId400 = {
   code: string;
   message: string;
-  validations?: DeleteAdminUsersId400ValidationsItem[];
+  validations?: PutAdminCouponsId400ValidationsItem[];
+};
+
+export type PostAdminCouponsIdIncrementUsage200AllOf = {
+  code: string;
+  message: string;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PostAdminCouponsIdIncrementUsage200AllOfTwoDataDiscountType = {  PERCENTAGE: 'PERCENTAGE',
+  FIXED: 'FIXED',
+} as const
+export type PostAdminCouponsIdIncrementUsage200AllOfTwoData = {
+  id: string;
+  code: string;
+  discountType: typeof PostAdminCouponsIdIncrementUsage200AllOfTwoDataDiscountType[keyof typeof PostAdminCouponsIdIncrementUsage200AllOfTwoDataDiscountType] ;
+  value: number;
+  expiresAt?: string;
+  usageLimit?: number;
+  usageCount: number;
+  active: boolean;
+  stripeCouponId?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PostAdminCouponsIdIncrementUsage200AllOfTwo = {
+  data: PostAdminCouponsIdIncrementUsage200AllOfTwoData;
+};
+
+export type PostAdminCouponsIdIncrementUsage200 = PostAdminCouponsIdIncrementUsage200AllOf & PostAdminCouponsIdIncrementUsage200AllOfTwo;
+
+export type PostAdminCouponsIdIncrementUsage400ValidationsItem = {
+  field: string;
+  message: string;
+};
+
+export type PostAdminCouponsIdIncrementUsage400 = {
+  code: string;
+  message: string;
+  validations?: PostAdminCouponsIdIncrementUsage400ValidationsItem[];
 };
 
 export type GetAdminProductsParams = {
@@ -1325,7 +1416,377 @@ export type PatchAdminProductPricesIdSwitchActive400 = {
   validations?: PatchAdminProductPricesIdSwitchActive400ValidationsItem[];
 };
 
-export type GetAdminCouponsParams = {
+export type GetAdminRoles200AllOf = {
+  code: string;
+  message: string;
+};
+
+export type GetAdminRoles200AllOfTwoDataItem = {
+  /**
+   * @minLength 2
+   * @maxLength 50
+   */
+  slug: string;
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  privilege: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type GetAdminRoles200AllOfTwo = {
+  data: GetAdminRoles200AllOfTwoDataItem[];
+};
+
+export type GetAdminRoles200 = GetAdminRoles200AllOf & GetAdminRoles200AllOfTwo;
+
+export type GetAdminRoles400ValidationsItem = {
+  field: string;
+  message: string;
+};
+
+export type GetAdminRoles400 = {
+  code: string;
+  message: string;
+  validations?: GetAdminRoles400ValidationsItem[];
+};
+
+export type PostAdminRolesBody = {
+  /**
+   * @minLength 2
+   * @maxLength 50
+   */
+  slug: string;
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  privilege: number;
+};
+
+export type PostAdminRoles201AllOf = {
+  code: string;
+  message: string;
+};
+
+export type PostAdminRoles201AllOfTwoData = {
+  /**
+   * @minLength 2
+   * @maxLength 50
+   */
+  slug: string;
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  privilege: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PostAdminRoles201AllOfTwo = {
+  data: PostAdminRoles201AllOfTwoData;
+};
+
+export type PostAdminRoles201 = PostAdminRoles201AllOf & PostAdminRoles201AllOfTwo;
+
+export type PostAdminRoles400ValidationsItem = {
+  field: string;
+  message: string;
+};
+
+export type PostAdminRoles400 = {
+  code: string;
+  message: string;
+  validations?: PostAdminRoles400ValidationsItem[];
+};
+
+export type GetAdminRolesSlug200AllOf = {
+  code: string;
+  message: string;
+};
+
+export type GetAdminRolesSlug200AllOfTwoData = {
+  /**
+   * @minLength 2
+   * @maxLength 50
+   */
+  slug: string;
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  privilege: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type GetAdminRolesSlug200AllOfTwo = {
+  data: GetAdminRolesSlug200AllOfTwoData;
+};
+
+export type GetAdminRolesSlug200 = GetAdminRolesSlug200AllOf & GetAdminRolesSlug200AllOfTwo;
+
+export type GetAdminRolesSlug400ValidationsItem = {
+  field: string;
+  message: string;
+};
+
+export type GetAdminRolesSlug400 = {
+  code: string;
+  message: string;
+  validations?: GetAdminRolesSlug400ValidationsItem[];
+};
+
+export type PutAdminRolesSlugBody = {
+  /**
+   * @minLength 2
+   * @maxLength 50
+   */
+  slug?: string;
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  privilege?: number;
+};
+
+export type PutAdminRolesSlug200AllOf = {
+  code: string;
+  message: string;
+};
+
+export type PutAdminRolesSlug200AllOfTwoData = {
+  /**
+   * @minLength 2
+   * @maxLength 50
+   */
+  slug: string;
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  privilege: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PutAdminRolesSlug200AllOfTwo = {
+  data: PutAdminRolesSlug200AllOfTwoData;
+};
+
+export type PutAdminRolesSlug200 = PutAdminRolesSlug200AllOf & PutAdminRolesSlug200AllOfTwo;
+
+export type PutAdminRolesSlug400ValidationsItem = {
+  field: string;
+  message: string;
+};
+
+export type PutAdminRolesSlug400 = {
+  code: string;
+  message: string;
+  validations?: PutAdminRolesSlug400ValidationsItem[];
+};
+
+export type DeleteAdminRolesSlug200AllOf = {
+  code: string;
+  message: string;
+};
+
+export type DeleteAdminRolesSlug200AllOfTwoData = {
+  /**
+   * @minLength 2
+   * @maxLength 50
+   */
+  slug: string;
+  /**
+   * @minimum 0
+   * @maximum 100
+   */
+  privilege: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type DeleteAdminRolesSlug200AllOfTwo = {
+  data: DeleteAdminRolesSlug200AllOfTwoData;
+};
+
+export type DeleteAdminRolesSlug200 = DeleteAdminRolesSlug200AllOf & DeleteAdminRolesSlug200AllOfTwo;
+
+export type DeleteAdminRolesSlug400ValidationsItem = {
+  field: string;
+  message: string;
+};
+
+export type DeleteAdminRolesSlug400 = {
+  code: string;
+  message: string;
+  validations?: DeleteAdminRolesSlug400ValidationsItem[];
+};
+
+export type GetAdminRolePermissions200AllOf = {
+  code: string;
+  message: string;
+};
+
+export type GetAdminRolePermissions200AllOfTwoDataItem = {
+  organizationId: string;
+  roleSlug: string;
+  permissions: unknown;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type GetAdminRolePermissions200AllOfTwo = {
+  data: GetAdminRolePermissions200AllOfTwoDataItem[];
+};
+
+export type GetAdminRolePermissions200 = GetAdminRolePermissions200AllOf & GetAdminRolePermissions200AllOfTwo;
+
+export type GetAdminRolePermissions400ValidationsItem = {
+  field: string;
+  message: string;
+};
+
+export type GetAdminRolePermissions400 = {
+  code: string;
+  message: string;
+  validations?: GetAdminRolePermissions400ValidationsItem[];
+};
+
+export type PostAdminRolePermissionsBody = {
+  roleSlug: string;
+  permissions: unknown;
+};
+
+export type PostAdminRolePermissions201AllOf = {
+  code: string;
+  message: string;
+};
+
+export type PostAdminRolePermissions201AllOfTwoData = {
+  organizationId: string;
+  roleSlug: string;
+  permissions: unknown;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PostAdminRolePermissions201AllOfTwo = {
+  data: PostAdminRolePermissions201AllOfTwoData;
+};
+
+export type PostAdminRolePermissions201 = PostAdminRolePermissions201AllOf & PostAdminRolePermissions201AllOfTwo;
+
+export type PostAdminRolePermissions400ValidationsItem = {
+  field: string;
+  message: string;
+};
+
+export type PostAdminRolePermissions400 = {
+  code: string;
+  message: string;
+  validations?: PostAdminRolePermissions400ValidationsItem[];
+};
+
+export type GetAdminRolePermissionsRoleSlug200AllOf = {
+  code: string;
+  message: string;
+};
+
+export type GetAdminRolePermissionsRoleSlug200AllOfTwoData = {
+  organizationId: string;
+  roleSlug: string;
+  permissions: unknown;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type GetAdminRolePermissionsRoleSlug200AllOfTwo = {
+  data: GetAdminRolePermissionsRoleSlug200AllOfTwoData;
+};
+
+export type GetAdminRolePermissionsRoleSlug200 = GetAdminRolePermissionsRoleSlug200AllOf & GetAdminRolePermissionsRoleSlug200AllOfTwo;
+
+export type GetAdminRolePermissionsRoleSlug400ValidationsItem = {
+  field: string;
+  message: string;
+};
+
+export type GetAdminRolePermissionsRoleSlug400 = {
+  code: string;
+  message: string;
+  validations?: GetAdminRolePermissionsRoleSlug400ValidationsItem[];
+};
+
+export type PutAdminRolePermissionsRoleSlugBody = {
+  permissions: unknown;
+};
+
+export type PutAdminRolePermissionsRoleSlug200AllOf = {
+  code: string;
+  message: string;
+};
+
+export type PutAdminRolePermissionsRoleSlug200AllOfTwoData = {
+  organizationId: string;
+  roleSlug: string;
+  permissions: unknown;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PutAdminRolePermissionsRoleSlug200AllOfTwo = {
+  data: PutAdminRolePermissionsRoleSlug200AllOfTwoData;
+};
+
+export type PutAdminRolePermissionsRoleSlug200 = PutAdminRolePermissionsRoleSlug200AllOf & PutAdminRolePermissionsRoleSlug200AllOfTwo;
+
+export type PutAdminRolePermissionsRoleSlug400ValidationsItem = {
+  field: string;
+  message: string;
+};
+
+export type PutAdminRolePermissionsRoleSlug400 = {
+  code: string;
+  message: string;
+  validations?: PutAdminRolePermissionsRoleSlug400ValidationsItem[];
+};
+
+export type DeleteAdminRolePermissionsRoleSlug200AllOf = {
+  code: string;
+  message: string;
+};
+
+export type DeleteAdminRolePermissionsRoleSlug200AllOfTwoData = {
+  organizationId: string;
+  roleSlug: string;
+  permissions: unknown;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type DeleteAdminRolePermissionsRoleSlug200AllOfTwo = {
+  data: DeleteAdminRolePermissionsRoleSlug200AllOfTwoData;
+};
+
+export type DeleteAdminRolePermissionsRoleSlug200 = DeleteAdminRolePermissionsRoleSlug200AllOf & DeleteAdminRolePermissionsRoleSlug200AllOfTwo;
+
+export type DeleteAdminRolePermissionsRoleSlug400ValidationsItem = {
+  field: string;
+  message: string;
+};
+
+export type DeleteAdminRolePermissionsRoleSlug400 = {
+  code: string;
+  message: string;
+  validations?: DeleteAdminRolePermissionsRoleSlug400ValidationsItem[];
+};
+
+export type GetAdminUsersParams = {
 /**
  * @minimum 1
  */
@@ -1336,240 +1797,149 @@ page?: number;
 perPage?: number;
 };
 
-export type GetAdminCoupons200AllOf = {
+export type GetAdminUsers200AllOf = {
   code: string;
   message: string;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const GetAdminCoupons200AllOfTwoDataItemDiscountType = {  PERCENTAGE: 'PERCENTAGE',
-  FIXED: 'FIXED',
-} as const
-export type GetAdminCoupons200AllOfTwoDataItem = {
+export type GetAdminUsers200AllOfTwoDataItem = {
   id: string;
-  code: string;
-  discountType: typeof GetAdminCoupons200AllOfTwoDataItemDiscountType[keyof typeof GetAdminCoupons200AllOfTwoDataItemDiscountType] ;
-  value: number;
-  expiresAt?: string;
-  usageLimit?: number;
-  usageCount: number;
-  active: boolean;
-  stripeCouponId?: string;
+  email: string;
+  name: string;
+  username: string;
+  provider?: string;
+  image?: string;
+  role: string;
+  emailVerified: boolean;
+  preferences?: string;
+  twoFactorEnabled?: boolean;
   createdAt: string;
   updatedAt: string;
 };
 
-export type GetAdminCoupons200AllOfTwoMeta = {
+export type GetAdminUsers200AllOfTwoMeta = {
   total: number;
   page: number;
   perPage: number;
 };
 
-export type GetAdminCoupons200AllOfTwo = {
-  data: GetAdminCoupons200AllOfTwoDataItem[];
-  meta: GetAdminCoupons200AllOfTwoMeta;
+export type GetAdminUsers200AllOfTwo = {
+  data: GetAdminUsers200AllOfTwoDataItem[];
+  meta: GetAdminUsers200AllOfTwoMeta;
 };
 
-export type GetAdminCoupons200 = GetAdminCoupons200AllOf & GetAdminCoupons200AllOfTwo;
+export type GetAdminUsers200 = GetAdminUsers200AllOf & GetAdminUsers200AllOfTwo;
 
-export type GetAdminCoupons400ValidationsItem = {
+export type GetAdminUsers400ValidationsItem = {
   field: string;
   message: string;
 };
 
-export type GetAdminCoupons400 = {
+export type GetAdminUsers400 = {
   code: string;
   message: string;
-  validations?: GetAdminCoupons400ValidationsItem[];
+  validations?: GetAdminUsers400ValidationsItem[];
 };
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const PostAdminCouponsBodyDiscountType = {  PERCENTAGE: 'PERCENTAGE',
-  FIXED: 'FIXED',
-} as const
-export type PostAdminCouponsBody = {
-  code: string;
-  discountType: typeof PostAdminCouponsBodyDiscountType[keyof typeof PostAdminCouponsBodyDiscountType] ;
-  value: number;
-  expiresAt?: string;
-  usageLimit?: number;
-  usageCount: number;
-  active: boolean;
-  stripeCouponId?: string;
-};
-
-export type PostAdminCoupons201AllOf = {
+export type GetAdminUsersId200AllOf = {
   code: string;
   message: string;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const PostAdminCoupons201AllOfTwoDataDiscountType = {  PERCENTAGE: 'PERCENTAGE',
-  FIXED: 'FIXED',
-} as const
-export type PostAdminCoupons201AllOfTwoData = {
+export type GetAdminUsersId200AllOfTwoData = {
   id: string;
-  code: string;
-  discountType: typeof PostAdminCoupons201AllOfTwoDataDiscountType[keyof typeof PostAdminCoupons201AllOfTwoDataDiscountType] ;
-  value: number;
-  expiresAt?: string;
-  usageLimit?: number;
-  usageCount: number;
-  active: boolean;
-  stripeCouponId?: string;
+  email: string;
+  name: string;
+  username: string;
+  provider?: string;
+  image?: string;
+  role: string;
+  emailVerified: boolean;
+  preferences?: string;
+  twoFactorEnabled?: boolean;
   createdAt: string;
   updatedAt: string;
 };
 
-export type PostAdminCoupons201AllOfTwo = {
-  data: PostAdminCoupons201AllOfTwoData;
+export type GetAdminUsersId200AllOfTwo = {
+  data: GetAdminUsersId200AllOfTwoData;
 };
 
-export type PostAdminCoupons201 = PostAdminCoupons201AllOf & PostAdminCoupons201AllOfTwo;
+export type GetAdminUsersId200 = GetAdminUsersId200AllOf & GetAdminUsersId200AllOfTwo;
 
-export type PostAdminCoupons400ValidationsItem = {
+export type GetAdminUsersId400ValidationsItem = {
   field: string;
   message: string;
 };
 
-export type PostAdminCoupons400 = {
+export type GetAdminUsersId400 = {
   code: string;
   message: string;
-  validations?: PostAdminCoupons400ValidationsItem[];
+  validations?: GetAdminUsersId400ValidationsItem[];
 };
 
-export type GetAdminCouponsId200AllOf = {
+export type PutAdminUsersIdBody = {
+  email: string;
+  name: string;
+  image?: string;
+  username: string;
+  preferences?: string;
+};
+
+export type PutAdminUsersId200AllOf = {
   code: string;
   message: string;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const GetAdminCouponsId200AllOfTwoDataDiscountType = {  PERCENTAGE: 'PERCENTAGE',
-  FIXED: 'FIXED',
-} as const
-export type GetAdminCouponsId200AllOfTwoData = {
+export type PutAdminUsersId200AllOfTwoData = {
   id: string;
-  code: string;
-  discountType: typeof GetAdminCouponsId200AllOfTwoDataDiscountType[keyof typeof GetAdminCouponsId200AllOfTwoDataDiscountType] ;
-  value: number;
-  expiresAt?: string;
-  usageLimit?: number;
-  usageCount: number;
-  active: boolean;
-  stripeCouponId?: string;
+  email: string;
+  name: string;
+  username: string;
+  provider?: string;
+  image?: string;
+  role: string;
+  emailVerified: boolean;
+  preferences?: string;
+  twoFactorEnabled?: boolean;
   createdAt: string;
   updatedAt: string;
 };
 
-export type GetAdminCouponsId200AllOfTwo = {
-  data: GetAdminCouponsId200AllOfTwoData;
+export type PutAdminUsersId200AllOfTwo = {
+  data: PutAdminUsersId200AllOfTwoData;
 };
 
-export type GetAdminCouponsId200 = GetAdminCouponsId200AllOf & GetAdminCouponsId200AllOfTwo;
+export type PutAdminUsersId200 = PutAdminUsersId200AllOf & PutAdminUsersId200AllOfTwo;
 
-export type GetAdminCouponsId400ValidationsItem = {
+export type PutAdminUsersId400ValidationsItem = {
   field: string;
   message: string;
 };
 
-export type GetAdminCouponsId400 = {
+export type PutAdminUsersId400 = {
   code: string;
   message: string;
-  validations?: GetAdminCouponsId400ValidationsItem[];
+  validations?: PutAdminUsersId400ValidationsItem[];
 };
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const PutAdminCouponsIdBodyDiscountType = {  PERCENTAGE: 'PERCENTAGE',
-  FIXED: 'FIXED',
-} as const
-export type PutAdminCouponsIdBody = {
-  code?: string;
-  discountType?: typeof PutAdminCouponsIdBodyDiscountType[keyof typeof PutAdminCouponsIdBodyDiscountType] ;
-  value?: number;
-  expiresAt?: string;
-  usageLimit?: number;
-  usageCount?: number;
-  active?: boolean;
-  stripeCouponId?: string;
-};
-
-export type PutAdminCouponsId200AllOf = {
+export type DeleteAdminUsersId204AllOf = {
   code: string;
   message: string;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const PutAdminCouponsId200AllOfTwoDataDiscountType = {  PERCENTAGE: 'PERCENTAGE',
-  FIXED: 'FIXED',
-} as const
-export type PutAdminCouponsId200AllOfTwoData = {
-  id: string;
-  code: string;
-  discountType: typeof PutAdminCouponsId200AllOfTwoDataDiscountType[keyof typeof PutAdminCouponsId200AllOfTwoDataDiscountType] ;
-  value: number;
-  expiresAt?: string;
-  usageLimit?: number;
-  usageCount: number;
-  active: boolean;
-  stripeCouponId?: string;
-  createdAt: string;
-  updatedAt: string;
-};
+export type DeleteAdminUsersId204AllOfTwo = { [key: string]: unknown };
 
-export type PutAdminCouponsId200AllOfTwo = {
-  data: PutAdminCouponsId200AllOfTwoData;
-};
+export type DeleteAdminUsersId204 = DeleteAdminUsersId204AllOf & DeleteAdminUsersId204AllOfTwo;
 
-export type PutAdminCouponsId200 = PutAdminCouponsId200AllOf & PutAdminCouponsId200AllOfTwo;
-
-export type PutAdminCouponsId400ValidationsItem = {
+export type DeleteAdminUsersId400ValidationsItem = {
   field: string;
   message: string;
 };
 
-export type PutAdminCouponsId400 = {
+export type DeleteAdminUsersId400 = {
   code: string;
   message: string;
-  validations?: PutAdminCouponsId400ValidationsItem[];
-};
-
-export type PostAdminCouponsIdIncrementUsage200AllOf = {
-  code: string;
-  message: string;
-};
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const PostAdminCouponsIdIncrementUsage200AllOfTwoDataDiscountType = {  PERCENTAGE: 'PERCENTAGE',
-  FIXED: 'FIXED',
-} as const
-export type PostAdminCouponsIdIncrementUsage200AllOfTwoData = {
-  id: string;
-  code: string;
-  discountType: typeof PostAdminCouponsIdIncrementUsage200AllOfTwoDataDiscountType[keyof typeof PostAdminCouponsIdIncrementUsage200AllOfTwoDataDiscountType] ;
-  value: number;
-  expiresAt?: string;
-  usageLimit?: number;
-  usageCount: number;
-  active: boolean;
-  stripeCouponId?: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type PostAdminCouponsIdIncrementUsage200AllOfTwo = {
-  data: PostAdminCouponsIdIncrementUsage200AllOfTwoData;
-};
-
-export type PostAdminCouponsIdIncrementUsage200 = PostAdminCouponsIdIncrementUsage200AllOf & PostAdminCouponsIdIncrementUsage200AllOfTwo;
-
-export type PostAdminCouponsIdIncrementUsage400ValidationsItem = {
-  field: string;
-  message: string;
-};
-
-export type PostAdminCouponsIdIncrementUsage400 = {
-  code: string;
-  message: string;
-  validations?: PostAdminCouponsIdIncrementUsage400ValidationsItem[];
+  validations?: DeleteAdminUsersId400ValidationsItem[];
 };
 

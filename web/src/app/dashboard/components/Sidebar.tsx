@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { FiHome, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { RiCoupon2Fill } from "react-icons/ri";
+import { Shield, ShieldCheck } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useAuth } from '@/hooks/useAuth';
 import { rolesEnum } from '@/context/AuthContext';
@@ -60,6 +61,25 @@ const Sidebar: React.FC<{ className?: string; isOpen?: boolean; isMinimized?: bo
       name: t('manage coupons'),
       href: '/dashboard/coupons',
       icon: RiCoupon2Fill,
+      type: 'item',
+      access: [rolesEnum.ADMIN].includes(userRole)
+    },
+    {
+      name: t('system management'),
+      type: 'division',
+      access: [rolesEnum.ADMIN].includes(userRole)
+    },
+    {
+      name: t('manage roles'),
+      href: '/dashboard/roles',
+      icon: Shield,
+      type: 'item',
+      access: [rolesEnum.ADMIN].includes(userRole)
+    },
+    {
+      name: t('manage role permissions'),
+      href: '/dashboard/role-permissions',
+      icon: ShieldCheck,
       type: 'item',
       access: [rolesEnum.ADMIN].includes(userRole)
     },

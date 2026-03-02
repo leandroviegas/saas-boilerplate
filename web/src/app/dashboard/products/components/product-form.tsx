@@ -18,12 +18,17 @@ import { useCustomForm } from "@/hooks/useCustomForm";
 import { ProductPriceForm } from "./product-price-form";
 import { useRouter } from "next/navigation";
 import { useCreateProduct, useUpdateProduct } from "@/hooks/queries/useProducts";
+import PermissionManagement, { PermissionsMap } from "@/app/dashboard/components/permission-mangement";
 
+const availableProductPermissions: PermissionsMap = {
+  member: ["create", "update", "delete", "view"],
+};
 
 const productFormSchema = Type.Object({
   name: Type.String({ minLength: 1 }),
   description: Type.Optional(Type.String()),
   features: Type.Array(Type.String()),
+  permissions: Type.Record(Type.String(), Type.Array(Type.String())),
 });
 
 type ProductFormValues = Static<typeof productFormSchema>;
@@ -49,6 +54,7 @@ export function ProductForm({ product, onUpsertSuccess }: ProductFormProps) {
       name: product?.name || "",
       description: product?.description || "",
       features: product?.features || [],
+      permissions: (product?.permissions as PermissionsMap) ?? {},
     },
   });
 
@@ -60,7 +66,6 @@ export function ProductForm({ product, onUpsertSuccess }: ProductFormProps) {
           updateData: {
             id: product.id,
             ...formData,
-            permissions: product.permissions,
             active: product.active,
             archived: product.archived,
           },
@@ -68,7 +73,6 @@ export function ProductForm({ product, onUpsertSuccess }: ProductFormProps) {
       } else {
         await createProduct.mutateAsync({
           ...formData,
-          permissions: {},
           active: true,
           archived: false,
         });
@@ -138,66 +142,84 @@ export function ProductForm({ product, onUpsertSuccess }: ProductFormProps) {
                     <FormLabel className="text-base font-semibold">{t('features')}</FormLabel>
                     <FormControl>
                       <div className="space-y-4">
-                        {field.value && field.value.length > 0 && (
-                          <div className="flex flex-wrap gap-2 p-4 rounded-lg border bg-muted/50">
-                            {field.value.map((feature, index) => (
-                              <Badge
-                                key={index}
-                                variant="secondary"
-                                className="h-8 px-3 text-sm font-normal hover:bg-secondary/80 transition-colors"
+                        <div className="flex flex-wrap gap-2 p-4 rounded-lg border border-border bg-muted/50">
+                          {field.value.map((feature, index) => (
+                            <Badge
+                              key={index}
+                              variant="secondary"
+                              className="h-8 px-3 text-sm font-normal hover:bg-secondary/80 transition-colors"
+                            >
+                              <span className="mr-1">{feature}</span>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => {
+                                  const currentFeatures = field.value || [];
+                                  field.onChange(currentFeatures.filter((_, i) => i !== index));
+                                }}
+                                className="h-5 w-5 p-0 ml-1 hover:bg-destructive/20 rounded-full"
                               >
-                                <span className="mr-1">{feature}</span>
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => {
-                                    const currentFeatures = field.value || [];
-                                    field.onChange(currentFeatures.filter((_, i) => i !== index));
-                                  }}
-                                  className="h-5 w-5 p-0 ml-1 hover:bg-destructive/20 rounded-full"
-                                >
-                                  <X className="h-3 w-3" />
-                                </Button>
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
+                                <X className="h-3 w-3" />
+                              </Button>
+                            </Badge>
+                          ))}
 
-                        <div className="flex gap-2">
-                          <Input
-                            value={newFeature}
-                            onChange={(e) => setNewFeature(e.target.value)}
-                            placeholder={t('feature placeholder')}
-                            className="h-11"
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter') {
-                                e.preventDefault();
+                          <div className="flex items-center">
+                            <Input
+                              value={newFeature}
+                              onChange={(e) => setNewFeature(e.target.value)}
+                              placeholder={t('feature placeholder')}
+                              className="h-6 border-0 bg-transparent"
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                  e.preventDefault();
+                                  if (newFeature.trim()) {
+                                    const currentFeatures = field.value || [];
+                                    field.onChange([...currentFeatures, newFeature.trim()]);
+                                    setNewFeature("");
+                                  }
+                                }
+                              }}
+                            />
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
                                 if (newFeature.trim()) {
                                   const currentFeatures = field.value || [];
                                   field.onChange([...currentFeatures, newFeature.trim()]);
                                   setNewFeature("");
                                 }
-                              }
-                            }}
-                          />
-                          <Button
-                            type="button"
-                            onClick={() => {
-                              if (newFeature.trim()) {
-                                const currentFeatures = field.value || [];
-                                field.onChange([...currentFeatures, newFeature.trim()]);
-                                setNewFeature("");
-                              }
-                            }}
-                            variant="outline"
-                            size="icon"
-                            className="h-11 w-11 shrink-0"
-                          >
-                            <Plus className="h-4 w-4" />
-                          </Button>
+                              }}
+                              className="h-6 w-6 p-0 ml-1 hover:bg-secondary/80 rounded-full"
+                            >
+                              <Plus className="h-3 w-3" />
+                            </Button>
+                          </div>
                         </div>
                       </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Separator />
+
+              <FormField
+                control={form.control}
+                name="permissions"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-base font-semibold">{t('permissions')}</FormLabel>
+                    <FormControl>
+                      <PermissionManagement
+                        availablePermissions={availableProductPermissions}
+                        permissions={field.value as PermissionsMap}
+                        onPermissionChange={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

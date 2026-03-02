@@ -5,11 +5,6 @@ import { prisma } from "./plugins/prisma";
 import { notificationService } from "@/services";
 import { corsConfig } from "./config";
 
-/**
- * Derives the root domain for cross-subdomain support.
- * For maximum permissiveness in local development, it returns undefined 
- * to allow the browser to manage the default host.
- */
 function getCookieDomain(): string | undefined {
   const firstOrigin = corsConfig.origin[0];
   if (!firstOrigin) return undefined;
@@ -130,7 +125,8 @@ export const auth = betterAuth({
     organization({
       creatorRole: "owner",
       defaultRole: "member",
-      allowUserToCreateOrganization: true
+      allowUserToCreateOrganization: true,
+      disableOrganizationDeletion: true,
     })
   ],
 });

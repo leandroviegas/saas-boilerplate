@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import NotificationDropdown from './NotificationDropdown';
+import NotificationDropdown from './notification-dropdown';
 
 interface NavbarProps {
   onSidebarToggle?: () => void;

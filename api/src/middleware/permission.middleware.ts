@@ -26,9 +26,14 @@ function permissionChecker(availableAccess: PermissionsMap | null | undefined, a
     return availableAccess[access.feature]?.includes(access.action) ?? false;
 }
 
+interface MemberInfo {
+    organizationId: string;
+    role: string;
+}
+
 export async function hasPermission(
     user: AuthUser,
-    member: Member,
+    member: MemberInfo,
     access: AccessI
 ): Promise<void> {
     if (!permissionChecker(allFeatures, access)) throw new AppError("UNAUTHORIZED", 403);

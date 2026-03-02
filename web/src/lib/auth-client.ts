@@ -1,5 +1,5 @@
 import { createAuthClient } from "better-auth/client"
-import { jwtClient, twoFactorClient, usernameClient, multiSessionClient } from "better-auth/client/plugins"
+import { jwtClient, twoFactorClient, usernameClient, multiSessionClient, organizationClient } from "better-auth/client/plugins"
 import { env } from "./config";
 
 export const authClient = createAuthClient({
@@ -12,6 +12,8 @@ export const authClient = createAuthClient({
             },
         }),
         usernameClient(),
-        multiSessionClient()
+        multiSessionClient(),
+        organizationClient()
     ]
 })
+''

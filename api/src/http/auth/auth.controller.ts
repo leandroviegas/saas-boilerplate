@@ -22,6 +22,7 @@ export async function authController(fastify: FastifyInstance) {
     );
 
     reply.status(res.status);
+    
     res.headers.forEach((value: string, key: string) => {
       reply.header(key, value);
     });
