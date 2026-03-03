@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useState, ReactNode, useEffect } from 'react';
-import { User as BetterUser, Session } from "better-auth/client"
+import { User as BetterUser, Session, Organization } from "better-auth/client"
 import { authClient } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
 import { parseStaticUrl } from '@/utils/staticManager';
@@ -37,10 +37,12 @@ interface SignUpData {
 interface AuthContextType {
   user?: User
   session?: Session
+  organization?: Organization | null
   signIn: (data: SignInData) => Promise<void>
   signUp: (data: SignUpData) => Promise<void>
   signOut: () => Promise<void>
   updateSession: () => Promise<void>
+  checkOrganization: () => Promise<void>
 }
 
 
@@ -60,6 +62,7 @@ const parseUser = (user?: BetterUser) => {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children, user: u, session: s }) => {
   const [user, setUser] = useState<BetterUser | undefined>(parseUser(u));
   const [session, setSession] = useState<Session | undefined>(s);
+  const [organization, setOrganization] = useState<Organization | null | undefined>(undefined);
   const router = useRouter();
 
   useEffect(() => {
@@ -75,6 +78,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, user: u, s
     if (!data) return;
     setUser(parseUser(data.user));
     setSession(data.session);
+    await checkOrganization();
+  }
+
+  const checkOrganization = async () => {
+    const { data } = await authClient.organization.list();
+    if (data && data.length > 0) {
+      setOrganization(data[0]);
+    } else {
+      setOrganization(null);
+    }
   }
 
   const signIn = async (form: SignInData) => {
@@ -88,7 +101,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, user: u, s
     await updateSession();
     socket.disconnect();
     socket.connect();
-    router.push('/dashboard');
+    
+    const { data: orgData } = await authClient.organization.list();
+    if (!orgData || orgData.length === 0) {
+      router.push('/dashboard/organization');
+    } else {
+      router.push('/dashboard');
+    }
   }
 
   const signUp = async (form: SignUpData) => {
@@ -111,9 +130,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, user: u, s
   return <AuthContext.Provider value={{
     user,
     session,
+    organization,
     signIn,
     signUp,
     signOut,
-    updateSession
+    updateSession,
+    checkOrganization
   }}>{children}</AuthContext.Provider>
 }

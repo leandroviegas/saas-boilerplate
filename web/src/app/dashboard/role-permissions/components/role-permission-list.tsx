@@ -1,42 +1,22 @@
 "use client"
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import DataTable from '@/components/ui/data-table';
 import { useTranslation } from '@/hooks/useTranslation';
-import { FaPencilAlt, FaTrash, FaPlus } from 'react-icons/fa';
+import { FaPencilAlt, FaTrash } from 'react-icons/fa';
 import { Button } from '@/components/ui/button';
-import { useRolePermissions, useDeleteRolePermission, useCreateRolePermission, useUpdateRolePermission } from '@/hooks/queries/useOrganizationRolePermissions';
-import { useRoles } from '@/hooks/queries/useRoles';
+import { useRolePermissions, useDeleteRolePermission } from '@/hooks/queries/useOrganizationRolePermissions';
 import { GetAdminRolePermissions200AllOfTwoDataItem } from '@/api/generated/newChatbotAPI.schemas';
-import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
+import { PermissionsPreview } from '@/components/ui/permissions-preview';
+import { PermissionsMap } from '@/app/dashboard/components/permission-mangement';
 
 export default function RolePermissionList() {
     const { t } = useTranslation();
-    const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-    const [newRoleSlug, setNewRoleSlug] = useState('');
-    
+
     const { data, isLoading, error } = useRolePermissions();
-    const { data: rolesData } = useRoles();
     const deleteRolePermission = useDeleteRolePermission();
-    const createRolePermission = useCreateRolePermission();
-    
+
     const rolePermissions = data || [];
 
     const dataFormat = [
@@ -57,15 +37,13 @@ export default function RolePermissionList() {
                             <h3 className="font-semibold text-lg tracking-tight">
                                 {permission.roleSlug}
                             </h3>
-                            <p className="text-sm text-muted-foreground">
-                                {t('permissions')}: {JSON.stringify(permission.permissions)}
-                            </p>
+                            <PermissionsPreview permissions={permission.permissions as PermissionsMap} />
                         </div>
                     </div>
 
                     <div className="flex gap-2 p-6 border-t border-border mt-auto">
-                        <Link 
-                            className="flex-1" 
+                        <Link
+                            className="flex-1"
                             href={`/dashboard/role-permissions/${permission.roleSlug}`}
                         >
                             <Button variant="secondary" size="sm" className="w-full">
@@ -73,8 +51,8 @@ export default function RolePermissionList() {
                             </Button>
                         </Link>
                         <Button
-                            onClick={() => deleteRolePermission.mutate({ 
-                                roleSlug: permission.roleSlug 
+                            onClick={() => deleteRolePermission.mutate({
+                                roleSlug: permission.roleSlug
                             })}
                             variant="destructive"
                             size="sm"
@@ -89,104 +67,36 @@ export default function RolePermissionList() {
         </div>
     )
 
-    const handleCreate = () => {
-        if (newRoleSlug) {
-            createRolePermission.mutate(
-                {
-                    roleSlug: newRoleSlug,
-                    permissions: {}
-                },
-                {
-                    onSuccess: () => {
-                        setIsCreateDialogOpen(false);
-                        setNewRoleSlug('');
-                    }
-                }
-            );
-        }
-    };
-
     return (
-        <div>
-            <div className="flex gap-4 mb-6">
-                <div className="flex-1"></div>
-                
-                <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-                    <DialogTrigger asChild>
-                        <Button variant="outline" size="sm">
-                            <FaPlus className="h-4 w-4 mr-2" />
-                            {t('add role permission')}
+        <DataTable
+            data={rolePermissions}
+            list={<List />}
+            tableId='role-permission-list'
+            dataFormat={dataFormat}
+            status={isLoading ? 'loading' : error ? 'error' : 'success'}
+            meta={{ total: rolePermissions.length, page: 1, perPage: rolePermissions.length }}
+            actions={(permission: GetAdminRolePermissions200AllOfTwoDataItem) => (
+                <div className="flex gap-2 mt-auto">
+                    <Link
+                        className="flex-1"
+                        href={`/dashboard/role-permissions/${permission.roleSlug}`}
+                    >
+                        <Button variant="secondary" size="sm" className="w-full">
+                            <FaPencilAlt className="h-4 w-4" />
                         </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>{t('create role permission')}</DialogTitle>
-                            <DialogDescription>
-                                {t('create role permission description')}
-                            </DialogDescription>
-                        </DialogHeader>
-                        <div className="space-y-4 py-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="role">{t('role')}</Label>
-                                <Select value={newRoleSlug} onValueChange={setNewRoleSlug}>
-                                    <SelectTrigger id="role">
-                                        <SelectValue placeholder={t('select role')} />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {rolesData?.data?.map((role) => (
-                                            <SelectItem key={role.slug} value={role.slug}>
-                                                {role.slug}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        </div>
-                        <DialogFooter>
-                            <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
-                                {t('cancel')}
-                            </Button>
-                            <Button 
-                                onClick={handleCreate} 
-                                disabled={!newRoleSlug || createRolePermission.isPending}
-                            >
-                                {t('create')}
-                            </Button>
-                        </DialogFooter>
-                    </DialogContent>
-                </Dialog>
-            </div>
-
-            <DataTable
-                data={rolePermissions}
-                list={<List />}
-                tableId='role-permission-list'
-                dataFormat={dataFormat}
-                status={isLoading ? 'loading' : error ? 'error' : 'success'}
-                meta={{ total: rolePermissions.length, page: 1, perPage: rolePermissions.length }}
-                actions={(permission: GetAdminRolePermissions200AllOfTwoDataItem) => (
-                    <div className="flex gap-2 mt-auto">
-                        <Link 
-                            className="flex-1" 
-                            href={`/dashboard/role-permissions/${permission.roleSlug}`}
-                        >
-                            <Button variant="secondary" size="sm" className="w-full">
-                                <FaPencilAlt className="h-4 w-4" />
-                            </Button>
-                        </Link>
-                        <Button
-                            onClick={() => deleteRolePermission.mutate({ 
-                                roleSlug: permission.roleSlug 
-                            })}
-                            variant="destructive"
-                            size="sm"
-                            className="flex-1"
-                            disabled={deleteRolePermission.isPending}
-                        >
-                            <FaTrash className="h-4 w-4" />
-                        </Button>
-                    </div>
-                )} />
-        </div>
+                    </Link>
+                    <Button
+                        onClick={() => deleteRolePermission.mutate({
+                            roleSlug: permission.roleSlug
+                        })}
+                        variant="destructive"
+                        size="sm"
+                        className="flex-1"
+                        disabled={deleteRolePermission.isPending}
+                    >
+                        <FaTrash className="h-4 w-4" />
+                    </Button>
+                </div>
+            )} />
     )
 }

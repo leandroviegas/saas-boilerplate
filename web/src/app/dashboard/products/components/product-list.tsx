@@ -10,6 +10,7 @@ import { FaPencilAlt, FaTrash, FaSearch } from 'react-icons/fa';
 import { useQueryStates, parseAsInteger, parseAsString } from "nuqs";
 import { Button } from '@/components/ui/button';
 import { useProducts, useDeleteProduct } from '@/hooks/queries/useProducts';
+import { PermissionsPreview } from '@/components/ui/permissions-preview';
 
 export default function ProductList() {
     const { t } = useTranslation();
@@ -101,6 +102,10 @@ export default function ProductList() {
                                         ))}
                                     </div>
                                 </div>
+                            )}
+
+                            {product.permissions && Object.keys(product.permissions).length > 0 && (
+                                <PermissionsPreview permissions={product.permissions} />
                             )}
                         </div>
                     </div>

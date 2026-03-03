@@ -171,5 +171,15 @@
   "try again": "Tente novamente",
   "page not found": "Página não encontrada",
   "page not found description": "Descrição da página não encontrada",
-  "go home": "Ir para a página inicial"
+  "go home": "Ir para a página inicial",
+  "create your organization": "Crie sua organização",
+  "set up your organization to get started": "Configure sua organização para começar",
+  "organization name": "Nome da organização",
+  "your organization name": "Nome da sua organização",
+  "organization slug": "Slug da organização",
+  "your-organization": "sua-organizacao",
+  "creating...": "Criando...",
+  "create organization": "Criar organização",
+  "organization created successfully": "Organização criada com sucesso",
+  "failed to create organization": "Falha ao criar organização"
 }

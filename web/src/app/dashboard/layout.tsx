@@ -1,8 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Sidebar from '@/app/dashboard/components/Sidebar';
 import Navbar from '@/app/dashboard/components/Navbar';
+import { useAuth } from '@/hooks/useAuth';
+import { authClient } from '@/lib/auth-client';
 
 export default function DashboardLayout({
   children,
@@ -11,6 +14,19 @@ export default function DashboardLayout({
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarMinimized, setSidebarMinimized] = useState(false);
+  const router = useRouter();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    const checkOrganization = async () => {
+      if (!user) return;
+      const { data } = await authClient.organization.list();
+      if (!data || data.length === 0) {
+        router.push('/dashboard/organization');
+      }
+    };
+    checkOrganization();
+  }, [user, router]);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -19,6 +35,10 @@ export default function DashboardLayout({
   const toggleMinimized = () => {
     setSidebarMinimized(!sidebarMinimized);
   };
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className="flex h-screen bg-background">

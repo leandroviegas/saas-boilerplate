@@ -171,5 +171,15 @@
   "try again": "Try again",
   "page not found": "Page not found",
   "page not found description": "Page not found description",
-  "go home": "Go home"
+  "go home": "Go home",
+  "create your organization": "Create your organization",
+  "set up your organization to get started": "Set up your organization to get started",
+  "organization name": "Organization name",
+  "your organization name": "Your organization name",
+  "organization slug": "Organization slug",
+  "your-organization": "your-organization",
+  "creating...": "Creating...",
+  "create organization": "Create organization",
+  "organization created successfully": "Organization created successfully",
+  "failed to create organization": "Failed to create organization"
 }
