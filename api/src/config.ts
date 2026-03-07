@@ -1,4 +1,4 @@
-import { languageEnum } from "./enums/languageEnum";
+import { languageEnum } from "./enums/language-enum";
 
 export const emailConfig = {
     host: process.env.SMTP_HOST || "smtp.example.com",

@@ -42,5 +42,7 @@
   "cannot-delete-product-price-from-stripe": "cannot-delete-product-price-from-stripe",
   "This product cannot be deleted because it has one or more user-created prices.": "This product cannot be deleted because it has one or more user-created prices.",
   "Invalid email or password": "Invalid email or password",
-  "Organization already exists": "Organization already exists"
+  "Organization already exists": "Organization already exists",
+  "message": "message",
+  "code": "code"
 }

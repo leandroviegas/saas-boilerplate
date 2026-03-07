@@ -1,6 +1,6 @@
 import { PrismaClientKnownRequestError, PrismaClientValidationError } from "@prisma/client/runtime/client";
 import { ValidationMessageI } from "./error.handler";
-import { languageEnum } from "@/enums/languageEnum";
+import { languageEnum } from "@/enums/language-enum";
 import { translateValidation } from "@/locales";
 
 interface ErrorResponse {

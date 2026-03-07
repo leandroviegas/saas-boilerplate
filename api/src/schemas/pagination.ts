@@ -1,14 +1,15 @@
-import { Static, Type } from "@sinclair/typebox";
+import { t, Static } from "elysia";
 
-export const paginationSchema = Type.Object({
-  page: Type.Optional(Type.Integer({ default: 1, minimum: 1 })),
-  perPage: Type.Optional(Type.Integer({ default: 20, minimum: 1 })),
+export const paginationSchema = t.Object({
+  page: t.Optional(t.Numeric({ default: 1, minimum: 1 })),
+  perPage: t.Optional(t.Numeric({ default: 20, minimum: 1 })),
+  search: t.Optional(t.String({ default: "" })),
 });
 
 export type PaginationType = Static<typeof paginationSchema>;
 
-export const metaSchema = Type.Object({
-  total: Type.Integer(),
-  page: Type.Integer(),
-  perPage: Type.Integer(),
+export const metaSchema = t.Object({
+  total: t.Integer(),
+  page: t.Integer(),
+  perPage: t.Integer(),
 });

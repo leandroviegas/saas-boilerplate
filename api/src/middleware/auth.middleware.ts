@@ -1,22 +1,15 @@
-import { FastifyRequest, FastifyReply } from 'fastify';
-import { authService, organizationService } from "@/services";
-import { AuthUser, AuthSession } from "@/auth";
-import { languageEnum } from '@/enums/languageEnum';
-import { Organization } from '@prisma/client';
+import { Elysia } from 'elysia';
+import { authService } from "@/services";
 
-declare module 'fastify' {
-  interface FastifyRequest {
-    user: AuthUser;
-    session: AuthSession & { activeOrganizationId: string };
-    lang: languageEnum;
-  }
-}
+export const authMiddleware = new Elysia({ name: 'authMiddleware' })
+    .derive({ as: 'global' }, async ({ headers }) => {
+        const data = await authService.session(headers);
 
-export async function authMiddleware(request: FastifyRequest, reply: FastifyReply) {
-  const data = await authService.session(request.headers);
-
-  if (data) {
-    request.user = data.user;
-    request.session = { ...data.session, activeOrganizationId: data.session.activeOrganizationId || "" };
-  }
-}
+        return {
+            user: data?.user ?? null,
+            session: data?.session ? {
+                ...data.session,
+                activeOrganizationId: data.session.activeOrganizationId || ""
+            } : null
+        };
+    });

@@ -1,23 +1,20 @@
-import { Type, Static } from "@sinclair/typebox";
+import { t } from "elysia";
 
-export const DiscountTypeSchema = Type.Union([
-  Type.Literal("PERCENTAGE"),
-  Type.Literal("FIXED"),
+export const DiscountTypeSchema = t.Union([
+  t.Literal("PERCENTAGE"),
+  t.Literal("FIXED"),
 ]);
 
-export const CouponSchema = Type.Object({
-  id: Type.String(),
-  code: Type.String(),
+export const CouponSchema = t.Object({
+  id: t.String(),
+  code: t.String(),
   discountType: DiscountTypeSchema,
-  value: Type.Number(),
-  expiresAt: Type.Optional(Type.String({ format: "date-time" })),
-  usageLimit: Type.Optional(Type.Number()),
-  usageCount: Type.Number(),
-  active: Type.Boolean(),
-  stripeCouponId: Type.Optional(Type.String()),
-  createdAt: Type.String({ format: "date-time" }),
-  updatedAt: Type.String({ format: "date-time" }),
+  value: t.Number(),
+  expiresAt: t.Optional(t.String({ format: "date-time" })),
+  usageLimit: t.Optional(t.Number()),
+  usageCount: t.Number(),
+  active: t.Boolean(),
+  stripeCouponId: t.Optional(t.String()),
+  createdAt: t.String({ format: "date-time" }),
+  updatedAt: t.String({ format: "date-time" }),
 });
-
-export type CouponType = Static<typeof CouponSchema>;
-export type DiscountType = Static<typeof DiscountTypeSchema>;

@@ -1,7 +1,8 @@
-import { FastifyError, FastifyReply, FastifyRequest } from "fastify";
 import { PrismaClientKnownRequestError, PrismaClientValidationError } from "@prisma/client/runtime/client";
 import { handlePrismaError, handlePrismaValidationError } from "./prisma.handler";
-import { handleValidationError } from "./validation.handler";
+import { languageEnum } from '@/enums/language-enum';
+import { handleElysiaValidationError } from "./validation.handler";
+import { ValidationError } from "elysia";
 
 interface ErrorResponse {
   validations?: ValidationMessageI[];
@@ -12,10 +13,6 @@ interface ErrorResponse {
 export interface ValidationMessageI {
   field?: string;
   message: string;
-}
-
-interface ValidationError extends FastifyError {
-  validation?: any[];
 }
 
 export class AppError extends Error {
@@ -29,54 +26,70 @@ export class AppError extends Error {
   }
 }
 
-export async function errorHandler(
-  error: Error | ValidationError | PrismaClientKnownRequestError | PrismaClientValidationError,
-  request: FastifyRequest,
-  reply: FastifyReply
-) {
-  let response: ErrorResponse = {
+export async function processError(
+  error: unknown, // Some error
+  lang: languageEnum
+): Promise<{ status: number; response: ErrorResponse }> {
+  const baseResponse: ErrorResponse = {
     code: "INTERNAL_SERVER_ERROR"
   };
 
+  // Handle AppError
   if (error instanceof AppError) {
-    response.code = error.errorCode;
-    reply.status(error.status).send(response);
-    return;
+    return {
+      status: error.status,
+      response: {
+        code: error.errorCode
+      }
+    };
   }
 
-  if ('validation' in error && Array.isArray(error.validation)) {
-    const { code, status, validations } = await handleValidationError(error, request.lang);
-    response.code = code;
-    response.validations = validations;
-    reply.status(status).send(response);
-    return;
+  if (error instanceof ValidationError) {
+    const { code, status, validations } = await handleElysiaValidationError(
+      error.all,
+      lang
+    );
+
+    return {
+      status,
+      response: {
+        code,
+        validations
+      }
+    };
   }
 
+
+  // Handle Prisma known request errors
   if (error instanceof PrismaClientKnownRequestError) {
-    const { code, status, validations } = await handlePrismaError(error, request.lang);
-    response.code = code;
-    response.validations = validations;
-    reply.status(status).send(response);
-    return;
+    const { code, status, validations } = await handlePrismaError(error, lang);
+    return {
+      status,
+      response: {
+        code,
+        validations
+      }
+    };
   }
 
+  // Handle Prisma validation errors
   if (error instanceof PrismaClientValidationError) {
-    const { code, status } = await handlePrismaValidationError(error, request.lang);
-    response.code = code;
-    reply.status(status).send(response);
-    return;
+    const { code, status } = await handlePrismaValidationError(error, lang);
+    return {
+      status,
+      response: {
+        code
+      }
+    };
   }
 
-  response = {
-    ...response,
-    message: error.message
-  }
-
-  request.log.error({
-    err: error,
-    stack: error instanceof Error ? error.stack : undefined,
-    method: request.method,
-  });
-
-  reply.status(500).send(response);
+  // Handle generic errors
+  const err = error as Error;
+  return {
+    status: 500,
+    response: {
+      ...baseResponse,
+      message: err.message
+    }
+  };
 }

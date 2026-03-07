@@ -9,7 +9,7 @@ export abstract class StripeAbstractService extends AbstractService {
   constructor(prisma: ExtendedPrismaClient) {
     super(prisma);
     this.stripe = new Stripe(stripeConfig.apiKey, {
-      apiVersion: "2026-01-28.clover",
+      apiVersion: "2026-02-25.clover",
     });
   }
 }

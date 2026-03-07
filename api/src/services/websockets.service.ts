@@ -1,4 +1,4 @@
-import { wsTypeEnum, wsEventEnum } from "@/enums/websocketsEnum";
+import { wsTypeEnum, wsEventEnum } from "@/enums/websockets-enum";
 import { pubClient } from "@/plugins/ioredis";
 import { Notification } from "@prisma/client";
 

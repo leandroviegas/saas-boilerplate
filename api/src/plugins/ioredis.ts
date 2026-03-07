@@ -1,6 +1,6 @@
 import IORedis from 'ioredis';
 import logger from './logger';
-import { redisConfig } from '@/config';
+import { redisConfig } from '../config';
 
 export const ioredis = new IORedis({
     host: redisConfig.host,
@@ -13,6 +13,4 @@ export const ioredis = new IORedis({
 });
 
 export const pubClient = ioredis;
-export const subClient = pubClient.duplicate({ enableReadyCheck: false }).on('error', (err) => {
-    logger.error('Redis subClient error:', err);
-});
+export const subClient = pubClient.duplicate({ enableReadyCheck: false }).on('error', (err) => { logger.error('Redis subClient error:', err); });

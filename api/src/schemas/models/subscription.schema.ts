@@ -1,27 +1,24 @@
-import { Type, Static } from "@sinclair/typebox";
+import { t } from "elysia";
 import { ProductSchema } from "./product.schema";
 
-export const SubscriptionStatusSchema = Type.Union([
-  Type.Literal("ACTIVE"),
-  Type.Literal("CANCELED"),
-  Type.Literal("PAST_DUE"),
-  Type.Literal("INCOMPLETE"),
-  Type.Literal("TRIALING"),
+export const SubscriptionStatusSchema = t.Union([
+  t.Literal("ACTIVE"),
+  t.Literal("CANCELED"),
+  t.Literal("PAST_DUE"),
+  t.Literal("INCOMPLETE"),
+  t.Literal("TRIALING"),
 ]);
 
-export const SubscriptionSchema = Type.Object({
-  id: Type.String(),
-  userId: Type.String(),
-  productId: Type.String(),
-  product: Type.Optional(ProductSchema),
+export const SubscriptionSchema = t.Object({
+  id: t.String(),
+  userId: t.String(),
+  productId: t.String(),
+  product: t.Optional(ProductSchema),
   status: SubscriptionStatusSchema,
-  currentPeriodStart: Type.String({ format: "date-time" }),
-  currentPeriodEnd: Type.String({ format: "date-time" }),
-  cancelAtPeriodEnd: Type.Boolean(),
-  stripeSubscriptionId: Type.Optional(Type.String()),
-  createdAt: Type.String({ format: "date-time" }),
-  updatedAt: Type.String({ format: "date-time" }),
+  currentPeriodStart: t.String({ format: "date-time" }),
+  currentPeriodEnd: t.String({ format: "date-time" }),
+  cancelAtPeriodEnd: t.Boolean(),
+  stripeSubscriptionId: t.Optional(t.String()),
+  createdAt: t.String({ format: "date-time" }),
+  updatedAt: t.String({ format: "date-time" }),
 });
-
-export type SubscriptionType = Static<typeof SubscriptionSchema>;
-export type SubscriptionStatusType = Static<typeof SubscriptionStatusSchema>;

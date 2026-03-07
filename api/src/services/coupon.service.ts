@@ -36,7 +36,14 @@ export class CouponService extends AbstractService {
   }
 
   findAll(pagination: PaginationType) {
-    return this.prisma.coupon.paginate({}, pagination);
+    const { search, ...rest } = pagination;
+    const where: Prisma.CouponWhereInput = search ? {
+      OR: [
+        { code: { contains: search, mode: 'insensitive' } },
+      ]
+    } : {};
+
+    return this.prisma.coupon.paginate({ where }, rest);
   }
 
   findById(id: string) {

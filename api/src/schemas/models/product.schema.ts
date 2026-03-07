@@ -1,44 +1,40 @@
-import { Type, Static } from "@sinclair/typebox";
+import { t } from "elysia";
 
-export const PriceIntervalSchema = Type.Union([
-  Type.Literal("DAY"),
-  Type.Literal("WEEK"),
-  Type.Literal("MONTH"),
-  Type.Literal("YEAR"),
+export const PriceIntervalSchema = t.Union([
+  t.Literal("DAY"),
+  t.Literal("WEEK"),
+  t.Literal("MONTH"),
+  t.Literal("YEAR"),
 ]);
 
-export const CurrencySchema = Type.Union([
-  Type.Literal("USD"),
-  Type.Literal("EUR"),
-  Type.Literal("BRL"),
+export const CurrencySchema = t.Union([
+  t.Literal("USD"),
+  t.Literal("EUR"),
+  t.Literal("BRL"),
 ]);
 
-export const ProductPriceSchema = Type.Object({
-  id: Type.String(),
-  productId: Type.String(),
-  amount: Type.Number(),
+export const ProductPriceSchema = t.Object({
+  id: t.String(),
+  productId: t.String(),
+  amount: t.Number(),
   currencyCode: CurrencySchema,
-  stripePriceId: Type.Optional(Type.String()),
-  active: Type.Boolean(),
-  archived: Type.Boolean(),
+  stripePriceId: t.Optional(t.String()),
+  active: t.Boolean(),
+  archived: t.Boolean(),
   intervalType: PriceIntervalSchema,
-  intervalValue: Type.Number({ default: 1, minimum: 1, maximum: 1000 }),
-  createdAt: Type.String({ format: "date-time" }),
-  updatedAt: Type.String({ format: "date-time" }),
+  intervalValue: t.Number({ default: 1, minimum: 1, maximum: 1000 }),
+  createdAt: t.String({ format: "date-time" }),
+  updatedAt: t.String({ format: "date-time" }),
 });
 
-export const ProductSchema = Type.Object({
-  id: Type.String(),
-  name: Type.String({ minLength: 2, maxLength: 100 }),
-  description: Type.Optional(Type.String()),
-  features: Type.Array(Type.String()),
-  active: Type.Boolean(),
-  archived: Type.Boolean(),
-  permissions: Type.Record(Type.String(), Type.Array(Type.String())),
-  createdAt: Type.String({ format: "date-time" }),
-  updatedAt: Type.String({ format: "date-time" }),
+export const ProductSchema = t.Object({
+  id: t.String(),
+  name: t.String({ minLength: 2, maxLength: 100 }),
+  description: t.Optional(t.String()),
+  features: t.Array(t.String()),
+  active: t.Boolean(),
+  archived: t.Boolean(),
+  permissions: t.Record(t.String(), t.Array(t.String())),
+  createdAt: t.String({ format: "date-time" }),
+  updatedAt: t.String({ format: "date-time" }),
 });
-
-export type ProductType = Static<typeof ProductSchema>;
-export type ProductPriceType = Static<typeof ProductPriceSchema>;
-export type PriceIntervalType = Static<typeof PriceIntervalSchema>;

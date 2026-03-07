@@ -105,7 +105,7 @@ const combinedLogTransport = createRotatingTransport('combined', 'silly', '30d',
 
 const logger = winston.createLogger({
   format: fileFormat,
-  defaultMeta: { service: 'fastify-api' },
+  defaultMeta: { service: 'elysia-api' },
   transports: [
     errorLogTransport,
     warnLogTransport,

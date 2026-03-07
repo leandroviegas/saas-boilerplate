@@ -1,8 +1,12 @@
-import { languageEnum } from '@/enums/languageEnum';
+import { languageEnum } from '@/enums/language-enum';
 import logger from '@/plugins/logger';
 import * as fs from 'fs';
 import { existsSync, mkdirSync } from 'fs';
 import * as path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 interface LocaleMessages {
   [key: string]: string;

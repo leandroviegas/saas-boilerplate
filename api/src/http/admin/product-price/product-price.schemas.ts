@@ -1,77 +1,23 @@
-import { Type, Static } from "@sinclair/typebox";
-import { ProductPriceSchema } from "@/schemas/models/product.schema";
-import { multiSchemaBuilder } from "@/schemas/schemas";
-import { paginationSchema, metaSchema } from "@/schemas/pagination";
+import { t } from "elysia";
+import { PriceIntervalSchema, CurrencySchema } from "@/schemas/models/product.schema";
 
-export const routesSchema = multiSchemaBuilder({
-  getAllProductPrices: {
-    tags: ["Product Prices"],
-    querystring: Type.Intersect([
-      paginationSchema,
-      Type.Object({
-        productId: Type.Optional(Type.String()),
-      }),
-    ]),
-    response: {
-      200: {
-        data: Type.Array(ProductPriceSchema),
-        meta: metaSchema
-      }
-    },
-  },
-
-  getProductPriceById: {
-    tags: ["Product Prices"],
-    params: Type.Object({
-      id: Type.String(),
-    }),
-    response: {
-      200: {
-        data: ProductPriceSchema,
-      },
-    },
-  },
-
-  createProductPrice: {
-    tags: ["Product Prices"],
-    body: Type.Intersect([Type.Omit(ProductPriceSchema, ["id", "createdAt", "updatedAt", "stripePriceId"]), Type.Object({
-      productId: Type.String(),
-    })]),
-    response: {
-      201: {
-        data: ProductPriceSchema,
-      },
-    },
-  },
-
-  updateProductPrice: {
-    tags: ["Product Prices"],
-    params: Type.Object({
-      id: Type.String(),
-    }),
-    body: Type.Omit(ProductPriceSchema, ["createdAt", "updatedAt", "stripePriceId"]),
-    response: {
-      200: {
-        data: ProductPriceSchema,
-      },
-    },
-  },
-
-  deleteProductPrice: {
-    tags: ["Product Prices"],
-    params: Type.Object({
-      id: Type.String(),
-    }),
-  },
-
-  switchActiveProductPrice: {
-    tags: ["Product Prices"],
-    params: Type.Object({
-      id: Type.String(),
-    }),
-  }
+export const CreateProductPriceBodySchema = t.Object({
+  productId: t.String(),
+  amount: t.Number(),
+  currencyCode: CurrencySchema,
+  active: t.Boolean({ default: true }),
+  intervalType: PriceIntervalSchema,
+  intervalValue: t.Number({ default: 1, minimum: 1, maximum: 1000 }),
 });
 
-export type CreateProductPriceBodyType = Static<typeof routesSchema.createProductPrice.body>;
-export type UpdateProductPriceBodyType = Static<typeof routesSchema.updateProductPrice.body>;
-export type GetAllProductPricesQueryType = Static<typeof routesSchema.getAllProductPrices.querystring>;
+export type CreateProductPriceBodyType = typeof CreateProductPriceBodySchema.static;
+
+export const UpdateProductPriceBodySchema = t.Object({
+  amount: t.Optional(t.Number()),
+  currencyCode: t.Optional(CurrencySchema),
+  active: t.Optional(t.Boolean()),
+  intervalType: t.Optional(PriceIntervalSchema),
+  intervalValue: t.Optional(t.Number({ minimum: 1, maximum: 1000 })),
+});
+
+export type UpdateProductPriceBodyType = typeof UpdateProductPriceBodySchema.static;

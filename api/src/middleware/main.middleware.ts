@@ -1,20 +1,23 @@
-import { FastifyReply, FastifyRequest } from "fastify/fastify";
+import { Elysia } from 'elysia';
 import acceptLanguageParser from 'accept-language-parser';
-import { languageEnum } from "@/enums/languageEnum";
-import { publicConfig } from "@/config";
+import { languageEnum } from '@/enums/language-enum';
+import { publicConfig } from '@/config';
 
-export async function mainMiddleware(request: FastifyRequest, reply: FastifyReply) {
-    let lang = publicConfig.defaultLang;
-    let cookieLang = request.cookies?.lang;
-    let acceptLanguage = request.headers["accept-language"];
+export const mainMiddleware = new Elysia({ name: 'mainMiddleware' })
+    .derive({ as: 'global' }, ({ headers, cookie: { lang: cookieLang } }) => {
+        let lang = publicConfig.defaultLang;
+        let acceptLanguage = headers["accept-language"];
 
-    if (cookieLang) {
-        lang = cookieLang as languageEnum;
-    } else if (acceptLanguage) {
-        const languages = acceptLanguageParser.parse(acceptLanguage);
-        if (Object.values(languageEnum).includes(languages[0]?.code as languageEnum)) {
-            lang = languages[0]?.code as languageEnum;
+        if (cookieLang?.value) {
+            lang = cookieLang.value as languageEnum;
+        } else if (acceptLanguage) {
+            const languages = acceptLanguageParser.parse(acceptLanguage);
+            if (Object.values(languageEnum).includes(languages[0]?.code as languageEnum)) {
+                lang = languages[0]?.code as languageEnum;
+            }
         }
-    }
-    request.lang = lang;
-}
+
+        return {
+            lang
+        };
+    });

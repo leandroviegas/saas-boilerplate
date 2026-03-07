@@ -1,18 +1,16 @@
-import { Type } from "@sinclair/typebox";
+import { t } from "elysia";
 
-const userFieldsS = {
-  id: Type.String(),
-  email: Type.String({ format: "email" }),
-  name: Type.String(),
-  username: Type.String(),
-  provider: Type.Optional(Type.String()),
-  image: Type.Optional(Type.String()),
-  role: Type.String({ default: "USER" }),
-  emailVerified: Type.Boolean({ default: false }),
-  preferences: Type.Optional(Type.String()),
-  twoFactorEnabled: Type.Optional(Type.Boolean()),
-  createdAt: Type.String({ format: "date-time" }),
-  updatedAt: Type.String({ format: "date-time" }),
-}
-
-export const UserSchema = Type.Object(userFieldsS);
+export const UserSchema = t.Object({
+  id: t.String(),
+  email: t.String({ format: "email" }),
+  name: t.String(),
+  username: t.String(),
+  provider: t.Optional(t.String()),
+  image: t.Optional(t.String()),
+  role: t.String({ default: "USER" }),
+  emailVerified: t.Boolean({ default: false }),
+  preferences: t.Optional(t.String()),
+  twoFactorEnabled: t.Optional(t.Boolean()),
+  createdAt: t.String({ format: "date-time" }),
+  updatedAt: t.String({ format: "date-time" }),
+});

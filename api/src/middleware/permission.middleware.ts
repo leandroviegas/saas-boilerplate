@@ -1,6 +1,5 @@
 import { AuthUser } from "@/auth";
 import { organizationRolePermissionService, productService } from "@/services";
-import { Member } from "@prisma/client";
 import lodash from "lodash";
 import { AppError } from "@/handlers/error.handler";
 
@@ -36,19 +35,19 @@ export async function hasPermission(
     member: MemberInfo,
     access: AccessI
 ): Promise<void> {
-    if (!permissionChecker(allFeatures, access)) throw new AppError("UNAUTHORIZED", 403);
+    if (!permissionChecker(allFeatures, access)) throw new Error("UNAUTHORIZED");
 
     if (user?.roleSlug === "admin") return;
 
-    if (!permissionChecker(customerFeatures, access)) throw new AppError("UNAUTHORIZED", 403);
+    if (!permissionChecker(customerFeatures, access)) throw new Error("UNAUTHORIZED");
 
     const organizationPermissions = await organizationRolePermissionService.findPermissionsById(member.organizationId, member.role);
 
-    if (!permissionChecker(organizationPermissions, access)) throw new AppError("UNAUTHORIZED", 403);
+    if (!permissionChecker(organizationPermissions, access)) throw new Error("UNAUTHORIZED");
 
     const products = await productService.findActiveProductsByOrganizationId(member.organizationId);
 
     const hasProductAccess = products.some(product => permissionChecker(product.permissions as PermissionsMap, access));
 
-    if (!hasProductAccess) throw new AppError("UNAUTHORIZED", 403);
+    if (!hasProductAccess) throw new AppError("UNAUTHORIZED");
 }

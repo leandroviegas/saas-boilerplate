@@ -1,15 +1,13 @@
-import { Type, Static } from "@sinclair/typebox";
+import { t, Static } from "elysia";
 
-export const TransactionSchema = Type.Object({
-  id: Type.String(),
-  userId: Type.String(),
-  amount: Type.Number(),
-  currency: Type.String(),
-  status: Type.String(),
-  paymentMethod: Type.Optional(Type.String()),
-  stripePaymentIntentId: Type.Optional(Type.String()),
-  createdAt: Type.String({ format: "date-time" }),
-  updatedAt: Type.String({ format: "date-time" }),
+export const TransactionSchema = t.Object({
+  id: t.String(),
+  userId: t.String(),
+  amount: t.Number(),
+  currency: t.String(),
+  status: t.String(),
+  paymentMethod: t.Optional(t.String()),
+  stripePaymentIntentId: t.Optional(t.String()),
+  createdAt: t.String({ format: "date-time" }),
+  updatedAt: t.String({ format: "date-time" }),
 });
-
-export type TransactionType = Static<typeof TransactionSchema>;

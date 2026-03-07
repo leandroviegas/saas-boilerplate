@@ -1,15 +1,13 @@
-import { Type } from "@sinclair/typebox";
+import { t } from "elysia";
 
-const notificationFieldsS = {
-  id: Type.String(),
-  userId: Type.String(),
-  title: Type.String(),
-  message: Type.String(),
-  type: Type.String(), // 'info', 'success', 'warning', 'error'
-  link: Type.Optional(Type.String()),
-  read: Type.Boolean({ default: false }),
-  createdAt: Type.String({ format: "date-time" }),
-  updatedAt: Type.String({ format: "date-time" }),
-}
-
-export const NotificationSchema = Type.Object(notificationFieldsS);
+export const NotificationSchema = t.Object({
+  id: t.String(),
+  userId: t.String(),
+  title: t.String(),
+  message: t.String(),
+  type: t.String(), // 'info', 'success', 'warning', 'error'
+  link: t.Optional(t.String()),
+  read: t.Boolean({ default: false }),
+  createdAt: t.String({ format: "date-time" }),
+  updatedAt: t.String({ format: "date-time" }),
+});
