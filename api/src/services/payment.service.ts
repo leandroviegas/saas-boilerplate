@@ -2,10 +2,9 @@ import { AbstractService } from "@/services/abstract.service";
 import { PaymentProvider } from "./payment/payment-provider.interface";
 import { stripeProvider } from "./payment/providers";
 import { ExtendedPrismaClient } from "@/plugins/prisma";
-import { CreateCheckoutSessionBodyType } from "@/http/member/payment/payment.schemas";
 import { PaginationType } from "@/schemas/pagination";
 import { stripeConfig } from "@/config";
-import { PermissionsMap } from "@/middleware/permission.middleware";
+import { CreateCheckoutSessionResponseType } from "@/controllers/member/payment.controller";
 
 export class PaymentService extends AbstractService {
   private provider: PaymentProvider;
@@ -15,7 +14,7 @@ export class PaymentService extends AbstractService {
     this.provider = provider;
   }
 
-  async createCheckoutSession(userId: string, organizationId: string, data: CreateCheckoutSessionBodyType) {
+  async createCheckoutSession(userId: string, organizationId: string, data: CreateCheckoutSessionResponseType) {
     const user = await this.prisma.user.findUniqueOrThrow({
       where: { id: userId },
     });

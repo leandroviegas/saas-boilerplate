@@ -1,4 +1,4 @@
-import { Elysia, t } from 'elysia';
+import { Elysia, Static, t } from 'elysia';
 import { paymentService, productService } from "@/services";
 import { SubscriptionSchema } from "@/schemas/models/subscription.schema";
 import { TransactionSchema } from "@/schemas/models/transaction.schema";
@@ -36,6 +36,13 @@ const GetTransactionsResponse = t.Object({
     meta: metaSchema
 });
 
+const CreateCheckoutSessionResponse = t.Object({
+    productPriceId: t.String(),
+    promotionCode: t.Optional(t.String()),
+});
+
+export type CreateCheckoutSessionResponseType = Static<typeof CreateCheckoutSessionResponse>;
+
 export const memberPaymentController = new Elysia({
     prefix: '/payment',
     detail: { tags: ['Member Payment'] }
@@ -46,7 +53,7 @@ export const memberPaymentController = new Elysia({
 
         return {
             code: "get-products",
-            data: data.map(p => ({...p, permissions: parsePermissions(p.permissions)})),
+            data: data.map(p => ({ ...p, permissions: parsePermissions(p.permissions) })),
             meta
         };
     }, {
@@ -64,10 +71,7 @@ export const memberPaymentController = new Elysia({
             data: { url: checkoutSession.url },
         };
     }, {
-        body: t.Object({
-            productPriceId: t.String(),
-            promotionCode: t.Optional(t.String()),
-        }),
+        body: CreateCheckoutSessionResponse,
         response: CreateCheckoutResponse
     })
     .get('/subscription', async ({ session }) => {

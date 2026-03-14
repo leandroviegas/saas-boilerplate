@@ -1,7 +1,7 @@
 import { AbstractService } from "@/services/abstract.service";
-import { CreateProductPriceBodyType, UpdateProductPriceBodyType } from "@/schemas/models/product-price.schemas";
 import { PaginationType } from "@/schemas/pagination";
 import { stripeProvider } from "./payment/providers";
+import { CreateProductPriceType, UpdateProductPriceType } from "@/controllers/admin/product-price.controller";
 
 export class ProductPriceService extends AbstractService {
     findAllByProductId(productId: string) {
@@ -26,7 +26,7 @@ export class ProductPriceService extends AbstractService {
         });
     }
 
-    async create(data: CreateProductPriceBodyType) {
+    async create(data: CreateProductPriceType) {
         const productPrice = await this.prisma.productPrice.create({
             data,
         });
@@ -62,7 +62,7 @@ export class ProductPriceService extends AbstractService {
         return productPrice;
     }
 
-    async update(id: string, data: UpdateProductPriceBodyType) {
+    async update(id: string, data: UpdateProductPriceType) {
         let productPrice = await this.prisma.productPrice.findFirstOrThrow({
             where: { id },
         });

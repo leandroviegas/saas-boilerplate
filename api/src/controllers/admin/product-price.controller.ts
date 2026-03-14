@@ -14,7 +14,7 @@ export const CreateProductPriceBodySchema = t.Object({
   intervalValue: t.Numeric({ default: 1, minimum: 1, maximum: 1000 }),
 });
 
-export type CreateProductPriceBodyType = typeof CreateProductPriceBodySchema.static;
+export type CreateProductPriceType = typeof CreateProductPriceBodySchema.static;
 
 export const UpdateProductPriceBodySchema = t.Object({
   amount: t.Optional(t.Numeric()),
@@ -25,7 +25,7 @@ export const UpdateProductPriceBodySchema = t.Object({
   intervalValue: t.Optional(t.Numeric({ minimum: 1, maximum: 1000 })),
 });
 
-export type UpdateProductPriceBodyType = typeof UpdateProductPriceBodySchema.static;
+export type UpdateProductPriceType = typeof UpdateProductPriceBodySchema.static;
 
 const GetProductPricesResponse = t.Object({
     code: t.String(),

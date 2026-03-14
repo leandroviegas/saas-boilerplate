@@ -6,6 +6,7 @@ import { notificationService } from "@/services";
 import { corsConfig } from "./config";
 
 function getCookieDomain(): string | undefined {
+  if (!corsConfig.origin) return undefined;
   const firstOrigin = corsConfig.origin[0];
   if (!firstOrigin) return undefined;
   try {

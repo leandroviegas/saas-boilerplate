@@ -1,8 +1,8 @@
 import { s3Service } from "@/services";
-import { UpdateUserBodyType } from "../schemas/models/user.schemas";
 import { AbstractService } from "@/services/abstract.service";
 import { PaginationType } from "@/schemas/pagination";
 import { Prisma } from "@prisma/client";
+import { UpdateUserBodyType } from "@/controllers/admin/user.controller";
 
 export class UserService extends AbstractService {
   findAll(pagination: PaginationType) {
