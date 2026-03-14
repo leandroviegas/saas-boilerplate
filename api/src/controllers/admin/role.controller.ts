@@ -2,6 +2,31 @@ import { Elysia, t } from 'elysia';
 import { roleService } from "@/services";
 import { RoleSchema } from "@/schemas/models/role.schema";
 
+const GetRolesResponse = t.Object({
+    code: t.String(),
+    data: t.Array(RoleSchema)
+});
+
+const GetRoleResponse = t.Object({
+    code: t.String(),
+    data: RoleSchema
+});
+
+const CreateRoleResponse = t.Object({
+    code: t.String(),
+    data: RoleSchema
+});
+
+const UpdateRoleResponse = t.Object({
+    code: t.String(),
+    data: RoleSchema
+});
+
+const DeleteRoleResponse = t.Object({
+    code: t.String(),
+    data: RoleSchema
+});
+
 export const adminRoleController = new Elysia({
     prefix: '/role',
     detail: { tags: ['Admin Roles'] }
@@ -14,6 +39,7 @@ export const adminRoleController = new Elysia({
             data
         };
     }, {
+        response: GetRolesResponse
     })
     .get('/:slug', async ({ params: { slug } }) => {
         const data = await roleService.findById(slug);
@@ -23,7 +49,8 @@ export const adminRoleController = new Elysia({
             data
         };
     }, {
-        params: t.Object({ slug: t.String() })
+        params: t.Object({ slug: t.String() }),
+        response: GetRoleResponse
     })
     .post('/', async ({ body }) => {
         const data = await roleService.create(body);
@@ -33,7 +60,8 @@ export const adminRoleController = new Elysia({
             data
         };
     }, {
-        body: t.Omit(RoleSchema, ["createdAt", "updatedAt"])
+        body: t.Omit(RoleSchema, ["createdAt", "updatedAt"]),
+        response: CreateRoleResponse
     })
     .put('/:slug', async ({ params: { slug }, body }) => {
         const data = await roleService.update(slug, body);
@@ -44,7 +72,8 @@ export const adminRoleController = new Elysia({
         };
     }, {
         params: t.Object({ slug: t.String() }),
-        body: t.Partial(t.Omit(RoleSchema, ["createdAt", "updatedAt"]))
+        body: t.Partial(t.Omit(RoleSchema, ["createdAt", "updatedAt"])),
+        response: UpdateRoleResponse
     })
     .delete('/:slug', async ({ params: { slug } }) => {
         const data = await roleService.delete(slug);
@@ -54,5 +83,6 @@ export const adminRoleController = new Elysia({
             data
         };
     }, {
-        params: t.Object({ slug: t.String() })
+        params: t.Object({ slug: t.String() }),
+        response: DeleteRoleResponse
     });

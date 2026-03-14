@@ -1,4 +1,4 @@
-import { t } from "elysia";
+import { t, Static } from "elysia";
 
 export const PriceIntervalSchema = t.Union([
   t.Literal("DAY"),
@@ -16,25 +16,29 @@ export const CurrencySchema = t.Union([
 export const ProductPriceSchema = t.Object({
   id: t.String(),
   productId: t.String(),
-  amount: t.Number(),
-  currencyCode: CurrencySchema,
-  stripePriceId: t.Optional(t.String()),
+  amount: t.Numeric(),
+  currencyCode: t.Union([CurrencySchema, t.String()]),
+  stripePriceId: t.Optional(t.Union([t.String(), t.Null()])),
   active: t.Boolean(),
   archived: t.Boolean(),
   intervalType: PriceIntervalSchema,
-  intervalValue: t.Number({ default: 1, minimum: 1, maximum: 1000 }),
-  createdAt: t.String({ format: "date-time" }),
-  updatedAt: t.String({ format: "date-time" }),
+  intervalValue: t.Numeric(),
+  createdAt: t.Date(),
+  updatedAt: t.Date(),
 });
 
 export const ProductSchema = t.Object({
   id: t.String(),
   name: t.String({ minLength: 2, maxLength: 100 }),
-  description: t.Optional(t.String()),
+  description: t.Optional(t.Union([t.String(), t.Null()])),
   features: t.Array(t.String()),
   active: t.Boolean(),
   archived: t.Boolean(),
   permissions: t.Record(t.String(), t.Array(t.String())),
-  createdAt: t.String({ format: "date-time" }),
-  updatedAt: t.String({ format: "date-time" }),
+  stripeProductId: t.Optional(t.Union([t.String(), t.Null()])),
+  createdAt: t.Date(),
+  updatedAt: t.Date(),
 });
+
+export type ProductType = Static<typeof ProductSchema>;
+export type ProductPriceType = Static<typeof ProductPriceSchema>;

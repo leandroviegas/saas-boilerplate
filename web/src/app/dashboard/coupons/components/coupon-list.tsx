@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { GetAdminCoupons200AllOfTwoDataItem } from '@/api/generated/newChatbotAPI.schemas';
 import DataTable from '@/components/ui/data-table';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -10,6 +9,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { FaPencilAlt, FaSearch } from 'react-icons/fa';
 import { useQueryStates, parseAsInteger, parseAsString } from "nuqs";
 import { useCoupons, useIncrementCouponUsage } from '@/hooks/queries/useCoupons';
+import { Coupon } from '@/models/coupon.model';
 
 export default function CouponList() {
     const { t } = useTranslation();
@@ -22,8 +22,8 @@ export default function CouponList() {
     }, { shallow: true, history: "replace" });
 
     const { data, isLoading, error } = useCoupons(filters);
-    const coupons = data?.data || [];
-    const meta = data?.meta || { total: 0, page: 1, perPage: 20 };
+    const coupons = data?.items || [];
+    const meta = { total: data?.total || 0, page: filters.page, perPage: filters.perPage };
 
     const dataFormat = [
         { key: 'code', header: t('code'), type: 'string' as const },
@@ -135,7 +135,7 @@ export default function CouponList() {
                 status={isLoading ? 'loading' : error ? 'error' : 'success'}
                 meta={meta}
                 onPageChange={(page, perPage) => { setFilters(prevFilters => ({ ...prevFilters, page, perPage })) }}
-                actions={(coupon: GetAdminCoupons200AllOfTwoDataItem) => (
+                actions={(coupon: Coupon) => (
                     <div className='flex gap-2 mt-auto'>
                         <Button variant="outline" className='flex-1' onClick={() => incrementUsage.mutate(coupon.id)} disabled={incrementUsage.isPending}>
                             {t('increment usage')}

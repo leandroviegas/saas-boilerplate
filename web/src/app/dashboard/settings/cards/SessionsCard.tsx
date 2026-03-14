@@ -1,36 +1,25 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslation } from "@/hooks/useTranslation";
-import { getSessions } from "@/api/generated/sessions/sessions";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
-import { GetMemberSessions200AllOfTwoDataItem } from "@/api/generated/newChatbotAPI.schemas";
-
-const sessionApi = getSessions();
+import { useSessions, useRevokeSession } from "@/hooks/queries/useSessions";
 
 export function SessionsCard() {
   const { t } = useTranslation();
-  const [sessions, setSessions] = useState<GetMemberSessions200AllOfTwoDataItem[]>([]);
+  const { data: sessions = [] } = useSessions();
+  const { mutate: revokeSession } = useRevokeSession();
   const { session } = useAuth();
 
-  async function fetchSessions() {
-    const { data } = await sessionApi.getMemberSessions();
-    if (!data) return;
-    setSessions(data);
+  function handleRevokeSession(sessionId: string) {
+    revokeSession(sessionId, {
+      onSuccess: () => {
+        toast.success(t("session revoked"));
+      }
+    });
   };
-
-  async function handleRevokeSession(sessionId: string) {
-    await sessionApi.deleteMemberSessionsId(sessionId);
-    toast.success(t("session revoked"));
-    fetchSessions();
-  };
-
-  useEffect(() => {
-    fetchSessions();
-  }, []);
 
   return (
     <Card>

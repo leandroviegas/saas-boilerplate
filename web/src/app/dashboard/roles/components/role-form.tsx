@@ -9,10 +9,10 @@ import { useForm } from "react-hook-form";
 import { typeboxResolver } from "@/lib/typebox-resolver";
 import { Type, Static } from "@sinclair/typebox";
 import { Loader2 } from "lucide-react";
-import { GetAdminRoles200AllOfTwoDataItem } from "@/api/generated/newChatbotAPI.schemas";
 import { useCustomForm } from "@/hooks/useCustomForm";
 import { useRouter } from "next/navigation";
 import { useCreateRole, useUpdateRole } from "@/hooks/queries/useRoles";
+import { Role } from "@/models/role.model";
 
 const roleFormSchema = Type.Object({
   slug: Type.String({ minLength: 2, maxLength: 50 }),
@@ -22,7 +22,7 @@ const roleFormSchema = Type.Object({
 type RoleFormValues = Static<typeof roleFormSchema>;
 
 interface RoleFormProps {
-  role?: GetAdminRoles200AllOfTwoDataItem;
+  role?: Role;
   onUpsertSuccess?: () => void;
 }
 
@@ -47,7 +47,7 @@ export function RoleForm({ role, onUpsertSuccess }: RoleFormProps) {
       if (role?.slug) {
         await updateRole.mutateAsync({
           slug: role.slug,
-          updateData: formData,
+          data: formData,
         });
       } else {
         await createRole.mutateAsync(formData);

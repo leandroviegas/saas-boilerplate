@@ -7,14 +7,13 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { FaPencilAlt, FaTrash } from 'react-icons/fa';
 import { Button } from '@/components/ui/button';
 import { useRoles, useDeleteRole } from '@/hooks/queries/useRoles';
-import { GetAdminRoles200AllOfTwoDataItem } from '@/api/generated/newChatbotAPI.schemas';
+import { Role } from '@/models/role.model';
 
 export default function RoleList() {
     const { t } = useTranslation();
     const deleteRole = useDeleteRole();
 
-    const { data, isLoading, error } = useRoles();
-    const roles = data?.data || [];
+    const { data: roles = [], isLoading, error } = useRoles();
 
     const dataFormat = [
         { key: 'slug', header: t('slug'), type: 'string' as const },
@@ -70,7 +69,7 @@ export default function RoleList() {
                 dataFormat={dataFormat}
                 status={isLoading ? 'loading' : error ? 'error' : 'success'}
                 meta={{ total: roles.length, page: 1, perPage: roles.length }}
-                actions={(role: GetAdminRoles200AllOfTwoDataItem) => (
+                actions={(role: Role) => (
                     <div className="flex gap-2 mt-auto">
                         <Link className="flex-1" href={`/dashboard/roles/${role.slug}`}>
                             <Button variant="secondary" size="sm" className="w-full">

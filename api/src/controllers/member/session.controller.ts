@@ -1,6 +1,16 @@
 import { Elysia, t } from 'elysia';
 import { sessionService } from "@/services";
+import { SessionSchema } from "@/schemas/models/session.schema";
 import { authMiddleware } from "@/middleware/auth.middleware";
+
+const GetSessionsResponse = t.Object({
+    code: t.String(),
+    data: t.Array(SessionSchema)
+});
+
+const RevokeSessionResponse = t.Object({
+    code: t.String()
+});
 
 export const memberSessionController = new Elysia({
     prefix: '/session',
@@ -16,6 +26,7 @@ export const memberSessionController = new Elysia({
             data: sessions
         };
     }, {
+        response: GetSessionsResponse
     })
     .delete('/:id', async ({ params: { id }, user }) => {
         if (!user) throw new Error("Unauthorized");
@@ -25,5 +36,6 @@ export const memberSessionController = new Elysia({
             code: 'session-revoked'
         };
     }, {
-        params: t.Object({ id: t.String() })
+        params: t.Object({ id: t.String() }),
+        response: RevokeSessionResponse
     });

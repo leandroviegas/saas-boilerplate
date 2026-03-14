@@ -1,4 +1,4 @@
-import { t } from "elysia";
+import { t, Static } from "elysia";
 import { ProductSchema } from "./product.schema";
 
 export const SubscriptionStatusSchema = t.Union([
@@ -7,18 +7,22 @@ export const SubscriptionStatusSchema = t.Union([
   t.Literal("PAST_DUE"),
   t.Literal("INCOMPLETE"),
   t.Literal("TRIALING"),
+  t.Literal("INCOMPLETE_EXPIRED"),
+  t.Literal("UNPAID"),
 ]);
 
 export const SubscriptionSchema = t.Object({
   id: t.String(),
-  userId: t.String(),
+  organizationId: t.String(),
   productId: t.String(),
   product: t.Optional(ProductSchema),
   status: SubscriptionStatusSchema,
-  currentPeriodStart: t.String({ format: "date-time" }),
-  currentPeriodEnd: t.String({ format: "date-time" }),
+  currentPeriodStart: t.Date(),
+  currentPeriodEnd: t.Date(),
   cancelAtPeriodEnd: t.Boolean(),
-  stripeSubscriptionId: t.Optional(t.String()),
-  createdAt: t.String({ format: "date-time" }),
-  updatedAt: t.String({ format: "date-time" }),
+  stripeSubscriptionId: t.Optional(t.Union([t.String(), t.Null()])),
+  createdAt: t.Date(),
+  updatedAt: t.Date(),
 });
+
+export type SubscriptionType = Static<typeof SubscriptionSchema>;

@@ -1,4 +1,4 @@
-import { t } from "elysia";
+import { t, Static } from "elysia";
 
 export const DiscountTypeSchema = t.Union([
   t.Literal("PERCENTAGE"),
@@ -10,11 +10,13 @@ export const CouponSchema = t.Object({
   code: t.String(),
   discountType: DiscountTypeSchema,
   value: t.Number(),
-  expiresAt: t.Optional(t.String({ format: "date-time" })),
-  usageLimit: t.Optional(t.Number()),
-  usageCount: t.Number(),
+  expiresAt: t.Optional(t.Union([t.Date(), t.Null()])),
+  usageLimit: t.Optional(t.Union([t.Numeric(), t.Null()])),
+  usageCount: t.Numeric(),
   active: t.Boolean(),
-  stripeCouponId: t.Optional(t.String()),
-  createdAt: t.String({ format: "date-time" }),
-  updatedAt: t.String({ format: "date-time" }),
+  stripeCouponId: t.Optional(t.Union([t.String(), t.Null()])),
+  createdAt: t.Date(),
+  updatedAt: t.Date(),
 });
+
+export type CouponType = Static<typeof CouponSchema>;

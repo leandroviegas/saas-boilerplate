@@ -1,7 +1,23 @@
 import { Elysia, t } from 'elysia';
 import { notificationService } from "@/services";
-import { paginationSchema } from "@/schemas/pagination";
+import { NotificationSchema } from "@/schemas/models/notification.schema";
+import { paginationSchema, metaSchema } from "@/schemas/pagination";
 import { authMiddleware } from "@/middleware/auth.middleware";
+
+const GetNotificationsResponse = t.Object({
+    code: t.String(),
+    data: t.Array(NotificationSchema),
+    meta: metaSchema
+});
+
+const MarkAsReadResponse = t.Object({
+    code: t.String(),
+    data: NotificationSchema
+});
+
+const MarkAllReadResponse = t.Object({
+    code: t.String()
+});
 
 export const memberNotificationController = new Elysia({
     prefix: '/notification',
@@ -18,7 +34,8 @@ export const memberNotificationController = new Elysia({
             meta
         };
     }, {
-        query: t.Intersect([paginationSchema])
+        query: t.Intersect([paginationSchema]),
+        response: GetNotificationsResponse
     })
     .put('/:id/read', async ({ params: { id }, user }) => {
         if (!user) throw new Error("User not found");
@@ -29,7 +46,8 @@ export const memberNotificationController = new Elysia({
             data
         };
     }, {
-        params: t.Object({ id: t.String() })
+        params: t.Object({ id: t.String() }),
+        response: MarkAsReadResponse
     })
     .put('/read-all', async ({ user }) => {
         if (!user) throw new Error("User not found");
@@ -39,6 +57,7 @@ export const memberNotificationController = new Elysia({
             code: 'mark-all-notifications-read'
         };
     }, {
+        response: MarkAllReadResponse
     })
     .delete('/:id', async ({ params: { id }, user, set }) => {
         if (!user) throw new Error("User not found");

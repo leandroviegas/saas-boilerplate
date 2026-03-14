@@ -13,9 +13,9 @@ import { useCustomForm } from "@/hooks/useCustomForm";
 import { authClient } from "@/lib/auth-client";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
-import { getUsers } from "@/api/generated/users/users";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LuTrash2, LuUpload } from "react-icons/lu";
+import { useUpdateUser } from "@/hooks/queries/useUser";
 
 const userDetailsSchema = Type.Object({
   name: Type.String({ minLength: 1 }),
@@ -30,7 +30,7 @@ export function UserDetailsCard() {
   const { t, locale } = useTranslation();
   const { user, updateSession } = useAuth();
   const { onFormSubmit, isLoading } = useCustomForm();
-  const usersApi = getUsers();
+  const { mutateAsync: updateUser } = useUpdateUser();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -80,10 +80,18 @@ export function UserDetailsCard() {
 
     if (!user?.id) return;
 
-    const { message } = await usersApi.putAdminUsersId(user.id, { name: values.name, username: values.username, email: values.email, image: values.image });
+    await updateUser({ 
+      id: user.id, 
+      data: { 
+        name: values.name, 
+        username: values.username, 
+        email: values.email, 
+        image: values.image 
+      } 
+    });
 
     await updateSession();
-    toast.success(t(message!));
+    toast.success(t("user updated successfully"));
   };
 
   const onSubmit = async (data: UserDetailsValues) => {

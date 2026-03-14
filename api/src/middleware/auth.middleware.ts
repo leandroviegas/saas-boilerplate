@@ -9,7 +9,7 @@ export const authMiddleware = new Elysia({ name: 'authMiddleware' })
             user: data?.user ?? null,
             session: data?.session ? {
                 ...data.session,
-                activeOrganizationId: data.session.activeOrganizationId || ""
+                activeOrganizationId: data.session.activeOrganizationId
             } : null
         };
     });

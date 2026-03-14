@@ -1,5 +1,5 @@
 import { s3Service } from "@/services";
-import { UpdateUserBodyType } from "../http/admin/user/user.schemas";
+import { UpdateUserBodyType } from "../schemas/models/user.schemas";
 import { AbstractService } from "@/services/abstract.service";
 import { PaginationType } from "@/schemas/pagination";
 import { Prisma } from "@prisma/client";

@@ -11,7 +11,7 @@ export const emailConfig = {
 };
 
 export const corsConfig = {
-    origin: process.env.CORS_ORIGINS?.split(',') || ["http://localhost:3001", "http://127.0.0.1:3001"],
+    origin: process.env.CORS_ORIGINS?.split(','),
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'set-cookie', 'set-auth-jwt'],
     exposedHeaders: ['set-cookie', 'set-auth-jwt'],
@@ -24,6 +24,12 @@ export const serverConfig = {
     protocol: process.env.PROTOCOL || "http"
 };
 
+export const websocketsConfig = {
+    port: Number(process.env.WSPORT) || 3001,
+    host: process.env.WSHOST || "0.0.0.0",
+    protocol: process.env.WSPROTOCOL || "ws"
+};
+
 export const redisConfig = {
     host: process.env.REDIS_HOST || "127.0.0.1",
     port: Number(process.env.REDIS_PORT) || 6379,
@@ -33,8 +39,8 @@ export const redisConfig = {
 export const stripeConfig = {
     apiKey: process.env.STRIPE_SECRET_KEY || "",
     webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || "",
-    successUrl: process.env.STRIPE_SUCCESS_URL || "http://localhost:3001/dashboard/billing?success=true",
-    cancelUrl: process.env.STRIPE_CANCEL_URL || "http://localhost:3001/dashboard/billing?canceled=true",
+    successUrl: process.env.STRIPE_SUCCESS_URL || "http://localhost:8080/dashboard/billing?success=true",
+    cancelUrl: process.env.STRIPE_CANCEL_URL || "http://localhost:8080/dashboard/billing?canceled=true",
 };
 
 export const s3Config = {

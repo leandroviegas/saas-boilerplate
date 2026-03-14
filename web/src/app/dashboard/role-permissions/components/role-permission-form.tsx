@@ -43,7 +43,7 @@ export function RolePermissionForm({ roleSlug, onUpsertSuccess }: RolePermission
   const { t, locale } = useTranslation();
   const router = useRouter();
   const { data: existingData, isLoading: isLoadingExisting } = useRolePermission(roleSlug || "");
-  const { data: rolesData } = useRoles();
+  const { data: rolesData = [] } = useRoles();
   const updateRolePermission = useUpdateRolePermission();
   const createRolePermission = useCreateRolePermission();
   const { onFormSubmit, isLoading } = useCustomForm();
@@ -128,7 +128,7 @@ export function RolePermissionForm({ roleSlug, onUpsertSuccess }: RolePermission
                               <SelectValue placeholder={t('select role')} />
                             </SelectTrigger>
                             <SelectContent>
-                              {rolesData?.data?.map((role) => (
+                              {rolesData.map((role) => (
                                 <SelectItem key={role.slug} value={role.slug}>
                                   {role.slug}
                                 </SelectItem>

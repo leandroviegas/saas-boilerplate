@@ -1,8 +1,40 @@
-import { Elysia, t } from 'elysia';
+import { Elysia, t, Static } from 'elysia';
 import { userService } from "@/services";
 import { UserSchema } from "@/schemas/models/user.schema";
-import { paginationSchema } from "@/schemas/pagination";
+import { paginationSchema, metaSchema } from "@/schemas/pagination";
 import { authMiddleware } from "@/middleware/auth.middleware";
+
+const GetUsersResponse = t.Object({
+    code: t.String(),
+    data: t.Array(UserSchema),
+    meta: metaSchema
+});
+
+export type GetUsersResponseType = Static<typeof GetUsersResponse>;
+
+const GetUserResponse = t.Object({
+    code: t.String(),
+    data: UserSchema
+});
+
+export type GetUserResponseType = Static<typeof GetUserResponse>;
+
+const UpdateUserResponse = t.Object({
+    code: t.String(),
+    data: UserSchema
+});
+
+export const UpdateUserBodySchema = t.Object({
+  email: t.String({ format: "email" }),
+  name: t.String(),
+  username: t.String(),
+  image: t.Optional(t.Union([t.String(), t.Null()])),
+  preferences: t.Optional(t.Union([t.String(), t.Null()])),
+});
+
+export type UpdateUserBodyType = typeof UpdateUserBodySchema.static;
+
+export type UpdateUserResponseType = Static<typeof UpdateUserResponse>;
 
 export const adminUserController = new Elysia({
     prefix: '/user',
@@ -21,16 +53,18 @@ export const adminUserController = new Elysia({
             meta
         };
     }, {
-        query: t.Intersect([paginationSchema])
+        query: t.Intersect([paginationSchema]),
+        response: GetUsersResponse
     })
 
 
     .get('/:id', async ({ params: { id } }) => {
         const user = await userService.findById(id);
 
-        return { code: 'update-user', data: user };
+        return { code: 'get-user', data: user };
     }, {
-        params: t.Object({ id: t.String() })
+        params: t.Object({ id: t.String() }),
+        response: GetUserResponse
     })
 
 
@@ -43,7 +77,8 @@ export const adminUserController = new Elysia({
         };
     }, {
         params: t.Object({ id: t.String() }),
-        body: t.Pick(UserSchema, ["email", "name", "image", "username", "preferences"])
+        body: UpdateUserBodySchema,
+        response: UpdateUserResponse
     })
     .delete('/:id', async ({ params: { id }, set }) => {
         await userService.delete(id);

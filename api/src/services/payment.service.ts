@@ -5,6 +5,7 @@ import { ExtendedPrismaClient } from "@/plugins/prisma";
 import { CreateCheckoutSessionBodyType } from "@/http/member/payment/payment.schemas";
 import { PaginationType } from "@/schemas/pagination";
 import { stripeConfig } from "@/config";
+import { PermissionsMap } from "@/middleware/permission.middleware";
 
 export class PaymentService extends AbstractService {
   private provider: PaymentProvider;

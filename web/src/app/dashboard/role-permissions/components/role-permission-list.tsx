@@ -7,7 +7,6 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { FaPencilAlt, FaTrash } from 'react-icons/fa';
 import { Button } from '@/components/ui/button';
 import { useRolePermissions, useDeleteRolePermission } from '@/hooks/queries/useOrganizationRolePermissions';
-import { GetAdminRolePermissions200AllOfTwoDataItem } from '@/api/generated/newChatbotAPI.schemas';
 import { PermissionsPreview } from '@/components/ui/permissions-preview';
 import { PermissionsMap } from '@/app/dashboard/components/permission-mangement';
 
@@ -27,7 +26,7 @@ export default function RolePermissionList() {
 
     const List = () => (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {rolePermissions.map((permission) => (
+            {rolePermissions.map((permission: any) => (
                 <div
                     key={permission.roleSlug}
                     className="group relative border border-border rounded-lg bg-card text-card-foreground shadow-sm hover:shadow-lg transition-all duration-200 hover:border-primary/50 flex flex-col"
@@ -51,9 +50,7 @@ export default function RolePermissionList() {
                             </Button>
                         </Link>
                         <Button
-                            onClick={() => deleteRolePermission.mutate({
-                                roleSlug: permission.roleSlug
-                            })}
+                            onClick={() => deleteRolePermission.mutate(permission.roleSlug)}
                             variant="destructive"
                             size="sm"
                             className="flex-1"
@@ -75,7 +72,7 @@ export default function RolePermissionList() {
             dataFormat={dataFormat}
             status={isLoading ? 'loading' : error ? 'error' : 'success'}
             meta={{ total: rolePermissions.length, page: 1, perPage: rolePermissions.length }}
-            actions={(permission: GetAdminRolePermissions200AllOfTwoDataItem) => (
+            actions={(permission: any) => (
                 <div className="flex gap-2 mt-auto">
                     <Link
                         className="flex-1"
@@ -86,9 +83,7 @@ export default function RolePermissionList() {
                         </Button>
                     </Link>
                     <Button
-                        onClick={() => deleteRolePermission.mutate({
-                            roleSlug: permission.roleSlug
-                        })}
+                        onClick={() => deleteRolePermission.mutate(permission.roleSlug)}
                         variant="destructive"
                         size="sm"
                         className="flex-1"

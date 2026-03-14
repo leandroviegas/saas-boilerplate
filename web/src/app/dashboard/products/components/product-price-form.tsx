@@ -11,8 +11,8 @@ import { useCustomForm } from "@/hooks/useCustomForm";
 import { useTranslation } from "@/hooks/useTranslation";
 import { typeboxResolver } from "@/lib/typebox-resolver";
 import { Type, Static } from "@sinclair/typebox";
-import { getProductPrices } from "@/api/generated/product-prices/product-prices";
-import { GetAdminProducts200AllOfTwoDataItemAllOfThreePricesItem } from "@/api/generated/newChatbotAPI.schemas";
+import { ProductPrice } from "@/models/product.model";
+import { useCreateProductPrice, useUpdateProductPrice, useDeleteProductPrice } from "@/hooks/queries/useProducts";
 
 const productPriceFormSchema = Type.Object({
   id: Type.Optional(Type.String()),
@@ -26,24 +26,25 @@ const productPriceFormSchema = Type.Object({
 type ProductPriceFormValues = Static<typeof productPriceFormSchema>;
 
 interface ProductPriceFormProps {
-  price?: GetAdminProducts200AllOfTwoDataItemAllOfThreePricesItem
+  price?: ProductPrice
   productId: string
   onUpsertSuccess?: () => void
   onDeleteSucess?: () => void
 }
 
-const productPricesApi = getProductPrices();
-
 export function ProductPriceForm({ price, productId, onUpsertSuccess, onDeleteSucess }: ProductPriceFormProps) {
   const { t, locale } = useTranslation();
   const { onFormSubmit, isLoading } = useCustomForm();
+  const { mutateAsync: createPrice } = useCreateProductPrice();
+  const { mutateAsync: updatePrice } = useUpdateProductPrice();
+  const { mutateAsync: deletePrice } = useDeleteProductPrice();
 
   const form = useForm<ProductPriceFormValues>({
     resolver: typeboxResolver(productPriceFormSchema, { locale }),
     defaultValues: {
       id: price?.id,
       amount: price?.amount || 0,
-      currency: price?.currencyCode || "USD",
+      currency: (price?.currencyCode as any) || "USD",
       active: price?.active || true,
       intervalType: price?.intervalType || "MONTH",
       intervalValue: price?.intervalValue || 1,
@@ -52,21 +53,18 @@ export function ProductPriceForm({ price, productId, onUpsertSuccess, onDeleteSu
 
   const onSubmit = async (data: ProductPriceFormValues) => {
     await onFormSubmit(data, async (formData) => {
-      let { id, currency, ...formDataWithoutIdAndCurrency } = formData;
+      const { id, currency, ...rest } = formData;
       
-      id = formData.id || price?.id;
-
       const formToSend = {
-        ...formDataWithoutIdAndCurrency,
+        ...rest,
         currencyCode: currency,
         productId,
-        archived: false,
       }
 
       if (id) {
-        await productPricesApi.putAdminProductPricesId(id, { ...formToSend, id });
+        await updatePrice({ id, data: formToSend });
       } else {
-        await productPricesApi.postAdminProductPrices(formToSend);
+        await createPrice(formToSend);
       }
 
       if (onUpsertSuccess)
@@ -75,10 +73,11 @@ export function ProductPriceForm({ price, productId, onUpsertSuccess, onDeleteSu
   };
 
   async function onDelete() {
-    if (price?.id)
-      await productPricesApi.deleteAdminProductPricesId(price.id);
-    if (onDeleteSucess)
-      onDeleteSucess()
+    if (price?.id) {
+      await deletePrice(price.id);
+      if (onDeleteSucess)
+        onDeleteSucess()
+    }
   }
 
   return (

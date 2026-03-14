@@ -1,69 +1,46 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getProducts } from '@/api/generated/products/products';
-import type {
-  GetAdminProductsParams,
-  PostAdminProductsBody,
-  PutAdminProductsIdBody,
-} from '@/api/generated/newChatbotAPI.schemas';
+import { ProductService } from '@/services/product.service';
 
-const productsApi = getProducts();
-
-// Query keys
 export const productKeys = {
   all: ['products'] as const,
   lists: () => [...productKeys.all, 'list'] as const,
-  list: (params?: GetAdminProductsParams) => [...productKeys.lists(), params] as const,
+  list: (params?: any) => [...productKeys.lists(), params] as const,
   details: () => [...productKeys.all, 'detail'] as const,
   detail: (id: string) => [...productKeys.details(), id] as const,
+  prices: (params?: any) => [...productKeys.all, 'prices', params] as const,
 };
 
-// Fetch all products
-export function useProducts(params?: GetAdminProductsParams) {
+export function useProducts(params?: any) {
   return useQuery({
     queryKey: productKeys.list(params),
-    queryFn: async () => {
-      const response = await productsApi.getAdminProducts(params);
-      return response;
-    },
+    queryFn: () => ProductService.listProducts(params),
   });
 }
 
-// Fetch single product by ID
 export function useProduct(id: string) {
   return useQuery({
     queryKey: productKeys.detail(id),
-    queryFn: async () => {
-      const response = await productsApi.getAdminProductsId(id);
-      return response.data;
-    },
+    queryFn: () => ProductService.getProduct(id),
     enabled: !!id,
   });
 }
 
-// Create product
 export function useCreateProduct() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (productData: PostAdminProductsBody) => {
-      const response = await productsApi.postAdminProducts(productData);
-      return response.data;
-    },
+    mutationFn: (data: any) => ProductService.createProduct(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: productKeys.lists() });
     },
   });
 }
 
-// Update product
 export function useUpdateProduct() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, updateData }: { id: string; updateData: PutAdminProductsIdBody }) => {
-      const response = await productsApi.putAdminProductsId(id, updateData);
-      return response.data;
-    },
+    mutationFn: ({ id, data }: { id: string; data: any }) => ProductService.updateProduct(id, data),
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: productKeys.lists() });
       queryClient.invalidateQueries({ queryKey: productKeys.detail(variables.id) });
@@ -71,35 +48,79 @@ export function useUpdateProduct() {
   });
 }
 
-// Delete product
 export function useDeleteProduct() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (id: string) => {
-      await productsApi.deleteAdminProductsId(id);
-      return id;
-    },
+    mutationFn: (id: string) => ProductService.deleteProduct(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: productKeys.lists() });
     },
   });
 }
 
-// Switch active status
 export function useSwitchProductActive() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (id: string) => {
-      const response = await productsApi.patchAdminProductsIdSwitchActive(id);
-      return response.data;
-    },
+    mutationFn: (id: string) => ProductService.switchProductActive(id),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: productKeys.lists() });
       if (data.id) {
         queryClient.invalidateQueries({ queryKey: productKeys.detail(data.id) });
       }
+    }
+  });
+}
+
+// Prices
+export function useProductPrices(params?: any) {
+  return useQuery({
+    queryKey: productKeys.prices(params),
+    queryFn: () => ProductService.listPrices(params),
+  });
+}
+
+export function useCreateProductPrice() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: any) => ProductService.createPrice(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+    },
+  });
+}
+
+export function useUpdateProductPrice() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: any }) => ProductService.updatePrice(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+    },
+  });
+}
+
+export function useDeleteProductPrice() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => ProductService.deletePrice(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+    },
+  });
+}
+
+export function useSwitchProductPriceActive() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => ProductService.switchPriceActive(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
     }
   });
 }

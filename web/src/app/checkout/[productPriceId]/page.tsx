@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { getPayment } from '@/api/generated/payment/payment';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,81 +9,43 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Loader2, CheckCircle2 } from 'lucide-react';
-import { GetMemberPaymentsProducts200AllOfTwoDataItem, GetMemberPaymentsProducts200AllOfTwoDataItemAllOfThreePricesItem } from '@/api/generated/newChatbotAPI.schemas';
-
-const paymentApi = getPayment();
+import { usePaymentProducts, useCreateCheckoutSession } from '@/hooks/queries/usePayment';
 
 export default function CheckoutPage() {
   const { productPriceId } = useParams();
   const router = useRouter();
   const { t } = useTranslation();
   
-  const [loading, setLoading] = useState(true);
-  const [processing, setProcessing] = useState(false);
-  const [product, setProduct] = useState<GetMemberPaymentsProducts200AllOfTwoDataItem | null>(null);
-  const [price, setPrice] = useState<GetMemberPaymentsProducts200AllOfTwoDataItemAllOfThreePricesItem | null>(null);
+  const { data, isLoading } = usePaymentProducts();
+  const { mutate: createCheckout, isPending: processing } = useCreateCheckoutSession();
   const [promotionCode, setPromotionCode] = useState('');
 
-  useEffect(() => {
-    const fetchProductDetails = async () => {
-      try {
-        const response = await paymentApi.getMemberPaymentsProducts();
-        const allProducts = response.data;
-        
-        let foundProduct = null;
-        let foundPrice = null;
+  const products = data?.items || [];
+  let product = null;
+  let price = null;
 
-        for (const p of allProducts) {
-          const prices = p.prices || [];
-          const pr = prices.find(price => price.id === productPriceId);
-          if (pr) {
-            foundProduct = p;
-            foundPrice = pr;
-            break;
-          }
-        }
-
-        if (foundProduct && foundPrice) {
-          setProduct(foundProduct);
-          setPrice(foundPrice);
-        } else {
-          toast.error(t('product not found'));
-          router.push('/dashboard');
-        }
-      } catch (error) {
-        console.error('Error fetching product details:', error);
-        toast.error(t('error fetching product'));
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (productPriceId) {
-      fetchProductDetails();
+  for (const p of products) {
+    const pr = p.prices?.find(price => price.id === productPriceId);
+    if (pr) {
+      product = p;
+      price = pr;
+      break;
     }
-  }, [productPriceId, router, t]);
+  }
 
-  const handleCheckout = async () => {
-    try {
-      setProcessing(true);
-      const response = await paymentApi.postMemberPaymentsCheckout({
-        productPriceId: productPriceId as string,
-        promotionCode: promotionCode || undefined,
-      });
-
-      if (response.data?.url) {
-        window.location.href = response.data.url;
-      } else {
-        throw new Error('no checkout url returned');
+  const handleCheckout = () => {
+    createCheckout({
+      productPriceId: productPriceId as string,
+      promotionCode: promotionCode || undefined,
+    }, {
+      onError: (error) => {
+        console.error('Checkout error:', error);
+        toast.error(t('checkout error'));
       }
-    } catch (error) {
-      console.error('Checkout error:', error);
-      toast.error(t('checkout error'));
-      setProcessing(false);
-    }
+    });
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -93,7 +54,12 @@ export default function CheckoutPage() {
   }
 
   if (!product || !price) {
-    return null;
+    return (
+      <div className="container mx-auto max-w-2xl py-12 px-4 text-center">
+        <h2 className="text-xl font-bold mb-4">{t('product not found')}</h2>
+        <Button onClick={() => router.push('/dashboard/billing')}>{t('go back')}</Button>
+      </div>
+    );
   }
 
   return (

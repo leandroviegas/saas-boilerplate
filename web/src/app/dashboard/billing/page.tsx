@@ -1,37 +1,19 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { getPayment } from '@/api/generated/payment/payment';
+import React from 'react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
-import { GetMemberPaymentsProducts200AllOfTwoDataItem } from '@/api/generated/newChatbotAPI.schemas';
-
-const paymentApi = getPayment();
+import { usePaymentProducts } from '@/hooks/queries/usePayment';
 
 export default function MemberProductsPage() {
   const { t } = useTranslation();
-  const [loading, setLoading] = useState(true);
-  const [products, setProducts] = useState<GetMemberPaymentsProducts200AllOfTwoDataItem[]>([]);
+  const { data, isLoading } = usePaymentProducts();
+  const products = data?.items || [];
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await paymentApi.getMemberPaymentsProducts();
-        setProducts(response.data);
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />

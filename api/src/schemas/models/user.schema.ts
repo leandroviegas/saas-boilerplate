@@ -1,16 +1,20 @@
-import { t } from "elysia";
+import { t, Static } from "elysia";
 
 export const UserSchema = t.Object({
   id: t.String(),
   email: t.String({ format: "email" }),
   name: t.String(),
   username: t.String(),
-  provider: t.Optional(t.String()),
-  image: t.Optional(t.String()),
-  role: t.String({ default: "USER" }),
-  emailVerified: t.Boolean({ default: false }),
-  preferences: t.Optional(t.String()),
-  twoFactorEnabled: t.Optional(t.Boolean()),
-  createdAt: t.String({ format: "date-time" }),
-  updatedAt: t.String({ format: "date-time" }),
+  provider: t.Union([t.String(), t.Null()]),
+  image: t.Union([t.String(), t.Null()]),
+  roleSlug: t.Union([t.String(), t.Null()]),
+  emailVerified: t.Boolean(),
+  preferences: t.Union([t.String(), t.Null()]),
+  twoFactorEnabled: t.Union([t.Boolean(), t.Null()]),
+  stripeCustomerId: t.Union([t.String(), t.Null()]),
+  createdAt: t.Date(),
+  updatedAt: t.Date(),
+  displayUsername: t.Union([t.String(), t.Null()]),
 });
+
+export type UserType = Static<typeof UserSchema>;

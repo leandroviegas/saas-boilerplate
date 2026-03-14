@@ -2,6 +2,7 @@ import { AuthUser } from "@/auth";
 import { organizationRolePermissionService, productService } from "@/services";
 import lodash from "lodash";
 import { AppError } from "@/handlers/error.handler";
+import { Prisma } from "@prisma/client";
 
 export type PermissionsMap = { [key: string]: string[] };
 
@@ -28,6 +29,36 @@ function permissionChecker(availableAccess: PermissionsMap | null | undefined, a
 interface MemberInfo {
     organizationId: string;
     role: string;
+}
+
+export function parsePermissions(
+    permissions: string | Prisma.JsonValue | null | undefined
+): PermissionsMap {
+    if (!permissions) return {};
+
+    let data: unknown;
+
+    if (typeof permissions === "string") {
+        try {
+            data = JSON.parse(permissions);
+        } catch {
+            return {};
+        }
+    } else {
+        data = permissions;
+    }
+
+    if (typeof data !== "object" || data === null) return {};
+
+    const result: PermissionsMap = {};
+
+    for (const [key, value] of Object.entries(data as Record<string, unknown>)) {
+        if (Array.isArray(value)) {
+            result[key] = value.filter((v): v is string => typeof v === "string");
+        }
+    }
+
+    return result;
 }
 
 export async function hasPermission(

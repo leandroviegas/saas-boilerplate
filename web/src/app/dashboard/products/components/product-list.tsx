@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { GetAdminProducts200AllOfTwoDataItem } from '@/api/generated/newChatbotAPI.schemas';
 import DataTable from '@/components/ui/data-table';
 import { Input } from '@/components/ui/input';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -11,6 +10,7 @@ import { useQueryStates, parseAsInteger, parseAsString } from "nuqs";
 import { Button } from '@/components/ui/button';
 import { useProducts, useDeleteProduct } from '@/hooks/queries/useProducts';
 import { PermissionsPreview } from '@/components/ui/permissions-preview';
+import { Product } from '@/models/product.model';
 
 export default function ProductList() {
     const { t } = useTranslation();
@@ -23,8 +23,8 @@ export default function ProductList() {
     }, { shallow: true, history: "replace" });
 
     const { data, isLoading, error } = useProducts(filters);
-    const products = data?.data || [];
-    const meta = data?.meta || { total: 0, page: 1, perPage: 20 };
+    const products = data?.items || [];
+    const meta = { total: data?.total || 0, page: filters.page, perPage: filters.perPage };
 
     const dataFormat = [
         { key: 'name', header: t('name'), type: 'string' as const },
@@ -153,7 +153,7 @@ export default function ProductList() {
                 status={isLoading ? 'loading' : error ? 'error' : 'success'}
                 meta={meta}
                 onPageChange={(page, perPage) => { setFilters(prevFilters => ({ ...prevFilters, page, perPage })) }}
-                actions={(product: GetAdminProducts200AllOfTwoDataItem) => (
+                actions={(product: Product) => (
                     <div className="flex gap-2 mt-auto">
                         <Link className="flex-1" href={`/dashboard/products/${product.id}`}>
                             <Button variant="secondary" size="sm" className="w-full">

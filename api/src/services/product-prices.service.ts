@@ -1,5 +1,5 @@
 import { AbstractService } from "@/services/abstract.service";
-import { CreateProductPriceBodyType, UpdateProductPriceBodyType } from "@/http/admin/product-price/product-price.schemas";
+import { CreateProductPriceBodyType, UpdateProductPriceBodyType } from "@/schemas/models/product-price.schemas";
 import { PaginationType } from "@/schemas/pagination";
 import { stripeProvider } from "./payment/providers";
 

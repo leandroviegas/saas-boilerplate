@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React from 'react';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -13,79 +13,41 @@ import { Button } from '@/components/ui/button';
 import { FiBell, FiCheck, FiTrash2, FiInfo, FiAlertCircle, FiCheckCircle, FiXCircle } from 'react-icons/fi';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useWebsockets, WsData, wsTypeEnum } from '@/hooks/useWebsockets';
-import { getNotifications } from '@/api/generated/notifications/notifications';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
-
-interface Notification {
-  id: string;
-  title: string;
-  message: string;
-  type: string;
-  link?: string;
-  read: boolean;
-  createdAt: string;
-}
+import { 
+  useNotifications, 
+  useMarkNotificationAsRead, 
+  useMarkAllNotificationsAsRead, 
+  useDeleteNotification 
+} from '@/hooks/queries/useNotifications';
+import { useQueryClient } from '@tanstack/react-query';
+import { notificationKeys } from '@/hooks/queries/useNotifications';
 
 interface WsNotification extends WsData {
-  notification: Notification
+  notification: any
 }
-
-const notificationApi = getNotifications();
 
 const NotificationDropdown: React.FC = () => {
   const { t } = useTranslation();
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [unreadCount, setUnreadCount] = useState(0);
+  const queryClient = useQueryClient();
+  const { data } = useNotifications();
+  const notifications = data?.items || [];
+  const unreadCount = notifications.filter(n => !n.read).length;
 
-  const fetchNotifications = useCallback(async () => {
-    const response = await notificationApi.getMemberNotifications();
-    const data = response.data;
-    setNotifications(data);
-    setUnreadCount(data.filter((n) => !n.read).length);
-  }, [notificationApi]);
-
-  useEffect(() => {
-    fetchNotifications();
-  }, [fetchNotifications]);
+  const { mutate: markAsRead } = useMarkNotificationAsRead();
+  const { mutate: markAllAsRead } = useMarkAllNotificationsAsRead();
+  const { mutate: deleteNotification } = useDeleteNotification();
 
   useWebsockets('notification', (data: WsNotification) => {
     if (data.type === wsTypeEnum.NEW_NOTIFICATION) {
-      const newNotification = data.notification;
-      setNotifications((prev) => [newNotification, ...prev]);
-      setUnreadCount((prev) => prev + 1);
-      toast(newNotification.title, {
-        description: newNotification.message,
+      queryClient.invalidateQueries({ queryKey: notificationKeys.all });
+      toast(data.notification.title, {
+        description: data.notification.message,
       });
     }
   }, true);
-
-  const markAsRead = async (id: string) => {
-    try {
-      await notificationApi.putMemberNotificationsIdRead(id);
-      setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
-      setUnreadCount((prev) => Math.max(0, prev - 1));
-    } catch (error) {
-      console.error('Failed to mark notification as read', error);
-    }
-  };
-
-  const markAllAsRead = async () => {
-    await notificationApi.putMemberNotificationsReadAll();
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-    setUnreadCount(0);
-  };
-
-  const deleteNotification = async (id: string) => {
-    await notificationApi.deleteMemberNotificationsId(id);
-    setNotifications((prev) => {
-      const filtered = prev.filter((n) => n.id !== id);
-      const wasUnread = prev.find((n) => n.id === id && !n.read);
-      if (wasUnread) setUnreadCount((c) => Math.max(0, c - 1));
-      return filtered;
-    });
-  };
 
   const getIcon = (type: string) => {
     switch (type) {
@@ -116,7 +78,7 @@ const NotificationDropdown: React.FC = () => {
         <div className="flex items-center justify-between p-2">
           <DropdownMenuLabel>{t('notifications')}</DropdownMenuLabel>
           {unreadCount > 0 && (
-            <Button variant="ghost" size="sm" onClick={markAllAsRead} className="h-8 text-xs">
+            <Button variant="ghost" size="sm" onClick={() => markAllAsRead()} className="h-8 text-xs">
               <FiCheck className="mr-1" /> {t('mark all as read')}
             </Button>
           )}

@@ -13,12 +13,12 @@ import { typeboxResolver } from "@/lib/typebox-resolver";
 import { Type, Static } from "@sinclair/typebox";
 import { Plus, X, DollarSign, Loader2 } from "lucide-react";
 import { useState } from "react";
-import { GetAdminProducts200AllOfTwoDataItem, GetAdminProducts200AllOfTwoDataItemAllOfThreePricesItem } from "@/api/generated/newChatbotAPI.schemas";
 import { useCustomForm } from "@/hooks/useCustomForm";
 import { ProductPriceForm } from "./product-price-form";
 import { useRouter } from "next/navigation";
 import { useCreateProduct, useUpdateProduct } from "@/hooks/queries/useProducts";
 import PermissionManagement, { PermissionsMap } from "@/app/dashboard/components/permission-mangement";
+import { Product, ProductPrice } from "@/models/product.model";
 
 const availableProductPermissions: PermissionsMap = {
   member: ["create", "update", "delete", "view"],
@@ -34,7 +34,7 @@ const productFormSchema = Type.Object({
 type ProductFormValues = Static<typeof productFormSchema>;
 
 interface ProductFormProps {
-  product?: GetAdminProducts200AllOfTwoDataItem;
+  product?: Product;
   onUpsertSuccess?: () => void;
 }
 
@@ -44,7 +44,7 @@ export function ProductForm({ product, onUpsertSuccess }: ProductFormProps) {
   const createProduct = useCreateProduct();
   const updateProduct = useUpdateProduct();
 
-  const [prices, setPrices] = useState<GetAdminProducts200AllOfTwoDataItemAllOfThreePricesItem[] | undefined>(product?.prices);
+  const [prices, setPrices] = useState<ProductPrice[] | undefined>(product?.prices);
   const { onFormSubmit, isLoading } = useCustomForm();
   const [newFeature, setNewFeature] = useState("");
 
@@ -63,19 +63,10 @@ export function ProductForm({ product, onUpsertSuccess }: ProductFormProps) {
       if (product?.id) {
         await updateProduct.mutateAsync({
           id: product.id,
-          updateData: {
-            id: product.id,
-            ...formData,
-            active: product.active,
-            archived: product.archived,
-          },
+          data: formData,
         });
       } else {
-        await createProduct.mutateAsync({
-          ...formData,
-          active: true,
-          archived: false,
-        });
+        await createProduct.mutateAsync(formData);
       }
 
       if (onUpsertSuccess) {
@@ -259,7 +250,7 @@ export function ProductForm({ product, onUpsertSuccess }: ProductFormProps) {
               </div>
               <Button
                 onClick={() => {
-                  const newPrice = {} as GetAdminProducts200AllOfTwoDataItemAllOfThreePricesItem;
+                  const newPrice = {} as ProductPrice;
                   setPrices(prevPrices => ([...(prevPrices || []), newPrice]));
                 }}
                 size="sm"
@@ -295,7 +286,7 @@ export function ProductForm({ product, onUpsertSuccess }: ProductFormProps) {
                 </p>
                 <Button
                   onClick={() => {
-                    const newPrice = {} as GetAdminProducts200AllOfTwoDataItemAllOfThreePricesItem;
+                    const newPrice = {} as ProductPrice;
                     setPrices(prevPrices => ([...(prevPrices || []), newPrice]));
                   }}
                   variant="outline"

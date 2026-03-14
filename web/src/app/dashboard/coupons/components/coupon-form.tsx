@@ -9,11 +9,11 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { useForm } from "react-hook-form";
 import { typeboxResolver } from "@/lib/typebox-resolver";
 import { Type, Static } from "@sinclair/typebox";
-import { GetAdminCouponsId200AllOfTwoData } from "@/api/generated/newChatbotAPI.schemas";
 import { useCustomForm } from "@/hooks/useCustomForm";
 import { useRouter } from "next/navigation";
 import { useCreateCoupon, useUpdateCoupon } from "@/hooks/queries/useCoupons";
 import { Card, CardContent } from "@/components/ui/card";
+import { Coupon } from "@/models/coupon.model";
 
 const couponFormSchema = Type.Object({
   code: Type.String({ minLength: 1 }),
@@ -27,7 +27,7 @@ const couponFormSchema = Type.Object({
 type CouponFormValues = Static<typeof couponFormSchema>;
 
 interface CouponFormProps {
-  coupon?: GetAdminCouponsId200AllOfTwoData;
+  coupon?: Coupon;
 }
 
 export function CouponForm({ coupon }: CouponFormProps) {
@@ -46,7 +46,7 @@ export function CouponForm({ coupon }: CouponFormProps) {
       value: coupon?.value || 0,
       usageLimit: coupon?.usageLimit || undefined,
       active: coupon?.active ?? true,
-      expiresAt: coupon?.expiresAt || undefined,
+      expiresAt: coupon?.expiresAt ? coupon.expiresAt.toISOString() : undefined,
     },
   });
 
@@ -55,17 +55,10 @@ export function CouponForm({ coupon }: CouponFormProps) {
       if (coupon?.id) {
         await updateCoupon.mutateAsync({
           id: coupon.id,
-          updateData: {
-            ...formData,
-            usageCount: coupon.usageCount,
-            stripeCouponId: coupon.stripeCouponId,
-          },
+          data: formData,
         });
       } else {
-        await createCoupon.mutateAsync({
-          ...formData,
-          usageCount: 0,
-        });
+        await createCoupon.mutateAsync(formData);
       }
 
       router.push("/dashboard/coupons");

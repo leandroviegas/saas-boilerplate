@@ -42,7 +42,7 @@ interface AuthContextType {
   signUp: (data: SignUpData) => Promise<void>
   signOut: () => Promise<void>
   updateSession: () => Promise<void>
-  checkOrganization: () => Promise<void>
+  checkOrganization: (activeOrganizationId?: string | null) => Promise<void>
 }
 
 
@@ -78,16 +78,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, user: u, s
     if (!data) return;
     setUser(parseUser(data.user));
     setSession(data.session);
-    await checkOrganization();
+    await checkOrganization(data.session.activeOrganizationId ?? null);
   }
 
-  const checkOrganization = async () => {
-    const { data } = await authClient.organization.list();
-    if (data && data.length > 0) {
-      setOrganization(data[0]);
-    } else {
+  const checkOrganization = async (activeOrganizationId?: string | null) => {
+    const { data: orgs } = await authClient.organization.list();
+    if (!orgs || orgs.length === 0) {
       setOrganization(null);
+      return;
     }
+
+    const targetId = activeOrganizationId ?? orgs[0].id;
+    const isAlreadyActive = activeOrganizationId === targetId;
+
+    if (!isAlreadyActive) {
+      await authClient.organization.setActive({ organizationId: targetId });
+    }
+
+    const { data: fullOrg } = await authClient.organization.getFullOrganization({ query: { organizationId: targetId } });
+    setOrganization(fullOrg ?? orgs[0]);
   }
 
   const signIn = async (form: SignInData) => {
@@ -101,7 +110,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, user: u, s
     await updateSession();
     socket.disconnect();
     socket.connect();
-    
+
     const { data: orgData } = await authClient.organization.list();
     if (!orgData || orgData.length === 0) {
       router.push('/dashboard/organization');
