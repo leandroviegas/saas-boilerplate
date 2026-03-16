@@ -4,12 +4,11 @@ import { websocketsService } from "@/services";
 
 export class NotificationService extends AbstractService {
   async findAllByUserId(userId: string, pagination: PaginationType) {
-    let where = { userId };
+    const { page, perPage } = pagination;
 
-    return await this.prisma.notification.paginate({
-      where,
-      orderBy: { createdAt: 'desc' },
-    }, pagination);
+    const where = { userId };
+
+    return await this.prisma.notification.paginate({ where, orderBy: { createdAt: 'desc' } }, { page, perPage });
   }
 
   async create(data: {

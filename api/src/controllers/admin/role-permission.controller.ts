@@ -1,12 +1,14 @@
 import { Elysia, t } from 'elysia';
 import { organizationRolePermissionService } from "@/services";
 import { OrganizationRolePermissionsSchema } from "@/schemas/models/organization-role-permission.schema";
+import { paginationSchema, metaSchema } from "@/schemas/pagination";
 import { Prisma } from "@prisma/client";
 import { authMiddleware } from "@/middleware/auth.middleware";
 
 const GetRolePermissionsResponse = t.Object({
     code: t.String(),
-    data: t.Array(OrganizationRolePermissionsSchema)
+    data: t.Array(OrganizationRolePermissionsSchema),
+    meta: metaSchema
 });
 
 const GetRolePermissionBySlugResponse = t.Object({
@@ -34,17 +36,19 @@ export const adminRolePermissionController = new Elysia({
     detail: { tags: ['Admin Organization Role Permissions'] }
 })
     .use(authMiddleware)
-    .get('/', async ({ session }) => {
+    .get('/', async ({ query, session }) => {
         const organizationId = session?.activeOrganizationId;
         if (!organizationId) throw new Error("Organization not found");
 
-        const data = await organizationRolePermissionService.findByOrganizationId(organizationId);
+        const { data, meta } = await organizationRolePermissionService.findAll(query, organizationId);
 
         return {
             code: "get-organization-role-permissions",
             data,
+            meta
         };
     }, {
+        query: t.Intersect([paginationSchema]),
         response: GetRolePermissionsResponse
     })
     .get('/:roleSlug', async ({ params: { roleSlug }, session }) => {

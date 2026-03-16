@@ -9,7 +9,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { FaPencilAlt, FaSearch } from 'react-icons/fa';
 import { useQueryStates, parseAsInteger, parseAsString } from "nuqs";
 import { useCoupons, useIncrementCouponUsage } from '@/hooks/queries/useCoupons';
-import { Coupon } from '@/models/coupon.model';
+import { CouponDTO } from '@/models/coupon.model';
 
 export default function CouponList() {
     const { t } = useTranslation();
@@ -135,7 +135,7 @@ export default function CouponList() {
                 status={isLoading ? 'loading' : error ? 'error' : 'success'}
                 meta={meta}
                 onPageChange={(page, perPage) => { setFilters(prevFilters => ({ ...prevFilters, page, perPage })) }}
-                actions={(coupon: Coupon) => (
+                actions={(coupon: CouponDTO) => (
                     <div className='flex gap-2 mt-auto'>
                         <Button variant="outline" className='flex-1' onClick={() => incrementUsage.mutate(coupon.id)} disabled={incrementUsage.isPending}>
                             {t('increment usage')}

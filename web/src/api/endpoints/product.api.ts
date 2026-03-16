@@ -1,22 +1,22 @@
 import { api } from "../client";
 import { ApiResponse } from "../types/api-response";
-import { ProductDTO, ProductPriceDTO } from "../../models/product.model";
+import { ProductType, ProductPriceType } from "../../models/product.model";
 
 export const ProductAPI = {
   async getProduct(id: string) {
-    return api.get<ApiResponse<ProductDTO>>(`/admin/product/${id}`);
+    return api.get<ApiResponse<ProductType>>(`/admin/product/${id}`);
   },
 
   async listProducts(params?: any) {
-    return api.get<ApiResponse<ProductDTO[]> & { meta: any }>(`/admin/product`, { params });
+    return api.get<ApiResponse<ProductType[]> & { meta: any }>(`/admin/product`, { params });
   },
 
   async createProduct(data: any) {
-    return api.post<ApiResponse<ProductDTO>>(`/admin/product`, data);
+    return api.post<ApiResponse<ProductType>>(`/admin/product`, data);
   },
 
   async updateProduct(id: string, data: any) {
-    return api.put<ApiResponse<ProductDTO>>(`/admin/product/${id}`, data);
+    return api.put<ApiResponse<ProductType>>(`/admin/product/${id}`, data);
   },
 
   async deleteProduct(id: string) {
@@ -24,20 +24,20 @@ export const ProductAPI = {
   },
 
   async switchProductActive(id: string) {
-    return api.patch<ApiResponse<ProductDTO>>(`/admin/product/${id}/switch-active`);
+    return api.patch<ApiResponse<ProductType>>(`/admin/product/${id}/switch-active`);
   },
 
   // Prices
   async listPrices(params?: any) {
-    return api.get<ApiResponse<ProductPriceDTO[]> & { meta: any }>(`/admin/product-price`, { params });
+    return api.get<ApiResponse<ProductPriceType[]> & { meta: any }>(`/admin/product-price`, { params });
   },
 
   async createPrice(data: any) {
-    return api.post<ApiResponse<ProductPriceDTO>>(`/admin/product-price`, data);
+    return api.post<ApiResponse<ProductPriceType>>(`/admin/product-price`, data);
   },
 
   async updatePrice(id: string, data: any) {
-    return api.put<ApiResponse<ProductPriceDTO>>(`/admin/product-price/${id}`, data);
+    return api.put<ApiResponse<ProductPriceType>>(`/admin/product-price/${id}`, data);
   },
 
   async deletePrice(id: string) {
@@ -45,6 +45,6 @@ export const ProductAPI = {
   },
 
   async switchPriceActive(id: string) {
-    return api.patch<ApiResponse<ProductPriceDTO>>(`/admin/product-price/${id}/switch-active`);
+    return api.patch<ApiResponse<ProductPriceType>>(`/admin/product-price/${id}/switch-active`);
   }
 };

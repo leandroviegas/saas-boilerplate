@@ -10,14 +10,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import Link from "next/link";
 import { useAuth } from '@/hooks/useAuth';
 import { useCustomForm } from "@/hooks/useCustomForm";
-import { Type, Static } from "@sinclair/typebox";
+import { SignInSchema } from "@/models/schemas";
+import type { Static } from "@sinclair/typebox";
 
-const signInSchema = Type.Object({
-    email: Type.String({ format: "email" }),
-    password: Type.String(),
-});
-
-export type SignInFormValues = Static<typeof signInSchema>;
+export type SignInFormValues = Static<typeof SignInSchema>;
 
 export default function SignInForm() {
     const { t, locale } = useTranslation();
@@ -25,7 +21,7 @@ export default function SignInForm() {
     const { onFormSubmit, isLoading } = useCustomForm();
 
     const signInForm = useForm<SignInFormValues>({
-        resolver: typeboxResolver(signInSchema, { locale }),
+        resolver: typeboxResolver(SignInSchema, { locale }),
         defaultValues: {
             email: "",
             password: "",

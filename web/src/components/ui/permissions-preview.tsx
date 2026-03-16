@@ -36,10 +36,10 @@ export function PermissionsPreview({
       </p>
       <div className="space-y-2">
         {visibleFeatures.map(([feature, actions]) => (
-          <div key={feature} className="flex items-start gap-2">
-            <Badge variant="secondary" className="font-mono text-xs shrink-0">
-              {feature}
-            </Badge>
+          <div key={feature} className="flex items-center gap-2">
+            <span className="pb-1">
+              {feature}:
+            </span>
             <div className="flex flex-wrap gap-1">
               {actions.slice(0, maxActionsPerFeature).map((action) => (
                 <span

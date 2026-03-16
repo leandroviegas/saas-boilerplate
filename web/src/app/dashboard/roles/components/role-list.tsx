@@ -7,7 +7,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { FaPencilAlt, FaTrash } from 'react-icons/fa';
 import { Button } from '@/components/ui/button';
 import { useRoles, useDeleteRole } from '@/hooks/queries/useRoles';
-import { Role } from '@/models/role.model';
+import { RoleDTO } from '@/models/role.model';
 
 export default function RoleList() {
     const { t } = useTranslation();
@@ -69,7 +69,7 @@ export default function RoleList() {
                 dataFormat={dataFormat}
                 status={isLoading ? 'loading' : error ? 'error' : 'success'}
                 meta={{ total: roles.length, page: 1, perPage: roles.length }}
-                actions={(role: Role) => (
+                actions={(role: RoleDTO) => (
                     <div className="flex gap-2 mt-auto">
                         <Link className="flex-1" href={`/dashboard/roles/${role.slug}`}>
                             <Button variant="secondary" size="sm" className="w-full">

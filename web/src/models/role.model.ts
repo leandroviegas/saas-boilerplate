@@ -1,17 +1,17 @@
-export interface RoleDTO {
+export interface RoleType {
   slug: string;
   privilege: number;
   createdAt: string;
   updatedAt: string;
 }
 
-export class Role {
+export class RoleDTO {
   slug: string;
   privilege: number;
   createdAt: Date;
   updatedAt: Date;
 
-  constructor(dto: RoleDTO) {
+  constructor(dto: RoleType) {
     this.slug = dto.slug;
     this.privilege = dto.privilege;
     this.createdAt = new Date(dto.createdAt);

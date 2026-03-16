@@ -10,14 +10,10 @@ const GetUsersResponse = t.Object({
     meta: metaSchema
 });
 
-export type GetUsersResponseType = Static<typeof GetUsersResponse>;
-
 const GetUserResponse = t.Object({
     code: t.String(),
     data: UserSchema
 });
-
-export type GetUserResponseType = Static<typeof GetUserResponse>;
 
 const UpdateUserResponse = t.Object({
     code: t.String(),
@@ -25,11 +21,11 @@ const UpdateUserResponse = t.Object({
 });
 
 export const UpdateUserBodySchema = t.Object({
-  email: t.String({ format: "email" }),
-  name: t.String(),
-  username: t.String(),
-  image: t.Optional(t.Union([t.String(), t.Null()])),
-  preferences: t.Optional(t.Union([t.String(), t.Null()])),
+    email: t.String({ format: "email" }),
+    name: t.String(),
+    username: t.String(),
+    image: t.Optional(t.Union([t.String(), t.Null()])),
+    preferences: t.Optional(t.Union([t.String(), t.Null()])),
 });
 
 export type UpdateUserBodyType = typeof UpdateUserBodySchema.static;
@@ -40,10 +36,7 @@ export const adminUserController = new Elysia({
     prefix: '/user',
     detail: { tags: ['Admin Users'] }
 })
-
     .use(authMiddleware)
-
-
     .get('/', async ({ query }) => {
         const { data, meta } = await userService.findAll(query);
 

@@ -1,6 +1,6 @@
-import { Role, RoleDTO } from "./role.model";
+import { RoleDTO, RoleType } from "./role.model";
 
-export interface UserDTO {
+export interface UserType {
   id: string;
   email: string;
   username: string;
@@ -12,10 +12,10 @@ export interface UserDTO {
   twoFactorEnabled?: boolean | null;
   createdAt: string;
   updatedAt: string;
-  role?: RoleDTO | null;
+  role?: RoleType | null;
 }
 
-export class User {
+export class UserDTO {
   id: string;
   email: string;
   username: string;
@@ -27,9 +27,9 @@ export class User {
   twoFactorEnabled: boolean;
   createdAt: Date;
   updatedAt: Date;
-  role?: Role | null;
+  role?: RoleDTO | null;
 
-  constructor(dto: UserDTO) {
+  constructor(dto: UserType) {
     this.id = dto.id;
     this.email = dto.email;
     this.username = dto.username;
@@ -41,7 +41,7 @@ export class User {
     this.twoFactorEnabled = !!dto.twoFactorEnabled;
     this.createdAt = new Date(dto.createdAt);
     this.updatedAt = new Date(dto.updatedAt);
-    this.role = dto.role ? new Role(dto.role) : null;
+    this.role = dto.role ? new RoleDTO(dto.role) : null;
   }
 
   get initials(): string {

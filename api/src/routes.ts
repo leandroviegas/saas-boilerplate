@@ -6,6 +6,7 @@ import { adminProductPriceController } from './controllers/admin/product-price.c
 import { adminRoleController } from './controllers/admin/role.controller';
 import { adminRolePermissionController } from './controllers/admin/role-permission.controller';
 import { adminUserController } from './controllers/admin/user.controller';
+import { adminSystemVariableController } from './controllers/admin/system-variable.controller';
 import { memberNotificationController } from './controllers/member/notification.controller';
 import { memberPaymentController } from './controllers/member/payment.controller';
 import { memberSessionController } from './controllers/member/session.controller';
@@ -24,6 +25,7 @@ export const controllers = new Elysia()
         .use(adminRoleController)
         .use(adminRolePermissionController)
         .use(adminUserController)
+        .use(adminSystemVariableController)
     )
     .group('/member', (app) => app
         .use(memberNotificationController)

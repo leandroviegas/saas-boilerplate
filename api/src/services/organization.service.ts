@@ -4,9 +4,21 @@ import { PaginationType } from "@/schemas/pagination";
 
 export class OrganizationService extends AbstractService {
   findAll(pagination: PaginationType) {
-    return this.prisma.organization.paginate({
-      orderBy: { createdAt: 'desc' },
-    }, pagination);
+    const { search, page, perPage } = pagination;
+
+    let where: Prisma.OrganizationWhereInput = {};
+
+    if (search) {
+      where = {
+        ...where,
+        OR: [
+          { name: { contains: search, mode: 'insensitive' } },
+          { slug: { contains: search, mode: 'insensitive' } },
+        ]
+      }
+    }
+
+    return this.prisma.organization.paginate({ where, orderBy: { createdAt: 'desc' } }, { page, perPage });
   }
 
   findById(id: string) {

@@ -22,6 +22,9 @@ export class AuthService extends AbstractService {
     headers.set("origin", authUrl.origin);
     headers.set("host", authUrl.host);
     headers.set("x-forwarded-proto", authUrl.protocol.replace(":", ""));
+    headers.set('x-custom-header', 'value');
+    headers.set('cache-control', 'no-store');
+    headers.delete('content-length')
 
     const rawCookie = reqHeaders.cookie;
     if (rawCookie) {
@@ -35,7 +38,7 @@ export class AuthService extends AbstractService {
       });
       headers.set("cookie", Array.from(cookieMap.entries()).map(([n, v]) => `${n}=${v}`).join("; "));
     }
-    
+
     return headers;
   }
 

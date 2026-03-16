@@ -10,7 +10,8 @@ import { Separator } from "@/components/ui/separator";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useForm } from "react-hook-form";
 import { typeboxResolver } from "@/lib/typebox-resolver";
-import { Type, Static } from "@sinclair/typebox";
+import { ProductFormSchema } from "@/models/schemas";
+import type { Static } from "@sinclair/typebox";
 import { Plus, X, DollarSign, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useCustomForm } from "@/hooks/useCustomForm";
@@ -18,23 +19,16 @@ import { ProductPriceForm } from "./product-price-form";
 import { useRouter } from "next/navigation";
 import { useCreateProduct, useUpdateProduct } from "@/hooks/queries/useProducts";
 import PermissionManagement, { PermissionsMap } from "@/app/dashboard/components/permission-mangement";
-import { Product, ProductPrice } from "@/models/product.model";
+import { ProductDTO, ProductPriceDTO } from "@/models/product.model";
 
 const availableProductPermissions: PermissionsMap = {
   member: ["create", "update", "delete", "view"],
 };
 
-const productFormSchema = Type.Object({
-  name: Type.String({ minLength: 1 }),
-  description: Type.Optional(Type.String()),
-  features: Type.Array(Type.String()),
-  permissions: Type.Record(Type.String(), Type.Array(Type.String())),
-});
-
-type ProductFormValues = Static<typeof productFormSchema>;
+type ProductFormValues = Static<typeof ProductFormSchema>;
 
 interface ProductFormProps {
-  product?: Product;
+  product?: ProductDTO;
   onUpsertSuccess?: () => void;
 }
 
@@ -44,12 +38,12 @@ export function ProductForm({ product, onUpsertSuccess }: ProductFormProps) {
   const createProduct = useCreateProduct();
   const updateProduct = useUpdateProduct();
 
-  const [prices, setPrices] = useState<ProductPrice[] | undefined>(product?.prices);
+  const [prices, setPrices] = useState<ProductPriceDTO[] | undefined>(product?.prices);
   const { onFormSubmit, isLoading } = useCustomForm();
   const [newFeature, setNewFeature] = useState("");
 
   const form = useForm<ProductFormValues>({
-    resolver: typeboxResolver(productFormSchema, { locale }),
+    resolver: typeboxResolver(ProductFormSchema, { locale }),
     defaultValues: {
       name: product?.name || "",
       description: product?.description || "",
@@ -250,7 +244,7 @@ export function ProductForm({ product, onUpsertSuccess }: ProductFormProps) {
               </div>
               <Button
                 onClick={() => {
-                  const newPrice = {} as ProductPrice;
+                  const newPrice = {} as ProductPriceDTO;
                   setPrices(prevPrices => ([...(prevPrices || []), newPrice]));
                 }}
                 size="sm"
@@ -286,7 +280,7 @@ export function ProductForm({ product, onUpsertSuccess }: ProductFormProps) {
                 </p>
                 <Button
                   onClick={() => {
-                    const newPrice = {} as ProductPrice;
+                    const newPrice = {} as ProductPriceDTO;
                     setPrices(prevPrices => ([...(prevPrices || []), newPrice]));
                   }}
                   variant="outline"

@@ -1,8 +1,8 @@
-import { Product, ProductDTO } from "./product.model";
+import { ProductDTO, ProductType } from "./product.model";
 
 export type SubscriptionStatus = "ACTIVE" | "CANCELED" | "PAST_DUE" | "INCOMPLETE" | "TRIALING" | "INCOMPLETE_EXPIRED" | "UNPAID";
 
-export interface SubscriptionDTO {
+export interface SubscriptionType {
   id: string;
   organizationId: string;
   productId: string;
@@ -12,10 +12,10 @@ export interface SubscriptionDTO {
   status: SubscriptionStatus;
   createdAt: string;
   updatedAt: string;
-  product?: ProductDTO | null;
+  product?: ProductType | null;
 }
 
-export class Subscription {
+export class SubscriptionDTO {
   id: string;
   organizationId: string;
   productId: string;
@@ -25,9 +25,9 @@ export class Subscription {
   status: SubscriptionStatus;
   createdAt: Date;
   updatedAt: Date;
-  product?: Product | null;
+  product?: ProductDTO | null;
 
-  constructor(dto: SubscriptionDTO) {
+  constructor(dto: SubscriptionType) {
     this.id = dto.id;
     this.organizationId = dto.organizationId;
     this.productId = dto.productId;
@@ -37,11 +37,11 @@ export class Subscription {
     this.status = dto.status;
     this.createdAt = new Date(dto.createdAt);
     this.updatedAt = new Date(dto.updatedAt);
-    this.product = dto.product ? new Product(dto.product) : null;
+    this.product = dto.product ? new ProductDTO(dto.product) : null;
   }
 }
 
-export interface TransactionDTO {
+export interface TransactionType {
   id: string;
   userId?: string | null;
   amount: number;
@@ -52,7 +52,7 @@ export interface TransactionDTO {
   updatedAt: string;
 }
 
-export class Transaction {
+export class TransactionDTO {
   id: string;
   userId?: string | null;
   amount: number;
@@ -62,7 +62,7 @@ export class Transaction {
   createdAt: Date;
   updatedAt: Date;
 
-  constructor(dto: TransactionDTO) {
+  constructor(dto: TransactionType) {
     this.id = dto.id;
     this.userId = dto.userId;
     this.amount = dto.amount;

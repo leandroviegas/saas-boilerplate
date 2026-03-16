@@ -1,10 +1,13 @@
 import { Elysia, t } from 'elysia';
 import { roleService } from "@/services";
 import { RoleSchema } from "@/schemas/models/role.schema";
+import { authMiddleware } from '@/middleware/auth.middleware';
+import { metaSchema, paginationSchema } from '@/schemas/pagination';
 
 const GetRolesResponse = t.Object({
     code: t.String(),
-    data: t.Array(RoleSchema)
+    data: t.Array(RoleSchema),
+    meta: metaSchema
 });
 
 const GetRoleResponse = t.Object({
@@ -31,14 +34,17 @@ export const adminRoleController = new Elysia({
     prefix: '/role',
     detail: { tags: ['Admin Roles'] }
 })
-    .get('/', async () => {
-        const data = await roleService.findAll();
+    .use(authMiddleware)
+    .get('/', async ({ query }) => {
+        const { data, meta } = await roleService.findAll(query);
 
         return {
             code: 'get-roles',
-            data
+            data,
+            meta
         };
     }, {
+        query: t.Intersect([paginationSchema]),
         response: GetRolesResponse
     })
     .get('/:slug', async ({ params: { slug } }) => {

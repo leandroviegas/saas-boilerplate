@@ -2,6 +2,7 @@ import { Elysia, t } from 'elysia';
 import { couponService } from "@/services";
 import { CouponSchema } from "@/schemas/models/coupon.schema";
 import { paginationSchema, metaSchema } from "@/schemas/pagination";
+import { authMiddleware } from '@/middleware/auth.middleware';
 
 const GetCouponsResponse = t.Object({
     code: t.String(),
@@ -34,6 +35,7 @@ export const adminCouponController = new Elysia({
     detail: { tags: ['Admin Coupons'] },
 
 })
+    .use(authMiddleware)
     .get('/', async ({ query }) => {
         const { data, meta } = await couponService.findAll(query);
 

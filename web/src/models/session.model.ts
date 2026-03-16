@@ -1,4 +1,4 @@
-export interface SessionDTO {
+export interface SessionType {
   id: string;
   userId: string;
   expiresAt: string;
@@ -10,7 +10,7 @@ export interface SessionDTO {
   updatedAt: string;
 }
 
-export class Session {
+export class SessionDTO {
   id: string;
   userId: string;
   expiresAt: Date;
@@ -21,7 +21,7 @@ export class Session {
   createdAt: Date;
   updatedAt: Date;
 
-  constructor(dto: SessionDTO) {
+  constructor(dto: SessionType) {
     this.id = dto.id;
     this.userId = dto.userId;
     this.expiresAt = new Date(dto.expiresAt);

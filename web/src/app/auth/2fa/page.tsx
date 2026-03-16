@@ -3,7 +3,8 @@
 import { useTranslation } from "@/hooks/useTranslation";
 import { useForm } from "react-hook-form";
 import { typeboxResolver } from "@/lib/typebox-resolver";
-import { Type, Static } from "@sinclair/typebox";
+import { VerifySchema } from "@/models/schemas";
+import type { Static } from "@sinclair/typebox";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
@@ -13,11 +14,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useCustomForm } from "@/hooks/useCustomForm";
 import { useRouter } from "next/navigation";
 
-const verifySchema = Type.Object({
-  otpCode: Type.String({ minLength: 6, maxLength: 6 }),
-});
-
-type VerifyFormValues = Static<typeof verifySchema>;
+type VerifyFormValues = Static<typeof VerifySchema>;
 
 export default function TwoFactorPage() {
   const { t, locale } = useTranslation();
@@ -26,7 +23,7 @@ export default function TwoFactorPage() {
   const { onFormSubmit, isLoading } = useCustomForm();
 
   const form = useForm<VerifyFormValues>({
-    resolver: typeboxResolver(verifySchema, { locale }),
+    resolver: typeboxResolver(VerifySchema, { locale }),
     defaultValues: {
       otpCode: "",
     },

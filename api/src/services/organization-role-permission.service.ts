@@ -1,15 +1,16 @@
 import { PermissionsMap } from "@/middleware/permission.middleware";
 import { AbstractService } from "@/services/abstract.service";
+import { PaginationType } from "@/schemas/pagination";
 import { Prisma } from "@prisma/client";
 
 export class OrganizationRolePermissionService extends AbstractService {
-  findAll() {
-    return this.prisma.organizationRolePermissions.findMany({
-      include: {
-        organization: true,
-        role: true,
-      },
-    });
+  findAll(pagination: PaginationType, organizationId: string) {
+    const { page, perPage } = pagination;
+
+    return this.prisma.organizationRolePermissions.paginate(
+      { where: { organizationId }, include: { organization: true, role: true } },
+      { page, perPage }
+    );
   }
 
   findByOrganizationId(organizationId: string) {

@@ -1,11 +1,13 @@
 import { Elysia, t } from 'elysia';
 import { sessionService } from "@/services";
 import { SessionSchema } from "@/schemas/models/session.schema";
+import { paginationSchema, metaSchema } from "@/schemas/pagination";
 import { authMiddleware } from "@/middleware/auth.middleware";
 
 const GetSessionsResponse = t.Object({
     code: t.String(),
-    data: t.Array(SessionSchema)
+    data: t.Array(SessionSchema),
+    meta: metaSchema
 });
 
 const RevokeSessionResponse = t.Object({
@@ -17,15 +19,17 @@ export const memberSessionController = new Elysia({
     detail: { tags: ['Member Sessions'] }
 })
     .use(authMiddleware)
-    .get('/', async ({ user }) => {
+    .get('/', async ({ query, user }) => {
         if (!user) throw new Error("Unauthorized");
-        const sessions = await sessionService.findAllByUserId(user.id);
+        const { data, meta } = await sessionService.findAllByUserId(user.id, query);
 
         return {
             code: 'get-sessions',
-            data: sessions
+            data,
+            meta
         };
     }, {
+        query: t.Intersect([paginationSchema]),
         response: GetSessionsResponse
     })
     .delete('/:id', async ({ params: { id }, user }) => {

@@ -4,46 +4,21 @@ import { Prisma } from "@prisma/client";
 import { stripeProvider } from "@/services/payment/providers";
 
 export class CouponService extends AbstractService {
-  findByCode(code: string) {
-    return this.prisma.coupon.findUniqueOrThrow({
-      where: { code, active: true },
-    });
-  }
-
-  async validate(code: string) {
-    const promo = await this.findByCode(code);
-
-    if (promo.expiresAt && promo.expiresAt < new Date()) {
-      throw new Error("coupon expired");
-    }
-
-    if (promo.usageLimit && promo.usageCount >= promo.usageLimit) {
-      throw new Error("coupon usage limit reached");
-    }
-
-    return promo;
-  }
-
-  incrementUsage(code: string) {
-    return this.prisma.coupon.update({
-      where: { code },
-      data: {
-        usageCount: {
-          increment: 1,
-        },
-      },
-    });
-  }
-
   findAll(pagination: PaginationType) {
-    const { search, ...rest } = pagination;
-    const where: Prisma.CouponWhereInput = search ? {
-      OR: [
-        { code: { contains: search, mode: 'insensitive' } },
-      ]
-    } : {};
+    const { search, page, perPage } = pagination;
 
-    return this.prisma.coupon.paginate({ where }, rest);
+    let where: Prisma.CouponWhereInput = {};
+
+    if (search) {
+      where = {
+        ...where,
+        OR: [
+          { code: { contains: search, mode: 'insensitive' } },
+        ]
+      }
+    }
+
+    return this.prisma.coupon.paginate({ where }, { page, perPage });
   }
 
   findById(id: string) {
@@ -100,4 +75,20 @@ export class CouponService extends AbstractService {
     });
   }
 
+  findByCode(code: string) {
+    return this.prisma.coupon.findUniqueOrThrow({
+      where: { code, active: true },
+    });
+  }
+
+  incrementUsage(code: string) {
+    return this.prisma.coupon.update({
+      where: { code },
+      data: {
+        usageCount: {
+          increment: 1,
+        },
+      },
+    });
+  }
 }

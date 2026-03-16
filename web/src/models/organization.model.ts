@@ -1,4 +1,4 @@
-export interface OrganizationDTO {
+export interface OrganizationType {
   id: string;
   name: string;
   slug?: string | null;
@@ -8,7 +8,7 @@ export interface OrganizationDTO {
   metadata?: string | null;
 }
 
-export class Organization {
+export class OrganizationDTO {
   id: string;
   name: string;
   slug?: string | null;
@@ -17,7 +17,7 @@ export class Organization {
   updatedAt: Date;
   metadata?: any;
 
-  constructor(dto: OrganizationDTO) {
+  constructor(dto: OrganizationType) {
     this.id = dto.id;
     this.name = dto.name;
     this.slug = dto.slug;

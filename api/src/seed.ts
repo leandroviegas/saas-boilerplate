@@ -45,12 +45,26 @@ async function seedUser(prisma: ExtendedPrismaClient) {
     }
 }
 
+async function seedCurrency(prisma: ExtendedPrismaClient) {
+    const currencies = await prisma.currency.createMany({
+        data: [
+            { code: 'BRL', name: 'brl' },
+            { code: 'USD', name: 'usd' },
+        ],
+        skipDuplicates: true,
+    });
+
+    console.log('Created currencies:', currencies);
+}
+
 export async function seed() {
     console.log('Starting database seeding...');
 
     await seedRoles(prisma);
 
     await seedUser(prisma);
+
+    await seedCurrency(prisma);
 
     console.log('Database seeding completed successfully!');
 }

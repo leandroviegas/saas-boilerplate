@@ -6,19 +6,22 @@ import { UpdateUserBodyType } from "@/controllers/admin/user.controller";
 
 export class UserService extends AbstractService {
   findAll(pagination: PaginationType) {
-    const { search, ...rest } = pagination;
-    const where = search ? {
-      OR: [
-        { name: { contains: search, mode: Prisma.QueryMode.insensitive } },
-        { email: { contains: search, mode: Prisma.QueryMode.insensitive } },
-        { username: { contains: search, mode: Prisma.QueryMode.insensitive } },
-      ]
-    } : {};
+    const { search, page, perPage } = pagination;
 
-    return this.prisma.user.paginate({
-      where,
-      orderBy: { createdAt: 'desc' },
-    }, rest);
+    let where: Prisma.UserWhereInput = {};
+
+    if (search) {
+      where = {
+        ...where,
+        OR: [
+          { name: { contains: search, mode: Prisma.QueryMode.insensitive } },
+          { email: { contains: search, mode: Prisma.QueryMode.insensitive } },
+          { username: { contains: search, mode: Prisma.QueryMode.insensitive } },
+        ]
+      }
+    }
+
+    return this.prisma.user.paginate({ where, orderBy: { createdAt: 'desc' } }, { page, perPage });
   }
 
   findById(id: string) {

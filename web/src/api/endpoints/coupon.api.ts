@@ -1,22 +1,22 @@
 import { api } from "../client";
 import { ApiResponse } from "../types/api-response";
-import { CouponDTO } from "../../models/coupon.model";
+import { CouponType } from "../../models/coupon.model";
 
 export const CouponAPI = {
   async getCoupon(id: string) {
-    return api.get<ApiResponse<CouponDTO>>(`/admin/coupon/${id}`);
+    return api.get<ApiResponse<CouponType>>(`/admin/coupon/${id}`);
   },
 
   async listCoupons(params?: any) {
-    return api.get<ApiResponse<CouponDTO[]> & { meta: any }>(`/admin/coupon`, { params });
+    return api.get<ApiResponse<CouponType[]> & { meta: any }>(`/admin/coupon`, { params });
   },
 
   async createCoupon(data: any) {
-    return api.post<ApiResponse<CouponDTO>>(`/admin/coupon`, data);
+    return api.post<ApiResponse<CouponType>>(`/admin/coupon`, data);
   },
 
   async updateCoupon(id: string, data: any) {
-    return api.put<ApiResponse<CouponDTO>>(`/admin/coupon/${id}`, data);
+    return api.put<ApiResponse<CouponType>>(`/admin/coupon/${id}`, data);
   },
 
   async deleteCoupon(id: string) {
@@ -24,6 +24,6 @@ export const CouponAPI = {
   },
 
   async incrementUsage(id: string) {
-    return api.post<ApiResponse<CouponDTO>>(`/admin/coupon/${id}/increment-usage`);
+    return api.post<ApiResponse<CouponType>>(`/admin/coupon/${id}/increment-usage`);
   }
 };

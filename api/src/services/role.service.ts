@@ -1,13 +1,21 @@
 import { AbstractService } from "@/services/abstract.service";
+import { PaginationType } from "@/schemas/pagination";
 import { Prisma } from "@prisma/client";
 
 export class RoleService extends AbstractService {
-  findAll() {
-    return this.prisma.role.findMany({
-      orderBy: {
-        privilege: 'asc',
-      },
-    });
+  findAll(pagination: PaginationType) {
+    const { search, page, perPage } = pagination;
+
+    let where: Prisma.RoleWhereInput = {};
+
+    if (search) {
+      where = {
+        ...where,
+        slug: { contains: search, mode: 'insensitive' }
+      }
+    }
+
+    return this.prisma.role.paginate({ where, orderBy: { privilege: 'asc' } }, { page, perPage });
   }
 
   findById(slug: string) {

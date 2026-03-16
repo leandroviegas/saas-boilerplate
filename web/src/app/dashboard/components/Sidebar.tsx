@@ -11,6 +11,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { useAuth } from '@/hooks/useAuth';
 import { rolesEnum } from '@/context/AuthContext';
 import { Package } from 'lucide-react';
+import { Settings } from 'lucide-react';
 
 interface SidebarItem {
   name: string;
@@ -80,6 +81,13 @@ const Sidebar: React.FC<{ className?: string; isOpen?: boolean; isMinimized?: bo
       name: t('manage role permissions'),
       href: '/dashboard/role-permissions',
       icon: ShieldCheck,
+      type: 'item',
+      access: [rolesEnum.ADMIN].includes(userRole)
+    },
+    {
+      name: t('manage system variables'),
+      href: '/dashboard/system-variables',
+      icon: Settings,
       type: 'item',
       access: [rolesEnum.ADMIN].includes(userRole)
     },

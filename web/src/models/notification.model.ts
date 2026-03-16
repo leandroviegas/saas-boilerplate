@@ -1,4 +1,4 @@
-export interface NotificationDTO {
+export interface NotificationType {
   id: string;
   userId: string;
   title: string;
@@ -10,7 +10,7 @@ export interface NotificationDTO {
   updatedAt: string;
 }
 
-export class Notification {
+export class NotificationDTO {
   id: string;
   userId: string;
   title: string;
@@ -21,7 +21,7 @@ export class Notification {
   createdAt: Date;
   updatedAt: Date;
 
-  constructor(dto: NotificationDTO) {
+  constructor(dto: NotificationType) {
     this.id = dto.id;
     this.userId = dto.userId;
     this.title = dto.title;

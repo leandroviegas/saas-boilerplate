@@ -1,37 +1,37 @@
 import { CouponAPI } from "../api/endpoints/coupon.api";
-import { Coupon } from "../models/coupon.model";
+import { CouponDTO } from "../models/coupon.model";
 import { parseModel, parseModels } from "../utils/model-parser";
 
 export const CouponService = {
-  async getCoupon(id: string): Promise<Coupon> {
+  async getCoupon(id: string): Promise<CouponDTO> {
     const res = await CouponAPI.getCoupon(id);
-    return parseModel(res.data.data, Coupon);
+    return parseModel(res.data.data, CouponDTO);
   },
 
-  async listCoupons(params?: any): Promise<{ items: Coupon[], total: number }> {
+  async listCoupons(params?: any): Promise<{ items: CouponDTO[], total: number }> {
     const res = await CouponAPI.listCoupons(params);
     return {
-      items: parseModels(res.data.data, Coupon),
+      items: parseModels(res.data.data, CouponDTO),
       total: res.data.meta.total
     };
   },
 
-  async createCoupon(data: any): Promise<Coupon> {
+  async createCoupon(data: any): Promise<CouponDTO> {
     const res = await CouponAPI.createCoupon(data);
-    return parseModel(res.data.data, Coupon);
+    return parseModel(res.data.data, CouponDTO);
   },
 
-  async updateCoupon(id: string, data: any): Promise<Coupon> {
+  async updateCoupon(id: string, data: any): Promise<CouponDTO> {
     const res = await CouponAPI.updateCoupon(id, data);
-    return parseModel(res.data.data, Coupon);
+    return parseModel(res.data.data, CouponDTO);
   },
 
   async deleteCoupon(id: string): Promise<void> {
     await CouponAPI.deleteCoupon(id);
   },
 
-  async incrementUsage(id: string): Promise<Coupon> {
+  async incrementUsage(id: string): Promise<CouponDTO> {
     const res = await CouponAPI.incrementUsage(id);
-    return parseModel(res.data.data, Coupon);
+    return parseModel(res.data.data, CouponDTO);
   }
 };

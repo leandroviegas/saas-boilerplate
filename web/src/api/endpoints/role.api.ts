@@ -1,22 +1,22 @@
 import { api } from "../client";
 import { ApiResponse } from "../types/api-response";
-import { RoleDTO } from "../../models/role.model";
+import { RoleType } from "../../models/role.model";
 
 export const RoleAPI = {
   async listRoles() {
-    return api.get<ApiResponse<RoleDTO[]>>(`/admin/role`);
+    return api.get<ApiResponse<RoleType[]>>(`/admin/role`);
   },
 
   async getRole(slug: string) {
-    return api.get<ApiResponse<RoleDTO>>(`/admin/role/${slug}`);
+    return api.get<ApiResponse<RoleType>>(`/admin/role/${slug}`);
   },
 
   async createRole(data: any) {
-    return api.post<ApiResponse<RoleDTO>>(`/admin/role`, data);
+    return api.post<ApiResponse<RoleType>>(`/admin/role`, data);
   },
 
   async updateRole(slug: string, data: any) {
-    return api.put<ApiResponse<RoleDTO>>(`/admin/role/${slug}`, data);
+    return api.put<ApiResponse<RoleType>>(`/admin/role/${slug}`, data);
   },
 
   async deleteRole(slug: string) {

@@ -1,6 +1,6 @@
 export type DiscountType = "PERCENTAGE" | "FIXED";
 
-export interface CouponDTO {
+export interface CouponType {
   id: string;
   code: string;
   value: number;
@@ -13,7 +13,7 @@ export interface CouponDTO {
   updatedAt: string;
 }
 
-export class Coupon {
+export class CouponDTO {
   id: string;
   code: string;
   value: number;
@@ -25,7 +25,7 @@ export class Coupon {
   createdAt: Date;
   updatedAt: Date;
 
-  constructor(dto: CouponDTO) {
+  constructor(dto: CouponType) {
     this.id = dto.id;
     this.code = dto.code;
     this.value = dto.value;

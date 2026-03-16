@@ -10,23 +10,15 @@ import { useForm } from "react-hook-form";
 import { useCustomForm } from "@/hooks/useCustomForm";
 import { useTranslation } from "@/hooks/useTranslation";
 import { typeboxResolver } from "@/lib/typebox-resolver";
-import { Type, Static } from "@sinclair/typebox";
-import { ProductPrice } from "@/models/product.model";
+import { ProductPriceFormSchema } from "@/models/schemas";
+import type { Static } from "@sinclair/typebox";
+import { ProductPriceDTO } from "@/models/product.model";
 import { useCreateProductPrice, useUpdateProductPrice, useDeleteProductPrice } from "@/hooks/queries/useProducts";
 
-const productPriceFormSchema = Type.Object({
-  id: Type.Optional(Type.String()),
-  amount: Type.Number({ minimum: 0 }),
-  currency: Type.Union([Type.Literal("USD"), Type.Literal("EUR"), Type.Literal("BRL")]),
-  active: Type.Boolean(),
-  intervalType: Type.Union([Type.Literal("DAY"), Type.Literal("WEEK"), Type.Literal("MONTH"), Type.Literal("YEAR")]),
-  intervalValue: Type.Number({ minimum: 1 }),
-});
-
-type ProductPriceFormValues = Static<typeof productPriceFormSchema>;
+type ProductPriceFormValues = Static<typeof ProductPriceFormSchema>;
 
 interface ProductPriceFormProps {
-  price?: ProductPrice
+  price?: ProductPriceDTO
   productId: string
   onUpsertSuccess?: () => void
   onDeleteSucess?: () => void
@@ -40,7 +32,7 @@ export function ProductPriceForm({ price, productId, onUpsertSuccess, onDeleteSu
   const { mutateAsync: deletePrice } = useDeleteProductPrice();
 
   const form = useForm<ProductPriceFormValues>({
-    resolver: typeboxResolver(productPriceFormSchema, { locale }),
+    resolver: typeboxResolver(ProductPriceFormSchema, { locale }),
     defaultValues: {
       id: price?.id,
       amount: price?.amount || 0,

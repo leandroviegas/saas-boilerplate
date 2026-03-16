@@ -1,14 +1,14 @@
 import { api } from "../client";
 import { ApiResponse } from "../types/api-response";
-import { NotificationDTO } from "../../models/notification.model";
+import { NotificationType } from "../../models/notification.model";
 
 export const NotificationAPI = {
   async listNotifications(params?: any) {
-    return api.get<ApiResponse<NotificationDTO[]> & { meta: any }>(`/member/notification`, { params });
+    return api.get<ApiResponse<NotificationType[]> & { meta: any }>(`/member/notification`, { params });
   },
 
   async markAsRead(id: string) {
-    return api.patch<ApiResponse<NotificationDTO>>(`/member/notification/${id}/read`);
+    return api.patch<ApiResponse<NotificationType>>(`/member/notification/${id}/read`);
   },
 
   async markAllAsRead() {

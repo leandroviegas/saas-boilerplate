@@ -14,6 +14,12 @@ export class PaymentService extends AbstractService {
     this.provider = provider;
   }
 
+  async getTransactions(userId: string, pagination: PaginationType) {
+    const { page, perPage } = pagination;
+
+    return await this.prisma.transaction.paginate({ where: { userId }, orderBy: { createdAt: 'desc' } }, { page, perPage });
+  }
+
   async createCheckoutSession(userId: string, organizationId: string, data: CreateCheckoutSessionResponseType) {
     const user = await this.prisma.user.findUniqueOrThrow({
       where: { id: userId },
@@ -57,13 +63,6 @@ export class PaymentService extends AbstractService {
       include: { product: true },
       orderBy: { createdAt: "desc" },
     });
-  }
-
-  async getTransactions(userId: string, pagination: PaginationType) {
-    return await this.prisma.transaction.paginate({
-      where: { userId },
-      orderBy: { createdAt: "desc" },
-    }, pagination);
   }
 
 }

@@ -1,11 +1,11 @@
 import { SessionAPI } from "../api/endpoints/session.api";
-import { Session } from "../models/session.model";
+import { SessionDTO } from "../models/session.model";
 import { parseModels } from "../utils/model-parser";
 
 export const SessionService = {
-  async listSessions(): Promise<Session[]> {
+  async listSessions(): Promise<SessionDTO[]> {
     const res = await SessionAPI.listSessions();
-    return parseModels(res.data.data, Session);
+    return parseModels(res.data.data, SessionDTO);
   },
 
   async revokeSession(id: string): Promise<void> {

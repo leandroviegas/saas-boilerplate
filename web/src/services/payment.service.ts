@@ -1,13 +1,13 @@
 import { PaymentAPI } from "../api/endpoints/payment.api";
-import { Subscription, Transaction } from "../models/subscription.model";
-import { Product } from "../models/product.model";
+import { SubscriptionDTO, TransactionDTO } from "../models/subscription.model";
+import { ProductDTO } from "../models/product.model";
 import { parseModel, parseModels } from "../utils/model-parser";
 
 export const PaymentService = {
-  async listProducts(params?: any): Promise<{ items: Product[], total: number }> {
+  async listProducts(params?: any): Promise<{ items: ProductDTO[], total: number }> {
     const res = await PaymentAPI.listProducts(params);
     return {
-      items: parseModels(res.data.data, Product),
+      items: parseModels(res.data.data, ProductDTO),
       total: res.data.meta.total
     };
   },
@@ -17,19 +17,19 @@ export const PaymentService = {
     return res.data.data;
   },
 
-  async getSubscription(): Promise<Subscription> {
+  async getSubscription(): Promise<SubscriptionDTO> {
     const res = await PaymentAPI.getSubscription();
-    return parseModel(res.data.data, Subscription);
+    return parseModel(res.data.data, SubscriptionDTO);
   },
 
   async cancelSubscription(): Promise<void> {
     await PaymentAPI.cancelSubscription();
   },
 
-  async listTransactions(params?: any): Promise<{ items: Transaction[], total: number }> {
+  async listTransactions(params?: any): Promise<{ items: TransactionDTO[], total: number }> {
     const res = await PaymentAPI.listTransactions(params);
     return {
-      items: parseModels(res.data.data, Transaction),
+      items: parseModels(res.data.data, TransactionDTO),
       total: res.data.meta.total
     };
   }

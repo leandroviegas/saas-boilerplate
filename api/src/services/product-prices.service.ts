@@ -1,7 +1,7 @@
 import { AbstractService } from "@/services/abstract.service";
 import { PaginationType } from "@/schemas/pagination";
 import { stripeProvider } from "./payment/providers";
-import { CreateProductPriceType, UpdateProductPriceType } from "@/controllers/admin/product-price.controller";
+import { CreateProductPriceType, UpdateProductPriceType } from "@/schemas/models/product.schema";
 
 export class ProductPriceService extends AbstractService {
     findAllByProductId(productId: string) {
@@ -11,13 +11,15 @@ export class ProductPriceService extends AbstractService {
     }
 
     async findAll(query: { productId?: string } & PaginationType) {
-        return await this.prisma.productPrice.paginate({
-            where: {
-                ...(query.productId && { productId: query.productId }),
-                active: true,
-                archived: false
-            },
-        }, query);
+        const { productId, page, perPage } = query;
+
+        const where = {
+            ...(productId && { productId }),
+            active: true,
+            archived: false
+        };
+
+        return await this.prisma.productPrice.paginate({ where }, { page, perPage });
     }
 
     async findById(id: string) {

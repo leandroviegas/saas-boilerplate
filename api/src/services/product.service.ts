@@ -5,15 +5,21 @@ import { Prisma } from "@prisma/client";
 
 export class ProductService extends AbstractService {
   findAll(pagination: PaginationType) {
-    const { search, ...rest } = pagination;
-    const where: Prisma.ProductWhereInput = search ? {
-      OR: [
-        { name: { contains: search, mode: 'insensitive' } },
-        { description: { contains: search, mode: 'insensitive' } },
-      ]
-    } : {};
+    const { search, page, perPage } = pagination;
 
-    return this.prisma.product.paginate({ where }, rest);
+    let where: Prisma.ProductWhereInput = {};
+
+    if (search) {
+      where = {
+        ...where,
+        OR: [
+          { name: { contains: search, mode: 'insensitive' } },
+          { description: { contains: search, mode: 'insensitive' } },
+        ]
+      }
+    }
+
+    return this.prisma.product.paginate({ where, orderBy: { createdAt: 'desc' } }, { page, perPage });
   }
 
   findById(id: string) {

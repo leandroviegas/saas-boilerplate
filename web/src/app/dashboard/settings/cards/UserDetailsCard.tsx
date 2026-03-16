@@ -2,7 +2,8 @@
 
 import { useForm } from "react-hook-form";
 import { typeboxResolver } from "@/lib/typebox-resolver";
-import { Type, Static } from "@sinclair/typebox";
+import { UserDetailsSchema } from "@/models/schemas";
+import type { Static } from "@sinclair/typebox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -17,14 +18,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LuTrash2, LuUpload } from "react-icons/lu";
 import { useUpdateUser } from "@/hooks/queries/useUser";
 
-const userDetailsSchema = Type.Object({
-  name: Type.String({ minLength: 1 }),
-  username: Type.String({ minLength: 3 }),
-  email: Type.String({ format: "email" }),
-  image: Type.Optional(Type.String()),
-});
-
-type UserDetailsValues = Static<typeof userDetailsSchema>;
+type UserDetailsValues = Static<typeof UserDetailsSchema>;
 
 export function UserDetailsCard() {
   const { t, locale } = useTranslation();
@@ -63,7 +57,7 @@ export function UserDetailsCard() {
   };
 
   const form = useForm<UserDetailsValues>({
-    resolver: typeboxResolver(userDetailsSchema, { locale }),
+    resolver: typeboxResolver(UserDetailsSchema, { locale }),
     defaultValues: {
       name: user?.name || "",
       username: user?.username || "",

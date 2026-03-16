@@ -12,6 +12,9 @@ import { languageEnum } from './enums/language-enum';
 import { Server as SocketIOServer } from 'socket.io';
 import { socketio } from './plugins/socketio';
 import { createServer } from 'http';
+import { seed } from './seed';
+
+seed();
 
 let app = new Elysia({ adapter: node() })
     .use(mainMiddleware)

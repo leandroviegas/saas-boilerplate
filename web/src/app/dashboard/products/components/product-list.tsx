@@ -10,7 +10,7 @@ import { useQueryStates, parseAsInteger, parseAsString } from "nuqs";
 import { Button } from '@/components/ui/button';
 import { useProducts, useDeleteProduct } from '@/hooks/queries/useProducts';
 import { PermissionsPreview } from '@/components/ui/permissions-preview';
-import { Product } from '@/models/product.model';
+import { ProductDTO } from '@/models/product.model';
 
 export default function ProductList() {
     const { t } = useTranslation();
@@ -153,7 +153,7 @@ export default function ProductList() {
                 status={isLoading ? 'loading' : error ? 'error' : 'success'}
                 meta={meta}
                 onPageChange={(page, perPage) => { setFilters(prevFilters => ({ ...prevFilters, page, perPage })) }}
-                actions={(product: Product) => (
+                actions={(product: ProductDTO) => (
                     <div className="flex gap-2 mt-auto">
                         <Link className="flex-1" href={`/dashboard/products/${product.id}`}>
                             <Button variant="secondary" size="sm" className="w-full">

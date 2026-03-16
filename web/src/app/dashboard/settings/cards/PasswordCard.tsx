@@ -2,7 +2,8 @@
 
 import { useForm } from "react-hook-form";
 import { typeboxResolver } from "@/lib/typebox-resolver";
-import { Type, Static } from "@sinclair/typebox";
+import { PasswordSchema } from "@/models/schemas";
+import type { Static } from "@sinclair/typebox";
 import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -12,20 +13,14 @@ import { useCustomForm } from "@/hooks/useCustomForm";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 
-const passwordSchema = Type.Object({
-  currentPassword: Type.String({ minLength: 1 }),
-  newPassword: Type.String({ minLength: 8 }),
-  confirmPassword: Type.String({ minLength: 1 }),
-});
-
-type PasswordValues = Static<typeof passwordSchema>;
+type PasswordValues = Static<typeof PasswordSchema>;
 
 export function PasswordCard() {
   const { t, locale } = useTranslation();
   const { onFormSubmit, isLoading } = useCustomForm();
 
   const form = useForm<PasswordValues>({
-    resolver: typeboxResolver(passwordSchema, { locale }),
+    resolver: typeboxResolver(PasswordSchema, { locale }),
     defaultValues: {
       currentPassword: "",
       newPassword: "",

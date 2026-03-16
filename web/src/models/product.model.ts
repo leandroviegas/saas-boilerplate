@@ -1,6 +1,6 @@
 export type PriceInterval = "DAY" | "WEEK" | "MONTH" | "YEAR";
 
-export interface ProductPriceDTO {
+export interface ProductPriceType {
   id: string;
   productId: string;
   intervalValue: number;
@@ -12,7 +12,7 @@ export interface ProductPriceDTO {
   updatedAt: string;
 }
 
-export interface ProductDTO {
+export interface ProductType {
   id: string;
   name: string;
   description?: string | null;
@@ -21,10 +21,10 @@ export interface ProductDTO {
   active: boolean;
   createdAt: string;
   updatedAt: string;
-  prices?: ProductPriceDTO[];
+  prices?: ProductPriceType[];
 }
 
-export class ProductPrice {
+export class ProductPriceDTO {
   id: string;
   productId: string;
   intervalValue: number;
@@ -35,7 +35,7 @@ export class ProductPrice {
   createdAt: Date;
   updatedAt: Date;
 
-  constructor(dto: ProductPriceDTO) {
+  constructor(dto: ProductPriceType) {
     this.id = dto.id;
     this.productId = dto.productId;
     this.intervalValue = dto.intervalValue;
@@ -48,7 +48,7 @@ export class ProductPrice {
   }
 }
 
-export class Product {
+export class ProductDTO {
   id: string;
   name: string;
   description?: string | null;
@@ -57,9 +57,9 @@ export class Product {
   active: boolean;
   createdAt: Date;
   updatedAt: Date;
-  prices: ProductPrice[];
+  prices: ProductPriceDTO[];
 
-  constructor(dto: ProductDTO) {
+  constructor(dto: ProductType) {
     this.id = dto.id;
     this.name = dto.name;
     this.description = dto.description;
@@ -68,6 +68,6 @@ export class Product {
     this.active = dto.active;
     this.createdAt = new Date(dto.createdAt);
     this.updatedAt = new Date(dto.updatedAt);
-    this.prices = dto.prices ? dto.prices.map(p => new ProductPrice(p)) : [];
+    this.prices = dto.prices ? dto.prices.map(p => new ProductPriceDTO(p)) : [];
   }
 }

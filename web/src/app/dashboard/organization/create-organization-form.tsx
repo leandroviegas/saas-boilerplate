@@ -9,18 +9,14 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { typeboxResolver } from "@/lib/typebox-resolver";
-import { Type, Static } from "@sinclair/typebox";
+import { OrganizationSchema } from "@/models/schemas";
+import type { Static } from "@sinclair/typebox";
 import { Loader2, Building2 } from "lucide-react";
 import { useCustomForm } from "@/hooks/useCustomForm";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 
-const organizationFormSchema = Type.Object({
-  name: Type.String({ minLength: 1 }),
-  slug: Type.String({ minLength: 1 }),
-});
-
-type OrganizationFormValues = Static<typeof organizationFormSchema>;
+type OrganizationFormValues = Static<typeof OrganizationSchema>;
 
 export default function CreateOrganizationPage() {
   const { t, locale } = useTranslation();
@@ -29,7 +25,7 @@ export default function CreateOrganizationPage() {
   const { onFormSubmit, isLoading } = useCustomForm();
 
   const form = useForm<OrganizationFormValues>({
-    resolver: typeboxResolver(organizationFormSchema, { locale }),
+    resolver: typeboxResolver(OrganizationSchema, { locale }),
     defaultValues: {
       name: "",
       slug: "",

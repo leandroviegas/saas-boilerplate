@@ -13,6 +13,7 @@ export const CurrencySchema = t.Union([
   t.Literal("BRL"),
 ]);
 
+
 export const ProductPriceSchema = t.Object({
   id: t.String(),
   productId: t.String(),
@@ -26,6 +27,7 @@ export const ProductPriceSchema = t.Object({
   createdAt: t.Date(),
   updatedAt: t.Date(),
 });
+
 
 export const ProductSchema = t.Object({
   id: t.String(),
@@ -42,3 +44,15 @@ export const ProductSchema = t.Object({
 
 export type ProductType = Static<typeof ProductSchema>;
 export type ProductPriceType = Static<typeof ProductPriceSchema>;
+
+export type CreateProductPriceType = {
+  productId: string;
+  amount: number;
+  currencyCode: string;
+  active: boolean;
+  archived: boolean;
+  intervalType: "DAY" | "WEEK" | "MONTH" | "YEAR";
+  intervalValue: number;
+};
+
+export type UpdateProductPriceType = Partial<CreateProductPriceType>;

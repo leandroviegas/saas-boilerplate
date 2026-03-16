@@ -1,26 +1,26 @@
 import { RoleAPI } from "../api/endpoints/role.api";
-import { Role } from "../models/role.model";
+import { RoleDTO } from "../models/role.model";
 import { parseModel, parseModels } from "../utils/model-parser";
 
 export const RoleService = {
-  async listRoles(): Promise<Role[]> {
+  async listRoles(): Promise<RoleDTO[]> {
     const res = await RoleAPI.listRoles();
-    return parseModels(res.data.data, Role);
+    return parseModels(res.data.data, RoleDTO);
   },
 
-  async getRole(slug: string): Promise<Role> {
+  async getRole(slug: string): Promise<RoleDTO> {
     const res = await RoleAPI.getRole(slug);
-    return parseModel(res.data.data, Role);
+    return parseModel(res.data.data, RoleDTO);
   },
 
-  async createRole(data: any): Promise<Role> {
+  async createRole(data: any): Promise<RoleDTO> {
     const res = await RoleAPI.createRole(data);
-    return parseModel(res.data.data, Role);
+    return parseModel(res.data.data, RoleDTO);
   },
 
-  async updateRole(slug: string, data: any): Promise<Role> {
+  async updateRole(slug: string, data: any): Promise<RoleDTO> {
     const res = await RoleAPI.updateRole(slug, data);
-    return parseModel(res.data.data, Role);
+    return parseModel(res.data.data, RoleDTO);
   },
 
   async deleteRole(slug: string): Promise<void> {

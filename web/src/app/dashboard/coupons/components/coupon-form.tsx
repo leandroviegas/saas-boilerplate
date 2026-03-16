@@ -8,26 +8,18 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useForm } from "react-hook-form";
 import { typeboxResolver } from "@/lib/typebox-resolver";
-import { Type, Static } from "@sinclair/typebox";
+import { CouponFormSchema } from "@/models/schemas";
+import type { Static } from "@sinclair/typebox";
 import { useCustomForm } from "@/hooks/useCustomForm";
 import { useRouter } from "next/navigation";
 import { useCreateCoupon, useUpdateCoupon } from "@/hooks/queries/useCoupons";
 import { Card, CardContent } from "@/components/ui/card";
-import { Coupon } from "@/models/coupon.model";
+import { CouponDTO } from "@/models/coupon.model";
 
-const couponFormSchema = Type.Object({
-  code: Type.String({ minLength: 1 }),
-  discountType: Type.Union([Type.Literal("PERCENTAGE"), Type.Literal("FIXED")]),
-  value: Type.Number({ minimum: 0 }),
-  usageLimit: Type.Optional(Type.Number({ minimum: 1 })),
-  active: Type.Boolean(),
-  expiresAt: Type.Optional(Type.String({ format: "date-time" })),
-});
-
-type CouponFormValues = Static<typeof couponFormSchema>;
+type CouponFormValues = Static<typeof CouponFormSchema>;
 
 interface CouponFormProps {
-  coupon?: Coupon;
+  coupon?: CouponDTO;
 }
 
 export function CouponForm({ coupon }: CouponFormProps) {
@@ -39,7 +31,7 @@ export function CouponForm({ coupon }: CouponFormProps) {
   const { onFormSubmit, isLoading } = useCustomForm();
 
   const form = useForm<CouponFormValues>({
-    resolver: typeboxResolver(couponFormSchema, { locale }),
+    resolver: typeboxResolver(CouponFormSchema, { locale }),
     defaultValues: {
       code: coupon?.code || "",
       discountType: coupon?.discountType || "PERCENTAGE",

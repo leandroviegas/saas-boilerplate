@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { typeboxResolver } from "@/lib/typebox-resolver";
-import { Type, Static } from "@sinclair/typebox";
+import { TwoFactorPasswordSchema, TwoFactorVerifySchema } from "@/models/schemas";
+import type { Static } from "@sinclair/typebox";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -17,16 +18,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { useCustomForm } from "@/hooks/useCustomForm";
 import QRCode from "react-qr-code";
 
-const passwordSchema = Type.Object({
-  password: Type.String({ minLength: 1 }),
-});
-
-const verifySchema = Type.Object({
-  otpCode: Type.String({ minLength: 6, maxLength: 6 }),
-});
-
-type PasswordFormValues = Static<typeof passwordSchema>;
-type VerifyFormValues = Static<typeof verifySchema>;
+type PasswordFormValues = Static<typeof TwoFactorPasswordSchema>;
+type VerifyFormValues = Static<typeof TwoFactorVerifySchema>;
 
 interface Enable2FAModalProps {
   isOpen: boolean;
@@ -83,12 +76,12 @@ export function Enable2FAModal({ isOpen, onOpenChange }: Enable2FAModalProps) {
   const { onFormSubmit: onVerifySubmit, isLoading: verifyLoading } = useCustomForm();
 
   const passwordForm = useForm<PasswordFormValues>({
-    resolver: typeboxResolver(passwordSchema, { locale }),
+    resolver: typeboxResolver(TwoFactorPasswordSchema, { locale }),
     defaultValues: { password: "" },
   });
 
   const verifyForm = useForm<VerifyFormValues>({
-    resolver: typeboxResolver(verifySchema, { locale }),
+    resolver: typeboxResolver(TwoFactorVerifySchema, { locale }),
     defaultValues: { otpCode: "" },
   });
 
@@ -214,7 +207,7 @@ export function Disable2FAModal({ isOpen, onOpenChange }: Disable2FAModalProps) 
   const { onFormSubmit: onDisableSubmit, isLoading: disableLoading } = useCustomForm();
 
   const form = useForm<PasswordFormValues>({
-    resolver: typeboxResolver(passwordSchema),
+    resolver: typeboxResolver(TwoFactorPasswordSchema),
     defaultValues: { password: "" },
   });
 

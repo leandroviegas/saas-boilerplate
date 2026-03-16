@@ -9,18 +9,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useTranslation } from "@/hooks/useTranslation";
 import { useAuth } from '@/hooks/useAuth';
 import { useCustomForm } from "@/hooks/useCustomForm";
-import { Type, Static } from "@sinclair/typebox";
+import { SignUpSchema } from "@/models/schemas";
+import type { Static } from "@sinclair/typebox";
 
-const signUpSchema = Type.Object({
-    name: Type.String({ minLength: 1 }),
-    lastName: Type.String({ minLength: 1 }),
-    email: Type.String({ format: "email" }),
-    username: Type.Optional(Type.String()),
-    password: Type.String({ minLength: 8 }),
-    confirmPassword: Type.String({ minLength: 1 }),
-});
-
-export type SignUpFormValues = Static<typeof signUpSchema>;
+export type SignUpFormValues = Static<typeof SignUpSchema>;
 
 export default function SignUpForm() {
     const { t, locale } = useTranslation();
@@ -28,7 +20,7 @@ export default function SignUpForm() {
     const { onFormSubmit, isLoading } = useCustomForm()
 
     const signUpForm = useForm<SignUpFormValues>({
-        resolver: typeboxResolver(signUpSchema, { locale }),
+        resolver: typeboxResolver(SignUpSchema, { locale }),
         defaultValues: {
             name: "",
             lastName: "",

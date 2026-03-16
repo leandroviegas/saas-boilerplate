@@ -1,11 +1,11 @@
 import { api } from "../client";
 import { ApiResponse } from "../types/api-response";
-import { SubscriptionDTO, TransactionDTO } from "../../models/subscription.model";
-import { ProductDTO } from "../../models/product.model";
+import { SubscriptionType, TransactionType } from "../../models/subscription.model";
+import { ProductType } from "../../models/product.model";
 
 export const PaymentAPI = {
   async listProducts(params?: any) {
-    return api.get<ApiResponse<ProductDTO[]> & { meta: any }>(`/member/payment/products`, { params });
+    return api.get<ApiResponse<ProductType[]> & { meta: any }>(`/member/payment/products`, { params });
   },
 
   async createCheckoutSession(data: any) {
@@ -13,7 +13,7 @@ export const PaymentAPI = {
   },
 
   async getSubscription() {
-    return api.get<ApiResponse<SubscriptionDTO>>(`/member/payment/subscription`);
+    return api.get<ApiResponse<SubscriptionType>>(`/member/payment/subscription`);
   },
 
   async cancelSubscription() {
@@ -21,6 +21,6 @@ export const PaymentAPI = {
   },
 
   async listTransactions(params?: any) {
-    return api.get<ApiResponse<TransactionDTO[]> & { meta: any }>(`/member/payment/transactions`, { params });
+    return api.get<ApiResponse<TransactionType[]> & { meta: any }>(`/member/payment/transactions`, { params });
   }
 };

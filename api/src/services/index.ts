@@ -14,6 +14,7 @@ import { S3Service } from "./s3.service";
 import { SessionService } from "./session.service";
 import { UserService } from "./user.service";
 import { WebsocketsService } from "./websockets.service";
+import { SystemVariableService } from "./system-variable.service";
 
 export const authService = new AuthService(prisma);
 export const couponService = new CouponService(prisma);
@@ -28,4 +29,7 @@ export const roleService = new RoleService(prisma);
 export const s3Service = new S3Service();
 export const sessionService = new SessionService(prisma);
 export const userService = new UserService(prisma);
+
+export const systemVariableService = new SystemVariableService(prisma);
+
 export const websocketsService = new WebsocketsService();

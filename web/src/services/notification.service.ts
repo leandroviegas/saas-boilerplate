@@ -1,19 +1,19 @@
 import { NotificationAPI } from "../api/endpoints/notification.api";
-import { Notification } from "../models/notification.model";
+import { NotificationDTO } from "../models/notification.model";
 import { parseModel, parseModels } from "../utils/model-parser";
 
 export const NotificationService = {
-  async listNotifications(params?: any): Promise<{ items: Notification[], total: number }> {
+  async listNotifications(params?: any): Promise<{ items: NotificationDTO[], total: number }> {
     const res = await NotificationAPI.listNotifications(params);
     return {
-      items: parseModels(res.data.data, Notification),
+      items: parseModels(res.data.data, NotificationDTO),
       total: res.data.meta.total
     };
   },
 
-  async markAsRead(id: string): Promise<Notification> {
+  async markAsRead(id: string): Promise<NotificationDTO> {
     const res = await NotificationAPI.markAsRead(id);
-    return parseModel(res.data.data, Notification);
+    return parseModel(res.data.data, NotificationDTO);
   },
 
   async markAllAsRead(): Promise<void> {

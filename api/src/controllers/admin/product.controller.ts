@@ -3,22 +3,10 @@ import { productService } from "@/services";
 import { ProductSchema, ProductPriceSchema } from "@/schemas/models/product.schema";
 import { paginationSchema, metaSchema } from "@/schemas/pagination";
 import { parsePermissions } from '@/middleware/permission.middleware';
+import { authMiddleware } from '@/middleware/auth.middleware';
 
 const ProductWithPricesSchema = t.Object({
     prices: t.Optional(t.Array(ProductPriceSchema))
-});
-
-const ProductDataSchema = t.Object({
-    id: t.String(),
-    name: t.String({ minLength: 2, maxLength: 100 }),
-    description: t.Optional(t.Union([t.String(), t.Null()])),
-    features: t.Array(t.String()),
-    active: t.Boolean(),
-    archived: t.Boolean(),
-    permissions: t.Record(t.String(), t.Array(t.String())),
-    stripeProductId: t.Optional(t.Union([t.String(), t.Null()])),
-    createdAt: t.Date(),
-    updatedAt: t.Date(),
 });
 
 const GetProductsResponse = t.Object({
@@ -32,38 +20,37 @@ const GetProductResponse = t.Object({
     data: t.Intersect([ProductSchema, ProductWithPricesSchema])
 });
 
-
-
 const CreateProductResponse = t.Object({
     code: t.String(),
-    data: ProductDataSchema
+    data: ProductSchema
 });
 
 const UpdateProductResponse = t.Object({
     code: t.String(),
-    data: ProductDataSchema
+    data: ProductSchema
 });
 
 const DeleteProductResponse = t.Object({
     code: t.String(),
-    data: ProductDataSchema
+    data: ProductSchema
 });
 
 const SwitchActiveResponse = t.Object({
     code: t.String(),
-    data: ProductDataSchema
+    data: ProductSchema
 });
 
 export const adminProductController = new Elysia({
     prefix: '/product',
     detail: { tags: ['Admin Products'] }
 })
+    .use(authMiddleware)
     .get('/', async ({ query }) => {
         const { data, meta } = await productService.findAll(query);
 
         return {
             code: 'get-products',
-            data: data.map(p => ({...p, permissions: parsePermissions(p.permissions)})),
+            data: data.map(p => ({ ...p, permissions: parsePermissions(p.permissions) })),
             meta
         };
     }, {
@@ -75,7 +62,7 @@ export const adminProductController = new Elysia({
 
         return {
             code: 'get-product',
-            data: {...data, permissions: parsePermissions(data.permissions)}
+            data: { ...data, permissions: parsePermissions(data.permissions) }
         };
     }, {
         params: t.Object({ id: t.String() }),
@@ -86,10 +73,10 @@ export const adminProductController = new Elysia({
 
         return {
             code: 'create-product',
-            data: {...data, permissions: parsePermissions(data.permissions)}
+            data: { ...data, permissions: parsePermissions(data.permissions) }
         };
     }, {
-        body: t.Omit(ProductSchema, ["id", "createdAt", "updatedAt"]),
+        body: t.Omit(ProductSchema, ["id", "archived", "active", "createdAt", "updatedAt"]),
         response: CreateProductResponse
     })
     .put('/:id', async ({ params: { id }, body }) => {
@@ -97,11 +84,11 @@ export const adminProductController = new Elysia({
 
         return {
             code: 'update-product',
-            data: {...data, permissions: parsePermissions(data.permissions)}
+            data: { ...data, permissions: parsePermissions(data.permissions) }
         };
     }, {
         params: t.Object({ id: t.String() }),
-        body: t.Omit(ProductSchema, ["createdAt", "updatedAt"]),
+        body: t.Omit(ProductSchema, ["archived", "active", "createdAt", "updatedAt"]),
         response: UpdateProductResponse
     })
     .delete('/:id', async ({ params: { id } }) => {
@@ -109,7 +96,7 @@ export const adminProductController = new Elysia({
 
         return {
             code: 'switch-active',
-            data: {...data, permissions: parsePermissions(data.permissions)}
+            data: { ...data, permissions: parsePermissions(data.permissions) }
         };
     }, {
         params: t.Object({ id: t.String() }),
@@ -120,7 +107,7 @@ export const adminProductController = new Elysia({
 
         return {
             code: 'switch-active',
-            data: {...data, permissions: parsePermissions(data.permissions)}
+            data: { ...data, permissions: parsePermissions(data.permissions) }
         };
     }, {
         params: t.Object({ id: t.String() }),

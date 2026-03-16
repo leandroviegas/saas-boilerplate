@@ -7,22 +7,18 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useForm } from "react-hook-form";
 import { typeboxResolver } from "@/lib/typebox-resolver";
-import { Type, Static } from "@sinclair/typebox";
+import { RoleSchema } from "@/models/schemas";
+import type { Static } from "@sinclair/typebox";
 import { Loader2 } from "lucide-react";
 import { useCustomForm } from "@/hooks/useCustomForm";
 import { useRouter } from "next/navigation";
 import { useCreateRole, useUpdateRole } from "@/hooks/queries/useRoles";
-import { Role } from "@/models/role.model";
+import { RoleDTO } from "@/models/role.model";
 
-const roleFormSchema = Type.Object({
-  slug: Type.String({ minLength: 2, maxLength: 50 }),
-  privilege: Type.Integer({ minimum: 0, maximum: 100 }),
-});
-
-type RoleFormValues = Static<typeof roleFormSchema>;
+type RoleFormValues = Static<typeof RoleSchema>;
 
 interface RoleFormProps {
-  role?: Role;
+  role?: RoleDTO;
   onUpsertSuccess?: () => void;
 }
 
@@ -35,7 +31,7 @@ export function RoleForm({ role, onUpsertSuccess }: RoleFormProps) {
   const { onFormSubmit, isLoading } = useCustomForm();
 
   const form = useForm<RoleFormValues>({
-    resolver: typeboxResolver(roleFormSchema, { locale }),
+    resolver: typeboxResolver(RoleSchema, { locale }),
     defaultValues: {
       slug: role?.slug || "",
       privilege: role?.privilege || 20,

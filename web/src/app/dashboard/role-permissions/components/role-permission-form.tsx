@@ -8,7 +8,8 @@ import { Separator } from "@/components/ui/separator";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useForm } from "react-hook-form";
 import { typeboxResolver } from "@/lib/typebox-resolver";
-import { Type, Static } from "@sinclair/typebox";
+import { RolePermissionSchema } from "@/models/schemas";
+import type { Static } from "@sinclair/typebox";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useUpdateRolePermission, useCreateRolePermission, useRolePermission } from "@/hooks/queries/useOrganizationRolePermissions";
@@ -27,12 +28,7 @@ const availableRolePermissions: PermissionsMap = {
   member: ["create", "update", "delete", "view"],
 };
 
-const rolePermissionFormSchema = Type.Object({
-  roleSlug: Type.String({ minLength: 1 }),
-  permissions: Type.Record(Type.String(), Type.Array(Type.String())),
-});
-
-type RolePermissionFormValues = Static<typeof rolePermissionFormSchema>;
+type RolePermissionFormValues = Static<typeof RolePermissionSchema>;
 
 interface RolePermissionFormProps {
   roleSlug?: string;
@@ -49,7 +45,7 @@ export function RolePermissionForm({ roleSlug, onUpsertSuccess }: RolePermission
   const { onFormSubmit, isLoading } = useCustomForm();
 
   const form = useForm<RolePermissionFormValues>({
-    resolver: typeboxResolver(rolePermissionFormSchema, { locale }),
+    resolver: typeboxResolver(RolePermissionSchema, { locale }),
     defaultValues: {
       roleSlug: roleSlug || "",
       permissions: (existingData?.permissions as PermissionsMap) ?? {},

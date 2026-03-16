@@ -1,31 +1,11 @@
-import { Elysia, Static, t } from 'elysia';
+import { Elysia, t } from 'elysia';
 import { productPriceService } from "@/services";
-import { CurrencySchema, PriceIntervalSchema, ProductPriceSchema } from "@/schemas/models/product.schema";
+import { ProductPriceSchema, ProductPriceType, CreateProductPriceType, UpdateProductPriceType } from "@/schemas/models/product.schema";
 import { paginationSchema, metaSchema } from "@/schemas/pagination";
+import { authMiddleware } from '@/middleware/auth.middleware';
 
+export type { ProductPriceType, CreateProductPriceType, UpdateProductPriceType };
 
-export const CreateProductPriceBodySchema = t.Object({
-  productId: t.String(),
-  amount: t.Numeric(),
-  currencyCode: t.Union([CurrencySchema, t.String()]),
-  active: t.Boolean({ default: true }),
-  archived: t.Boolean({ default: false }),
-  intervalType: PriceIntervalSchema,
-  intervalValue: t.Numeric({ default: 1, minimum: 1, maximum: 1000 }),
-});
-
-export type CreateProductPriceType = typeof CreateProductPriceBodySchema.static;
-
-export const UpdateProductPriceBodySchema = t.Object({
-  amount: t.Optional(t.Numeric()),
-  currencyCode: t.Optional(t.Union([CurrencySchema, t.String()])),
-  active: t.Optional(t.Boolean()),
-  archived: t.Optional(t.Boolean()),
-  intervalType: t.Optional(PriceIntervalSchema),
-  intervalValue: t.Optional(t.Numeric({ minimum: 1, maximum: 1000 })),
-});
-
-export type UpdateProductPriceType = typeof UpdateProductPriceBodySchema.static;
 
 const GetProductPricesResponse = t.Object({
     code: t.String(),
@@ -62,6 +42,7 @@ export const adminProductPriceController = new Elysia({
     prefix: '/product-price',
     detail: { tags: ['Admin Product Prices'] }
 })
+    .use(authMiddleware)
     .get('/', async ({ query }) => {
         const { data, meta } = await productPriceService.findAll(query);
 
@@ -98,7 +79,7 @@ export const adminProductPriceController = new Elysia({
             data
         };
     }, {
-        body: CreateProductPriceBodySchema,
+        body: t.Omit(ProductPriceSchema, ['id', 'stripePriceId', 'createdAt', 'updatedAt']),
         response: CreateProductPriceResponse
     })
     .put('/:id', async ({ params: { id }, body }) => {
@@ -110,7 +91,7 @@ export const adminProductPriceController = new Elysia({
         };
     }, {
         params: t.Object({ id: t.String() }),
-        body: UpdateProductPriceBodySchema,
+        body: t.Omit(ProductPriceSchema, ['stripePriceId', 'createdAt', 'updatedAt']),
         response: UpdateProductPriceResponse
     })
     .delete('/:id', async ({ params: { id } }) => {
