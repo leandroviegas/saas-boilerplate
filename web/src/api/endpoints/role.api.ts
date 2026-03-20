@@ -1,22 +1,22 @@
 import { api } from "../client";
-import { ApiResponse } from "../types/api-response";
+import { DataSuccessResponse } from "../types/api-response";
 import { RoleType } from "../../models/role.model";
 
 export const RoleAPI = {
   async listRoles() {
-    return api.get<ApiResponse<RoleType[]>>(`/admin/role`);
+    return api.get<DataSuccessResponse<RoleType[]>>(`/admin/role`);
   },
 
   async getRole(slug: string) {
-    return api.get<ApiResponse<RoleType>>(`/admin/role/${slug}`);
+    return api.get<DataSuccessResponse<RoleType>>(`/admin/role/${slug}`);
   },
 
   async createRole(data: any) {
-    return api.post<ApiResponse<RoleType>>(`/admin/role`, data);
+    return api.post<DataSuccessResponse<RoleType>>(`/admin/role`, data);
   },
 
   async updateRole(slug: string, data: any) {
-    return api.put<ApiResponse<RoleType>>(`/admin/role/${slug}`, data);
+    return api.put<DataSuccessResponse<RoleType>>(`/admin/role/${slug}`, data);
   },
 
   async deleteRole(slug: string) {
@@ -25,15 +25,15 @@ export const RoleAPI = {
 
   // Role Permissions
   async listRolePermissions() {
-    return api.get<ApiResponse<any[]>>(`/admin/role-permission`);
+    return api.get<DataSuccessResponse<any[]>>(`/admin/role-permission`);
   },
 
   async getRolePermission(organizationId: string, roleSlug: string) {
-    return api.get<ApiResponse<any>>(`/admin/role-permission/${organizationId}/${roleSlug}`);
+    return api.get<DataSuccessResponse<any>>(`/admin/role-permission/${organizationId}/${roleSlug}`);
   },
 
   async upsertRolePermission(data: any) {
-    return api.post<ApiResponse<any>>(`/admin/role-permission`, data);
+    return api.post<DataSuccessResponse<any>>(`/admin/role-permission`, data);
   },
 
   async deleteRolePermission(organizationId: string, roleSlug: string) {

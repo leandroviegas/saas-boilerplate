@@ -1,7 +1,6 @@
 import { UserAPI } from "../api/endpoints/user.api";
 import { UserDTO } from "../models/user.model";
 import { parseModel, parseModels } from "../utils/model-parser";
-import { Paginated } from "../api/types/pagination";
 
 export const UserService = {
   async getMe(): Promise<UserDTO> {

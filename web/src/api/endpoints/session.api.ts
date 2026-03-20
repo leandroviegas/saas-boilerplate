@@ -1,10 +1,10 @@
 import { api } from "../client";
-import { ApiResponse } from "../types/api-response";
+import { DataSuccessResponse } from "../types/api-response";
 import { SessionType } from "../../models/session.model";
 
 export const SessionAPI = {
   async listSessions() {
-    return api.get<ApiResponse<SessionType[]>>(`/member/session`);
+    return api.get<DataSuccessResponse<SessionType[]>>(`/member/session`);
   },
 
   async revokeSession(id: string) {

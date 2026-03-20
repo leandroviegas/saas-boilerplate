@@ -3,11 +3,11 @@ import { NotificationDTO } from "../models/notification.model";
 import { parseModel, parseModels } from "../utils/model-parser";
 
 export const NotificationService = {
-  async listNotifications(params?: any): Promise<{ items: NotificationDTO[], total: number }> {
+  async listNotifications(params?: any) {
     const res = await NotificationAPI.listNotifications(params);
     return {
       items: parseModels(res.data.data, NotificationDTO),
-      total: res.data.meta.total
+      meta: res.data.meta
     };
   },
 

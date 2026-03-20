@@ -1,5 +1,5 @@
 
-export enum ApiResponseStatusEnum {
+export enum DataSuccessResponseStatusEnum {
     IDLE = 'idle', 
     LOADING = 'loading', 
     SUCCESS = 'success', 

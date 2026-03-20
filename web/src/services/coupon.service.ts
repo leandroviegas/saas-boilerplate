@@ -8,7 +8,7 @@ export const CouponService = {
     return parseModel(res.data.data, CouponDTO);
   },
 
-  async listCoupons(params?: any): Promise<{ items: CouponDTO[], total: number }> {
+  async listCoupons(params?: any) {
     const res = await CouponAPI.listCoupons(params);
     return {
       items: parseModels(res.data.data, CouponDTO),
