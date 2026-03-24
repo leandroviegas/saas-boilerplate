@@ -6,14 +6,21 @@ import DataTable from '@/components/ui/data-table';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/hooks/useTranslation';
-import { FaPencilAlt, FaSearch } from 'react-icons/fa';
+import { FaPencilAlt, FaSearch, FaTrash } from 'react-icons/fa';
 import { useQueryStates, parseAsInteger, parseAsString } from "nuqs";
-import { useCoupons, useIncrementCouponUsage } from '@/hooks/queries/useCoupons';
+import { useCoupons, useIncrementCouponUsage, useDeleteCoupon } from '@/hooks/queries/useCoupons';
 import { CouponDTO } from '@/models/coupon.model';
 
 export default function CouponList() {
     const { t } = useTranslation();
     const incrementUsage = useIncrementCouponUsage();
+    const deleteCoupon = useDeleteCoupon();
+
+    const handleDelete = (id: string) => {
+        if (window.confirm(t('confirm delete coupon'))) {
+            deleteCoupon.mutate(id);
+        }
+    };
 
     const [filters, setFilters] = useQueryStates({
         page: parseAsInteger.withDefault(1),
@@ -107,6 +114,14 @@ export default function CouponList() {
                                 <FaPencilAlt className="h-4 w-4" />
                             </Button>
                         </Link>
+                        <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => handleDelete(coupon.id)}
+                            disabled={deleteCoupon.isPending}
+                        >
+                            <FaTrash className="h-4 w-4" />
+                        </Button>
                     </div>
                 </div>
             ))}
@@ -145,6 +160,14 @@ export default function CouponList() {
                                 <FaPencilAlt className="h-4 w-4" />
                             </Button>
                         </Link>
+                        <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => handleDelete(coupon.id)}
+                            disabled={deleteCoupon.isPending}
+                        >
+                            <FaTrash className="h-4 w-4" />
+                        </Button>
                     </div>
                 )} />
         </div>

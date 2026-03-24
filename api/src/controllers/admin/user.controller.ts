@@ -73,6 +73,8 @@ export const adminUserController = new Elysia({
         body: UpdateUserBodySchema,
         response: UpdateUserResponse
     })
+
+    
     .delete('/:id', async ({ params: { id }, set }) => {
         await userService.delete(id);
         set.status = 204;

@@ -25,6 +25,11 @@ const UpdateCouponResponse = t.Object({
     data: CouponSchema
 });
 
+const DeleteCouponResponse = t.Object({
+    code: t.String(),
+    data: CouponSchema
+});
+
 const IncrementUsageResponse = t.Object({
     code: t.String(),
     data: CouponSchema
@@ -48,6 +53,8 @@ export const adminCouponController = new Elysia({
         query: t.Intersect([paginationSchema]),
         response: GetCouponsResponse
     })
+
+
     .get('/:id', async ({ params: { id } }) => {
         const coupon = await couponService.findById(id);
 
@@ -59,6 +66,8 @@ export const adminCouponController = new Elysia({
         params: t.Object({ id: t.String() }),
         response: GetCouponResponse
     })
+
+
     .post('/', async ({ body }) => {
         const coupon = await couponService.create(body);
 
@@ -70,6 +79,8 @@ export const adminCouponController = new Elysia({
         body: t.Omit(CouponSchema, ["id", "createdAt", "updatedAt"]),
         response: CreateCouponResponse
     })
+
+
     .put('/:id', async ({ params: { id }, body }) => {
         const coupon = await couponService.update(id, body);
 
@@ -82,6 +93,8 @@ export const adminCouponController = new Elysia({
         body: t.Partial(t.Omit(CouponSchema, ["id", "createdAt", "updatedAt"])),
         response: UpdateCouponResponse
     })
+
+    
     .post('/:id/increment-usage', async ({ params: { id } }) => {
         const coupon = await couponService.incrementUsage(id);
 
@@ -92,4 +105,17 @@ export const adminCouponController = new Elysia({
     }, {
         params: t.Object({ id: t.String() }),
         response: IncrementUsageResponse
+    })
+
+
+    .delete('/:id', async ({ params: { id } }) => {
+        const coupon = await couponService.delete(id);
+
+        return {
+            code: 'delete-coupon',
+            data: coupon,
+        };
+    }, {
+        params: t.Object({ id: t.String() }),
+        response: DeleteCouponResponse
     });

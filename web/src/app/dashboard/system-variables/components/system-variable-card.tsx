@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useUpdateSystemVariable, useDeleteSystemVariable } from '@/hooks/queries/useSystemVariables';
 import { FaSave, FaTrash } from 'react-icons/fa';
@@ -26,7 +26,6 @@ export function SystemVariableCard({ variable }: SystemVariableCardProps) {
   const deleteSystemVariable = useDeleteSystemVariable();
   const [value, setValue] = useState(variable.value);
 
-  // Update local state if prop changes (e.g. after refetch)
   useEffect(() => {
     setValue(variable.value);
   }, [variable.value]);
@@ -58,15 +57,21 @@ export function SystemVariableCard({ variable }: SystemVariableCardProps) {
 
   return (
     <Card className="w-full">
-      <CardHeader className="pb-3">
+      <CardHeader>
         <div className="flex items-center justify-between">
           <div>
             <CardTitle className="text-lg font-mono">{variable.id}</CardTitle>
-            <CardDescription>
-              {t('last updated')}: {new Date(variable.updatedAt).toLocaleString()}
-            </CardDescription>
           </div>
-          <div className="flex items-center gap-2">
+        </div>
+      </CardHeader>
+      <CardContent className='flex flex-col gap-2'>
+        <Input
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          className="font-mono"
+          placeholder={t('enter value')}
+        />
+        <div className="flex items-center gap-2">
             <Button 
               size="sm" 
               onClick={handleDelete}
@@ -84,16 +89,7 @@ export function SystemVariableCard({ variable }: SystemVariableCardProps) {
               <FaSave className="h-4 w-4 mr-2" />
               {t('save')}
             </Button>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <Input
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          className="font-mono"
-          placeholder={t('enter value')}
-        />
+          </div>  
       </CardContent>
     </Card>
   );

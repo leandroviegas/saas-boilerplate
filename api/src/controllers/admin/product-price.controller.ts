@@ -43,6 +43,8 @@ export const adminProductPriceController = new Elysia({
     detail: { tags: ['Admin Product Prices'] }
 })
     .use(authMiddleware)
+
+
     .get('/', async ({ query }) => {
         const { data, meta } = await productPriceService.findAll(query);
 
@@ -60,6 +62,8 @@ export const adminProductPriceController = new Elysia({
         ]),
         response: GetProductPricesResponse
     })
+
+
     .get('/:id', async ({ params: { id } }) => {
         const data = await productPriceService.findById(id);
 
@@ -71,6 +75,8 @@ export const adminProductPriceController = new Elysia({
         params: t.Object({ id: t.String() }),
         response: GetProductPriceResponse
     })
+
+
     .post('/', async ({ body }) => {
         const data = await productPriceService.create(body);
 
@@ -82,6 +88,8 @@ export const adminProductPriceController = new Elysia({
         body: t.Omit(ProductPriceSchema, ['id', 'stripePriceId', 'createdAt', 'updatedAt']),
         response: CreateProductPriceResponse
     })
+
+    
     .put('/:id', async ({ params: { id }, body }) => {
         const data = await productPriceService.update(id, body);
 
@@ -94,6 +102,8 @@ export const adminProductPriceController = new Elysia({
         body: t.Omit(ProductPriceSchema, ['stripePriceId', 'createdAt', 'updatedAt']),
         response: UpdateProductPriceResponse
     })
+
+
     .delete('/:id', async ({ params: { id } }) => {
         const data = await productPriceService.delete(id);
 
@@ -105,6 +115,8 @@ export const adminProductPriceController = new Elysia({
         params: t.Object({ id: t.String() }),
         response: DeleteProductPriceResponse
     })
+
+    
     .patch('/:id/switch-active', async ({ params: { id } }) => {
         const data = await productPriceService.switchActive(id);
 

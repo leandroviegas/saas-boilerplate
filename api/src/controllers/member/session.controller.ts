@@ -32,6 +32,8 @@ export const memberSessionController = new Elysia({
         query: t.Intersect([paginationSchema]),
         response: GetSessionsResponse
     })
+
+    
     .delete('/:id', async ({ params: { id }, user }) => {
         if (!user) throw new Error("Unauthorized");
         await sessionService.revoke(id, user.id);

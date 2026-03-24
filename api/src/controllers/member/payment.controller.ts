@@ -60,6 +60,8 @@ export const memberPaymentController = new Elysia({
         query: t.Intersect([paginationSchema]),
         response: GetProductsResponse
     })
+
+
     .post('/checkout', async ({ body, user, session }) => {
         if (!user || !session) throw new Error("Unauthorized");
         const organizationId = session.activeOrganizationId;
@@ -74,6 +76,8 @@ export const memberPaymentController = new Elysia({
         body: CreateCheckoutSessionResponse,
         response: CreateCheckoutResponse
     })
+
+
     .get('/subscription', async ({ session }) => {
         if (!session) throw new Error("Unauthorized");
         const organizationId = session.activeOrganizationId;
@@ -93,6 +97,8 @@ export const memberPaymentController = new Elysia({
     }, {
         response: GetSubscriptionResponse
     })
+
+
     .post('/subscription/cancel', async ({ session }) => {
         if (!session) throw new Error("Unauthorized");
         const organizationId = session.activeOrganizationId;
@@ -106,6 +112,8 @@ export const memberPaymentController = new Elysia({
     }, {
         response: CancelSubscriptionResponse
     })
+
+    
     .get('/transactions', async ({ query, user }) => {
         if (!user) throw new Error("Unauthorized");
         const { data, meta } = await paymentService.getTransactions(user.id, query);

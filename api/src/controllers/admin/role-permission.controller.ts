@@ -36,6 +36,8 @@ export const adminRolePermissionController = new Elysia({
     detail: { tags: ['Admin Organization Role Permissions'] }
 })
     .use(authMiddleware)
+
+
     .get('/', async ({ query, session }) => {
         const organizationId = session?.activeOrganizationId;
         if (!organizationId) throw new Error("Organization not found");
@@ -51,6 +53,8 @@ export const adminRolePermissionController = new Elysia({
         query: t.Intersect([paginationSchema]),
         response: GetRolePermissionsResponse
     })
+
+
     .get('/:roleSlug', async ({ params: { roleSlug }, session }) => {
         const organizationId = session?.activeOrganizationId;
         if (!organizationId) throw new Error("Organization not found");
@@ -68,6 +72,8 @@ export const adminRolePermissionController = new Elysia({
         params: t.Object({ roleSlug: t.String() }),
         response: GetRolePermissionBySlugResponse
     })
+
+
     .post('/', async ({ body, session }) => {
         const organizationId = session?.activeOrganizationId;
         if (!organizationId) throw new Error("Organization not found");
@@ -90,6 +96,8 @@ export const adminRolePermissionController = new Elysia({
         }),
         response: CreateRolePermissionResponse
     })
+
+
     .put('/:roleSlug', async ({ params: { roleSlug }, body, session }) => {
         const organizationId = session?.activeOrganizationId;
         if (!organizationId) throw new Error("Organization not found");
@@ -112,6 +120,8 @@ export const adminRolePermissionController = new Elysia({
         }),
         response: UpdateRolePermissionResponse
     })
+
+
     .delete('/:roleSlug', async ({ params: { roleSlug }, session }) => {
         const organizationId = session?.activeOrganizationId;
         if (!organizationId) throw new Error("Organization not found");
@@ -121,10 +131,7 @@ export const adminRolePermissionController = new Elysia({
             roleSlug
         );
 
-        return {
-            code: "delete-organization-role-permissions",
-            data,
-        };
+        return { code: "delete-organization-role-permissions", data };
     }, {
         params: t.Object({ roleSlug: t.String() }),
         response: DeleteRolePermissionResponse

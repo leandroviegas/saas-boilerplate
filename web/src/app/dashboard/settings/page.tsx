@@ -2,11 +2,11 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslation } from "@/hooks/useTranslation";
-import { UserDetailsCard } from "./cards/UserDetailsCard";
-import { PasswordCard } from "./cards/PasswordCard";
-import { PreferencesCard } from "./cards/PreferencesCard";
-import { TwoFactorCard } from "./cards/TwoFactorCard";
-import { SessionsCard } from "./cards/SessionsCard";
+import { UserDetailsCard } from "./cards/user-details-card";
+import { PreferencesCard } from "./cards/preferences-card";
+import { TwoFactorCard } from "./cards/two-factor-card";
+import { SessionsCard } from "./cards/sessions-card";
+import { PasswordCard } from "./cards/password-card";
 
 export default function SettingsPage() {
   const { t } = useTranslation();

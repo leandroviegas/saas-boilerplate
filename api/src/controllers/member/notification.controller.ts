@@ -37,6 +37,8 @@ export const memberNotificationController = new Elysia({
         query: t.Intersect([paginationSchema]),
         response: GetNotificationsResponse
     })
+
+
     .patch('/:id/read', async ({ params: { id }, user }) => {
         if (!user) throw new Error("User not found");
         const data = await notificationService.markAsRead(id, user.id);
@@ -49,6 +51,8 @@ export const memberNotificationController = new Elysia({
         params: t.Object({ id: t.String() }),
         response: MarkAsReadResponse
     })
+
+
     .patch('/read-all', async ({ user }) => {
         if (!user) throw new Error("User not found");
         await notificationService.markAllAsRead(user.id);
@@ -59,6 +63,8 @@ export const memberNotificationController = new Elysia({
     }, {
         response: MarkAllReadResponse
     })
+
+
     .delete('/:id', async ({ params: { id }, user, set }) => {
         if (!user) throw new Error("User not found");
         await notificationService.delete(id, user.id);
@@ -67,6 +73,8 @@ export const memberNotificationController = new Elysia({
     }, {
         params: t.Object({ id: t.String() })
     })
+
+    
     .delete('/', async ({ user, set }) => {
         if (!user) throw new Error("User not found");
         await notificationService.deleteAll(user.id);

@@ -35,6 +35,8 @@ export const adminRoleController = new Elysia({
     detail: { tags: ['Admin Roles'] }
 })
     .use(authMiddleware)
+
+    
     .get('/', async ({ query }) => {
         const { data, meta } = await roleService.findAll(query);
 
@@ -47,6 +49,8 @@ export const adminRoleController = new Elysia({
         query: t.Intersect([paginationSchema]),
         response: GetRolesResponse
     })
+
+
     .get('/:slug', async ({ params: { slug } }) => {
         const data = await roleService.findById(slug);
 
@@ -58,6 +62,8 @@ export const adminRoleController = new Elysia({
         params: t.Object({ slug: t.String() }),
         response: GetRoleResponse
     })
+
+
     .post('/', async ({ body }) => {
         const data = await roleService.create(body);
 
@@ -69,6 +75,8 @@ export const adminRoleController = new Elysia({
         body: t.Omit(RoleSchema, ["createdAt", "updatedAt"]),
         response: CreateRoleResponse
     })
+
+    
     .put('/:slug', async ({ params: { slug }, body }) => {
         const data = await roleService.update(slug, body);
 
@@ -81,6 +89,8 @@ export const adminRoleController = new Elysia({
         body: t.Partial(t.Omit(RoleSchema, ["createdAt", "updatedAt"])),
         response: UpdateRoleResponse
     })
+
+
     .delete('/:slug', async ({ params: { slug } }) => {
         const data = await roleService.delete(slug);
 
