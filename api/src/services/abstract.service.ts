@@ -1,8 +1,12 @@
-import { ExtendedPrismaClient } from "@/plugins/prisma";
+import type { TransactionClient } from "@/types/prisma";
+import { PrismaTransactionContext } from "@/plugins/prisma-transaction-context";
 
 export abstract class AbstractService {
-    prisma: ExtendedPrismaClient;
-    constructor(prisma: ExtendedPrismaClient) {
-        this.prisma = prisma;
-    }
+  constructor(
+    protected readonly transaction: PrismaTransactionContext
+  ) {}
+
+  protected get prisma(): TransactionClient {
+    return this.transaction.getClient();
+  }
 }

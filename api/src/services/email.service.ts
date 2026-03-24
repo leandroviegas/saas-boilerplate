@@ -1,5 +1,5 @@
 import { AbstractService } from "@/services/abstract.service";
-import { ExtendedPrismaClient } from "@/plugins/prisma";
+import { PrismaTransactionContext } from "@/plugins/prisma-transaction-context";
 import nodemailer from "nodemailer";
 import { emailConfig } from "@/config";
 
@@ -14,8 +14,8 @@ export interface EmailOptions {
 export class EmailService extends AbstractService {
     private transporter: nodemailer.Transporter;
 
-    constructor(prisma: ExtendedPrismaClient) {
-        super(prisma);
+    constructor(transaction: PrismaTransactionContext) {
+        super(transaction);
 
         this.transporter = nodemailer.createTransport({
             host: emailConfig.host,

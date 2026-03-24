@@ -3,6 +3,7 @@ import { AbstractService } from "@/services/abstract.service";
 import { PaginationType } from "@/schemas/pagination";
 import { Prisma } from "@prisma/client";
 import { UpdateUserBodyType } from "@/controllers/admin/user.controller";
+import { Transactional } from "@/decorators/transactional";
 
 export class UserService extends AbstractService {
   findAll(pagination: PaginationType) {
@@ -36,6 +37,7 @@ export class UserService extends AbstractService {
     });
   }
 
+  @Transactional()
   async update(id: string, data: UpdateUserBodyType) {
     const existingUser = await this.findById(id);
     const oldImageUrl = existingUser.image;

@@ -1,4 +1,4 @@
-import { prisma } from "@/plugins/prisma";
+import { transactionContext } from "@/plugins/prisma";
 
 import { AuthService } from "./auth.service";
 import { CouponService } from "./coupon.service";
@@ -16,20 +16,22 @@ import { UserService } from "./user.service";
 import { WebsocketsService } from "./websockets.service";
 import { SystemVariableService } from "./system-variable.service";
 
-export const authService = new AuthService(prisma);
-export const couponService = new CouponService(prisma);
-export const emailService = new EmailService(prisma);
-export const notificationService = new NotificationService(prisma);
-export const organizationRolePermissionService = new OrganizationRolePermissionService(prisma);
-export const organizationService = new OrganizationService(prisma);
-export const paymentService = new PaymentService(prisma);
-export const productPriceService = new ProductPriceService(prisma);
-export const productService = new ProductService(prisma);
-export const roleService = new RoleService(prisma);
-export const s3Service = new S3Service();
-export const sessionService = new SessionService(prisma);
-export const userService = new UserService(prisma);
+export { transactionContext };
 
-export const systemVariableService = new SystemVariableService(prisma);
+export const authService = new AuthService(transactionContext);
+export const couponService = new CouponService(transactionContext);
+export const emailService = new EmailService(transactionContext);
+export const notificationService = new NotificationService(transactionContext);
+export const organizationRolePermissionService = new OrganizationRolePermissionService(transactionContext);
+export const organizationService = new OrganizationService(transactionContext);
+export const paymentService = new PaymentService(transactionContext);
+export const productPriceService = new ProductPriceService(transactionContext);
+export const productService = new ProductService(transactionContext);
+export const roleService = new RoleService(transactionContext);
+export const s3Service = new S3Service();
+export const sessionService = new SessionService(transactionContext);
+export const userService = new UserService(transactionContext);
+
+export const systemVariableService = new SystemVariableService(transactionContext);
 
 export const websocketsService = new WebsocketsService();

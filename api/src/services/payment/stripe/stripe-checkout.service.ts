@@ -1,5 +1,5 @@
 import { CreateCheckoutSessionOptions } from "../payment-provider.interface";
-import { ExtendedPrismaClient } from "@/plugins/prisma";
+import { PrismaTransactionContext } from "@/plugins/prisma-transaction-context";
 import { StripeAbstractService } from "./stripe-abstract.service";
 import { StripeCustomerService } from "./stripe-customer.service";
 
@@ -7,9 +7,9 @@ import { StripeCustomerService } from "./stripe-customer.service";
 export class StripeCheckoutService extends StripeAbstractService {
   private customerService: StripeCustomerService;
 
-  constructor(prisma: ExtendedPrismaClient) {
-    super(prisma);
-    this.customerService = new StripeCustomerService(prisma);
+  constructor(transaction: PrismaTransactionContext) {
+    super(transaction);
+    this.customerService = new StripeCustomerService(transaction);
   }
 
   async createCheckoutSession(options: CreateCheckoutSessionOptions) {

@@ -1,7 +1,7 @@
 import { AbstractService } from "@/services/abstract.service";
 import { PaymentProvider } from "./payment/payment-provider.interface";
 import { stripeProvider } from "./payment/providers";
-import { ExtendedPrismaClient } from "@/plugins/prisma";
+import { PrismaTransactionContext } from "@/plugins/prisma-transaction-context";
 import { PaginationType } from "@/schemas/pagination";
 import { stripeConfig } from "@/config";
 import { CreateCheckoutSessionResponseType } from "@/controllers/member/payment.controller";
@@ -9,8 +9,8 @@ import { CreateCheckoutSessionResponseType } from "@/controllers/member/payment.
 export class PaymentService extends AbstractService {
   private provider: PaymentProvider;
 
-  constructor(prisma: ExtendedPrismaClient, provider: PaymentProvider = stripeProvider) {
-    super(prisma);
+  constructor(transaction: PrismaTransactionContext, provider: PaymentProvider = stripeProvider) {
+    super(transaction);
     this.provider = provider;
   }
 

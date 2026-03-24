@@ -2,6 +2,7 @@ import { Prisma, PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 import "dotenv/config";
+import { PrismaTransactionContext } from "@/plugins/prisma-transaction-context";
 
 const pool = new pg.Pool({
     connectionString: process.env.DATABASE_URL
@@ -70,3 +71,5 @@ const prismaBase = new PrismaClient({ adapter });
 export const prisma = prismaBase.$extends(paginationExtension);
 
 export type ExtendedPrismaClient = ReturnType<typeof InitializeExtendedPrisma>;
+
+export const transactionContext = new PrismaTransactionContext(prisma);

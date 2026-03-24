@@ -1,5 +1,5 @@
 import { CreateCheckoutSessionOptions, PaymentProvider, ProductType, ProductPriceType, CouponType } from "./payment-provider.interface";
-import { ExtendedPrismaClient } from "@/plugins/prisma";
+import { PrismaTransactionContext } from "@/plugins/prisma-transaction-context";
 import { StripeProductService } from "./stripe/stripe-product.service";
 import { StripePriceService } from "./stripe/stripe-price.service";
 import { StripeCheckoutService } from "./stripe/stripe-checkout.service";
@@ -7,20 +7,20 @@ import { StripeWebhookService } from "./stripe/stripe-webhook.service";
 import { StripeCouponService } from "./stripe/stripe-coupon.service";
 
 export class StripeProvider implements PaymentProvider {
-  private prisma: ExtendedPrismaClient;
+  private transaction: PrismaTransactionContext;
   private productService: StripeProductService;
   private priceService: StripePriceService;
   private checkoutService: StripeCheckoutService;
   private webhookService: StripeWebhookService;
   private couponService: StripeCouponService;
 
-  constructor(prisma: ExtendedPrismaClient) {
-    this.prisma = prisma;
-    this.productService = new StripeProductService(this.prisma);
-    this.priceService = new StripePriceService(this.prisma);
-    this.checkoutService = new StripeCheckoutService(this.prisma);
-    this.webhookService = new StripeWebhookService(this.prisma);
-    this.couponService = new StripeCouponService(this.prisma);
+  constructor(transaction: PrismaTransactionContext) {
+    this.transaction = transaction;
+    this.productService = new StripeProductService(this.transaction);
+    this.priceService = new StripePriceService(this.transaction);
+    this.checkoutService = new StripeCheckoutService(this.transaction);
+    this.webhookService = new StripeWebhookService(this.transaction);
+    this.couponService = new StripeCouponService(this.transaction);
   }
 
   async createCheckoutSession(options: CreateCheckoutSessionOptions) {
