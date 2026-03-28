@@ -36,8 +36,6 @@ export const adminRolePermissionController = new Elysia({
     detail: { tags: ['Admin Organization Role Permissions'] }
 })
     .use(authMiddleware)
-
-
     .get('/', async ({ query, session }) => {
         const organizationId = session?.activeOrganizationId;
         if (!organizationId) throw new Error("Organization not found");

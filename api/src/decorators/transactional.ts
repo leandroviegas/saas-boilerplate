@@ -1,4 +1,4 @@
-import type { PrismaTransactionContext } from "@/plugins/prisma-transaction-context";
+import type { PrismaTransactionContext, TransactionOptions } from "@/plugins/prisma-transaction-context";
 
 /**
  * Wraps the decorated service method inside a Prisma transaction.
@@ -14,7 +14,7 @@ import type { PrismaTransactionContext } from "@/plugins/prisma-transaction-cont
  * async update(id: string, data: UpdateUserBodyType) { ... }
  * ```
  */
-export function Transactional() {
+export function Transactional(options?: TransactionOptions) {
   return function (
     _target: object,
     _propertyKey: string | symbol,
@@ -24,7 +24,7 @@ export function Transactional() {
       descriptor.value;
 
     descriptor.value = function (this: Record<string, PrismaTransactionContext>, ...args: Parameters<typeof originalMethod>) {
-      return this["transaction"].run(() => originalMethod.apply(this, args));
+      return this["transaction"].run(() => originalMethod.apply(this, args), options);
     };
 
     return descriptor;

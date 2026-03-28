@@ -4,6 +4,8 @@ import { StripeAbstractService } from "./stripe-abstract.service";
 
 export class StripePriceService extends StripeAbstractService {
   async createProductPrice(productId: string, price: ProductPriceType): Promise<string> {
+    const { stripe } = await this.getStripe();
+
     const product = await this.prisma.product.findUnique({
       where: { id: productId },
     });
@@ -15,7 +17,7 @@ export class StripePriceService extends StripeAbstractService {
     let stripeProductId = product.stripeProductId;
 
     if (!stripeProductId) {
-      const stripeProduct = await this.stripe.products.create({
+      const stripeProduct = await stripe.products.create({
         name: product.name,
         description: product.description || undefined,
         metadata: {
@@ -31,7 +33,7 @@ export class StripePriceService extends StripeAbstractService {
       });
     }
 
-    const stripePrice = await this.stripe.prices.create({
+    const stripePrice = await stripe.prices.create({
       product: stripeProductId,
       unit_amount: Math.round(price.amount * 100),
       currency: price.currency,
@@ -48,7 +50,9 @@ export class StripePriceService extends StripeAbstractService {
   }
 
   async updateProductPrice(stripePriceId: string, price: ProductPriceType): Promise<string> {
-    const stripePrice = await this.stripe.prices.update(
+    const { stripe } = await this.getStripe();
+
+    const stripePrice = await stripe.prices.update(
       stripePriceId,
       {
         active: price.active,
@@ -67,7 +71,9 @@ export class StripePriceService extends StripeAbstractService {
   }
 
   async switchProductPriceActive(stripePriceId: string, active: boolean): Promise<void> {
-    await this.stripe.prices.update(stripePriceId, { active });
+    const { stripe } = await this.getStripe();
+
+    await stripe.prices.update(stripePriceId, { active });
   }
 
   async deleteProductPrice(stripePriceId: string): Promise<void> {

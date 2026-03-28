@@ -35,8 +35,6 @@ export const adminRoleController = new Elysia({
     detail: { tags: ['Admin Roles'] }
 })
     .use(authMiddleware)
-
-    
     .get('/', async ({ query }) => {
         const { data, meta } = await roleService.findAll(query);
 

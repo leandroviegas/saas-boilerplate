@@ -3,7 +3,7 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { jwt, twoFactor, username, multiSession, organization } from "better-auth/plugins";
 import { prisma } from "./plugins/prisma";
 import { notificationService } from "@/services";
-import { corsConfig } from "./config";
+import { betterAuthConfig, corsConfig } from "./config";
 
 function getCookieDomain(): string | undefined {
   if (!corsConfig.origin) return undefined;
@@ -25,7 +25,7 @@ const cookieDomain = getCookieDomain();
 
 export const auth = betterAuth({
   trustedOrigins: corsConfig.origin,
-  baseURL: process.env.BETTER_AUTH_URL,
+  baseURL: betterAuthConfig.url,
   trustHost: true, 
   advanced: {
     crossSubDomainCookies: {

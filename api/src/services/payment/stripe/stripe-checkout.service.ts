@@ -15,7 +15,9 @@ export class StripeCheckoutService extends StripeAbstractService {
   async createCheckoutSession(options: CreateCheckoutSessionOptions) {
     const customerId = await this.customerService.getOrCreateCustomer(options.userId, options.email);
 
-    const session = await this.stripe.checkout.sessions.create({
+    const { stripe } = await this.getStripe();
+
+    const session = await stripe.checkout.sessions.create({
       customer: customerId,
       payment_method_types: ["card"],
       line_items: [
@@ -42,7 +44,9 @@ export class StripeCheckoutService extends StripeAbstractService {
   }
 
   async cancelSubscription(subscriptionId: string) {
-    await this.stripe.subscriptions.update(subscriptionId, {
+    const { stripe } = await this.getStripe();
+
+    await stripe.subscriptions.update(subscriptionId, {
       cancel_at_period_end: true,
     });
   }

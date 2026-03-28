@@ -4,6 +4,8 @@ import { StripeAbstractService } from "./stripe-abstract.service";
 export class StripeCustomerService extends StripeAbstractService {
 
   async getOrCreateCustomer(userId: string, email: string): Promise<string> {
+    const { stripe } = await this.getStripe();
+
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       select: { stripeCustomerId: true, name: true },
@@ -13,7 +15,7 @@ export class StripeCustomerService extends StripeAbstractService {
       return user.stripeCustomerId;
     }
 
-    const customer = await this.stripe.customers.create({
+    const customer = await stripe.customers.create({
       email,
       name: user?.name,
       metadata: {

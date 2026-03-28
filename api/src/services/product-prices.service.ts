@@ -4,12 +4,6 @@ import { stripeProvider } from "./payment/providers";
 import { CreateProductPriceType, UpdateProductPriceType } from "@/schemas/models/product.schema";
 
 export class ProductPriceService extends AbstractService {
-    findAllByProductId(productId: string) {
-        return this.prisma.productPrice.findMany({
-            where: { productId },
-        });
-    }
-
     async findAll(query: { productId?: string } & PaginationType) {
         const { productId, page, perPage } = query;
 

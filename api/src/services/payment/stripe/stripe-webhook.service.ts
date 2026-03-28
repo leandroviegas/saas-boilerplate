@@ -1,17 +1,20 @@
 import Stripe from "stripe";
-import { stripeConfig } from "@/config";
 import { StripeAbstractService } from "./stripe-abstract.service";
 
 export class StripeWebhookService extends StripeAbstractService {
 
   async handleWebhook(payload: any, signature: string) {
+    const { stripe } = await this.getStripe();
+    
+    const stripeConfig = await this.systemVariableService.getStripeConfig();
+
     let event: Stripe.Event;
 
     try {
-      event = this.stripe.webhooks.constructEvent(
+      event = stripe.webhooks.constructEvent(
         payload,
         signature,
-        stripeConfig.webhookSecret
+        stripeConfig.webhookSecret!
       );
     } catch (err: any) {
       throw new Error(`webhook error: ${err.message}`);
@@ -34,6 +37,8 @@ export class StripeWebhookService extends StripeAbstractService {
   }
 
   private async handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
+    const { stripe } = await this.getStripe();
+
     const organizationId = session.metadata?.organizationId;
     const stripeSubscriptionId =
       typeof session.subscription === 'string'
@@ -42,7 +47,7 @@ export class StripeWebhookService extends StripeAbstractService {
 
     if (!organizationId || !stripeSubscriptionId) return;
 
-    const stripeSubscription = await this.stripe.subscriptions.retrieve(stripeSubscriptionId);
+    const stripeSubscription = await stripe.subscriptions.retrieve(stripeSubscriptionId);
     const subscriptionItem = stripeSubscription.items.data[0];
     const priceId = subscriptionItem.price.id;
 
@@ -72,6 +77,8 @@ export class StripeWebhookService extends StripeAbstractService {
   }
 
   private async handleInvoicePaymentSucceeded(invoice: Stripe.Invoice) {
+    const { stripe } = await this.getStripe();
+
     const sub = invoice.lines.data[0].subscription;
     const stripeSubscriptionId = typeof sub === 'string' ? sub : sub?.id;
     let userId = invoice.lines.data[0].metadata?.userId;
@@ -82,7 +89,7 @@ export class StripeWebhookService extends StripeAbstractService {
     let paymentIntentId;
 
     if (invoice.total > 0) {
-      const invoicePayments = await this.stripe.invoicePayments.list({
+      const invoicePayments = await stripe.invoicePayments.list({
         invoice: invoice.id,
         limit: 1,
       });
@@ -114,7 +121,7 @@ export class StripeWebhookService extends StripeAbstractService {
 
     userId = userId ?? subscription.organization.members[0].userId;
 
-    const stripeSubscription = await this.stripe.subscriptions.retrieve(stripeSubscriptionId);
+    const stripeSubscription = await stripe.subscriptions.retrieve(stripeSubscriptionId);
     const subscriptionItem = stripeSubscription.items.data[0];
 
     await this.prisma.subscription.update({

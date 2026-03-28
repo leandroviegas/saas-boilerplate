@@ -31,8 +31,6 @@ export const adminSystemVariableController = new Elysia({
     detail: { tags: ['Admin System Variables'] },
 })
     .use(authMiddleware)
-
-
     .get('/', async ({ query }) => {
         const { data, meta } = await systemVariableService.findMany();
 

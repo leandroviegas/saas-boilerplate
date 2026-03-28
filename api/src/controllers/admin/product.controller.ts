@@ -45,8 +45,6 @@ export const adminProductController = new Elysia({
     detail: { tags: ['Admin Products'] }
 })
     .use(authMiddleware)
-
-
     .get('/', async ({ query }) => {
         const { data, meta } = await productService.findAll(query);
 

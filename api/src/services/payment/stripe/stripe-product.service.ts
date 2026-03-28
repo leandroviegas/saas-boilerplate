@@ -5,7 +5,9 @@ import { StripeAbstractService } from "./stripe-abstract.service";
 export class StripeProductService extends StripeAbstractService {
 
   async createProduct(product: ProductType): Promise<string> {
-    const stripeProduct = await this.stripe.products.create({
+    const { stripe } = await this.getStripe();
+
+    const stripeProduct = await stripe.products.create({
       name: product.name,
       description: product.description,
       metadata: {
@@ -17,7 +19,9 @@ export class StripeProductService extends StripeAbstractService {
   }
 
   async updateProduct(stripeProductId: string, product: ProductType): Promise<string> {
-    const updatedStripeProduct = await this.stripe.products.update(
+    const { stripe } = await this.getStripe();
+
+    const updatedStripeProduct = await stripe.products.update(
       stripeProductId,
       {
         name: product.name,
@@ -30,7 +34,9 @@ export class StripeProductService extends StripeAbstractService {
   }
 
   async switchActive(stripeProductId: string, active: boolean): Promise<string> {
-    const updatedStripeProduct = await this.stripe.products.update(
+    const { stripe } = await this.getStripe();
+
+    const updatedStripeProduct = await stripe.products.update(
       stripeProductId,
       { active }
     );
@@ -39,6 +45,8 @@ export class StripeProductService extends StripeAbstractService {
   }
 
   async deleteProduct(stripeProductId: string): Promise<void> {
-    await this.stripe.products.del(stripeProductId);
+    const { stripe } = await this.getStripe();
+
+    await stripe.products.del(stripeProductId);
   }
 }

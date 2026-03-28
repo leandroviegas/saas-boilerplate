@@ -3,15 +3,17 @@ import { PaymentProvider } from "./payment/payment-provider.interface";
 import { stripeProvider } from "./payment/providers";
 import { PrismaTransactionContext } from "@/plugins/prisma-transaction-context";
 import { PaginationType } from "@/schemas/pagination";
-import { stripeConfig } from "@/config";
 import { CreateCheckoutSessionResponseType } from "@/controllers/member/payment.controller";
+import { SystemVariableService } from "./system-variable.service";
 
 export class PaymentService extends AbstractService {
   private provider: PaymentProvider;
+  private systemVariableService: SystemVariableService;
 
   constructor(transaction: PrismaTransactionContext, provider: PaymentProvider = stripeProvider) {
     super(transaction);
     this.provider = provider;
+    this.systemVariableService = new SystemVariableService(transaction);
   }
 
   async getTransactions(userId: string, pagination: PaginationType) {
@@ -21,6 +23,8 @@ export class PaymentService extends AbstractService {
   }
 
   async createCheckoutSession(userId: string, organizationId: string, data: CreateCheckoutSessionResponseType) {
+    const stripeConfig = await this.systemVariableService.getStripeConfig();
+
     const user = await this.prisma.user.findUniqueOrThrow({
       where: { id: userId },
     });

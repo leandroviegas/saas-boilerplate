@@ -5,6 +5,8 @@ import { StripeAbstractService } from "./stripe-abstract.service";
 
 export class StripeCouponService extends StripeAbstractService {
   async createCoupon(coupon: CouponType): Promise<string> {
+    const { stripe } = await this.getStripe();
+
     const stripeCouponData: Stripe.CouponCreateParams = {
       id: coupon.code,
       name: coupon.code,
@@ -22,13 +24,15 @@ export class StripeCouponService extends StripeAbstractService {
       stripeCouponData.currency = "usd";
     }
 
-    const stripeCoupon = await this.stripe.coupons.create(stripeCouponData);
+    const stripeCoupon = await stripe.coupons.create(stripeCouponData);
 
     return stripeCoupon.id;
   }
 
   async updateCoupon(couponId: string, coupon: CouponType): Promise<string> {
-    const updatedCoupon = await this.stripe.coupons.update(couponId, {
+    const { stripe } = await this.getStripe();
+
+    const updatedCoupon = await stripe.coupons.update(couponId, {
       name: coupon.code,
       metadata: {
         couponId: coupon.id,
@@ -39,6 +43,8 @@ export class StripeCouponService extends StripeAbstractService {
   }
 
   async deleteCoupon(couponId: string): Promise<void> {
-    await this.stripe.coupons.del(couponId);
+    const { stripe } = await this.getStripe();
+
+    await stripe.coupons.del(couponId);
   }
 }

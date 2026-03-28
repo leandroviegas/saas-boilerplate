@@ -2,7 +2,7 @@ import { AsyncLocalStorage } from "node:async_hooks";
 import { ExtendedPrismaClient } from "@/plugins/prisma";
 import type { TransactionClient } from "@/types/prisma";
 
-type TransactionOptions = {
+export type TransactionOptions = {
   timeout?: number;
   maxWait?: number;
   isolationLevel?: "ReadUncommitted" | "ReadCommitted" | "RepeatableRead" | "Serializable";

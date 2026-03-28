@@ -1,7 +1,8 @@
 import { AbstractService } from "@/services/abstract.service";
 import { PrismaTransactionContext } from "@/plugins/prisma-transaction-context";
 import nodemailer from "nodemailer";
-import { emailConfig } from "@/config";
+import SMTPTransport from "nodemailer/lib/smtp-transport";
+import { SystemVariableService } from "./system-variable.service";
 
 export interface EmailOptions {
     to: string | string[];
@@ -12,15 +13,21 @@ export interface EmailOptions {
 }
 
 export class EmailService extends AbstractService {
-    private transporter: nodemailer.Transporter;
+    systemVariableService!: SystemVariableService;
 
     constructor(transaction: PrismaTransactionContext) {
         super(transaction);
 
-        this.transporter = nodemailer.createTransport({
+        this.systemVariableService = new SystemVariableService(transaction);
+    }
+
+    async getTransporter() {
+        const emailConfig = await this.systemVariableService.getEmailConfig();
+
+        const transporter = nodemailer.createTransport({
             host: emailConfig.host,
             port: emailConfig.port,
-            secure: emailConfig.secure, // true for 465, false for other ports
+            secure: emailConfig.secure,
             auth: {
                 user: emailConfig.user,
                 pass: emailConfig.password,
@@ -28,20 +35,25 @@ export class EmailService extends AbstractService {
             tls: {
                 rejectUnauthorized: emailConfig.rejectUnauthorized,
             },
-        });
+        } as SMTPTransport.Options);
+
+        return { transporter };
     }
 
     async sendEmail(options: EmailOptions): Promise<void> {
+        const emailConfig = await this.systemVariableService.getEmailConfig();
+        const { transporter } = await this.getTransporter();
+
         try {
             const mailOptions = {
-                from: options.from || emailConfig.from,
+                from: options.from ?? emailConfig.from ?? undefined,
                 to: options.to,
                 subject: options.subject,
                 text: options.text,
                 html: options.html,
             };
 
-            await this.transporter.sendMail(mailOptions);
+            await transporter.sendMail(mailOptions);
         } catch (error) {
             throw new Error("failed to send email");
         }

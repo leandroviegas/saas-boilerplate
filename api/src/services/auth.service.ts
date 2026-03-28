@@ -1,10 +1,11 @@
 import { IncomingHttpHeaders } from "http";
 import { auth } from "../auth";
 import { AbstractService } from "@/services/abstract.service";
+import { betterAuthConfig } from "@/config";
 
 export class AuthService extends AbstractService {
   buildHeaders(reqHeaders: IncomingHttpHeaders) {
-    const authUrl = new URL(process.env.BETTER_AUTH_URL!);
+    const authUrl = new URL(betterAuthConfig.url);
     const headers = new Headers();
 
     Object.entries(reqHeaders).forEach(([key, value]) => {

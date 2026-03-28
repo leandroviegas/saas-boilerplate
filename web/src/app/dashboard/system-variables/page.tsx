@@ -8,12 +8,58 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useSystemVariables, useSetSystemVariable } from '@/hooks/queries/useSystemVariables';
-import { FaPlus, FaSave, FaAws, FaCreditCard } from 'react-icons/fa';
+import { FaPlus, FaSave, FaAws, FaCreditCard, FaEnvelope } from 'react-icons/fa';
 import { toast } from 'sonner';
 import { SystemVariableCard } from './components/system-variable-card';
 import { ConfigSection, ConfigField } from './components/config-section';
 import Pagination from '@/components/ui/pagination';
 import { useQueryStates, parseAsInteger } from 'nuqs';
+
+const EMAIL_FIELDS: ConfigField[] = [
+  {
+    key: 'SMTP_HOST',
+    label: 'SMTP_HOST',
+    description: 'Hostname of the SMTP server (e.g. smtp.gmail.com).',
+    placeholder: 'smtp.example.com',
+  },
+  {
+    key: 'SMTP_PORT',
+    label: 'SMTP_PORT',
+    description: 'Port used by the SMTP server. Common values: 587 (TLS), 465 (SSL), 25.',
+    placeholder: '587',
+  },
+  {
+    key: 'SMTP_SECURE',
+    label: 'SMTP_SECURE',
+    description: 'Set to "true" to use SSL/TLS. Usually "false" for port 587 (STARTTLS).',
+    placeholder: 'false',
+  },
+  {
+    key: 'SMTP_USER',
+    label: 'SMTP_USER',
+    description: 'Username or email address used to authenticate with the SMTP server.',
+    placeholder: 'user@example.com',
+  },
+  {
+    key: 'SMTP_PASSWORD',
+    label: 'SMTP_PASSWORD',
+    description: 'Password or app-specific password for SMTP authentication.',
+    sensitive: true,
+    placeholder: '••••••••',
+  },
+  {
+    key: 'SMTP_FROM',
+    label: 'SMTP_FROM',
+    description: 'The "From" address that will appear in outgoing emails.',
+    placeholder: 'no-reply@example.com',
+  },
+  {
+    key: 'SMTP_REJECT_UNAUTHORIZED',
+    label: 'SMTP_REJECT_UNAUTHORIZED',
+    description: 'Set to "false" to allow self-signed TLS certificates. Defaults to "true" (recommended for production).',
+    placeholder: 'true',
+  },
+];
 
 const S3_FIELDS: ConfigField[] = [
   {
@@ -70,18 +116,6 @@ const STRIPE_FIELDS: ConfigField[] = [
     description: 'Webhook signing secret for verifying Stripe event payloads.',
     sensitive: true,
     placeholder: 'whsec_...',
-  },
-  {
-    key: 'STRIPE_SUCCESS_URL',
-    label: 'STRIPE_SUCCESS_URL',
-    description: 'URL to redirect customers after a successful Stripe Checkout session.',
-    placeholder: 'https://example.com/success',
-  },
-  {
-    key: 'STRIPE_CANCEL_URL',
-    label: 'STRIPE_CANCEL_URL',
-    description: 'URL to redirect customers when they cancel a Stripe Checkout session.',
-    placeholder: 'https://example.com/cancel',
   },
 ];
 
@@ -145,6 +179,14 @@ export default function SystemVariablesPage() {
 
         {/* ── Configuration tab ────────────────────────────────── */}
         <TabsContent value="config" className="space-y-6 mt-4">
+          <ConfigSection
+            title="Email / SMTP"
+            description={t('smtp server credentials for sending transactional emails')}
+            icon={<FaEnvelope className="h-5 w-5" />}
+            fields={EMAIL_FIELDS}
+            existingVariables={managedVariables}
+          />
+
           <ConfigSection
             title="Amazon S3 / Object Storage"
             description={t('credentials and settings for S3-compatible file storage')}

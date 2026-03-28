@@ -1,5 +1,6 @@
 import { AbstractService } from "@/services/abstract.service";
 import { ioredis } from "@/plugins/ioredis";
+import { webUrl } from "@/config";
 
 
 export class SystemVariableService extends AbstractService {
@@ -31,7 +32,7 @@ export class SystemVariableService extends AbstractService {
     return result;
   }
 
-  async get<T>(id: string, defaultValue?: T) {
+  async get<T = string>(id: string, defaultValue?: T) {
     const cachedValue = await ioredis.get(this.getCacheKey(id));
     if (cachedValue !== null) {
       return cachedValue as T;
@@ -44,6 +45,38 @@ export class SystemVariableService extends AbstractService {
     }
 
     return defaultValue ?? null;
+  }
+
+  async getEmailConfig() {
+    return {
+      host: await this.get("SMTP_HOST"),
+      port: Number(await this.get("SMTP_PORT", 587)),
+      secure: Boolean(await this.get("SMTP_SECURE", false)),
+      user: await this.get("SMTP_USER"),
+      password: await this.get("SMTP_PASSWORD"),
+      from: await this.get("SMTP_FROM"),
+      rejectUnauthorized: await this.get("SMTP_REJECT_UNAUTHORIZED") !== "false",
+    };
+  }
+
+  async getS3Config() {
+    return {
+      region: await this.get("S3_REGION"),
+      accessKeyId: await this.get("S3_ACCESS_KEY_ID"),
+      secretAccessKey: await this.get("S3_SECRET_ACCESS_KEY"),
+      endpoint: await this.get("S3_ENDPOINT"),
+      forcePathStyle: Boolean(await this.get("S3_FORCE_PATH_STYLE")),
+      bucket: await this.get("S3_BUCKET_NAME")
+    };
+  }
+
+  async getStripeConfig() {
+    return {
+      apiKey: await this.get("STRIPE_SECRET_KEY"),
+      webhookSecret: await this.get("STRIPE_WEBHOOK_SECRET"),
+      successUrl: `${webUrl}/dashboard/billing?success=true`,
+      cancelUrl: `${webUrl}/dashboard/billing?canceled=true`,
+    };
   }
 
   async delete(id: string) {
