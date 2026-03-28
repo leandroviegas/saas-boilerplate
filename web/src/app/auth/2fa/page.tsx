@@ -84,7 +84,7 @@ export default function TwoFactorPage() {
                   )}
                 />
                 <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? t("verifying...") : t("verify and sign in")}
+                  {isLoading ? t("verifying") + " …" : t("verify and sign in")}
                 </Button>
               </form>
             </Form>

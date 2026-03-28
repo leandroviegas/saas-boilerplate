@@ -25,3 +25,16 @@ export const VerifySchema = Type.Object({
 });
 
 export type VerifyType = Static<typeof VerifySchema>;
+
+export const ForgotPasswordSchema = Type.Object({
+  email: Type.String({ format: "email" }),
+});
+
+export type ForgotPasswordType = Static<typeof ForgotPasswordSchema>;
+
+export const ResetPasswordSchema = Type.Object({
+  password: Type.String({ minLength: 8 }),
+  confirmPassword: Type.String({ minLength: 1 }),
+});
+
+export type ResetPasswordType = Static<typeof ResetPasswordSchema>;

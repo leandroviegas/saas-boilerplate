@@ -45,9 +45,11 @@ export default async function RootLayout({
   return (
     <html className={theme == 'dark' ? theme : ''} lang={lang}>
       <head>
+        <meta name="theme-color" content={theme == 'dark' ? '#1a1a1a' : '#ffffff'} media="(theme: light)" />
+        <meta name="theme-color" content="#1a1a1a" media="(theme: dark)" />
         <Script dangerouslySetInnerHTML={{ __html: `window._env = ${JSON.stringify(publicEnv)};` }} strategy="beforeInteractive" />
       </head>
-      <body className="bg-background text-foreground overflow-hidden">
+      <body className="bg-background text-foreground">
         <NuqsAdapter>
           <QueryProvider>
             <AuthProvider user={user}>

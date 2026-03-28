@@ -48,7 +48,7 @@ export default function SignUpForm() {
     return (
         <Form {...signUpForm}>
             <form onSubmit={signUpForm.handleSubmit(onRegisterSubmit)} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-3">
                     <FormField
                         control={signUpForm.control}
                         name="name"
@@ -56,7 +56,12 @@ export default function SignUpForm() {
                             <FormItem>
                                 <FormLabel className="text-foreground">{t('first name')}</FormLabel>
                                 <FormControl>
-                                    <Input placeholder={t('john')} {...field} />
+                                    <Input 
+                                        placeholder={t('john')} 
+                                        autoComplete="given-name" 
+                                        className="h-10"
+                                        {...field} 
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -70,7 +75,12 @@ export default function SignUpForm() {
                             <FormItem>
                                 <FormLabel className="text-foreground">{t('last name')}</FormLabel>
                                 <FormControl>
-                                    <Input placeholder={t('doe')} {...field} />
+                                    <Input 
+                                        placeholder={t('doe')} 
+                                        autoComplete="family-name" 
+                                        className="h-10"
+                                        {...field} 
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -85,7 +95,13 @@ export default function SignUpForm() {
                         <FormItem>
                             <FormLabel className="text-foreground">{t('email')}</FormLabel>
                             <FormControl>
-                                <Input placeholder={t('name@example.com')} {...field} />
+                                <Input 
+                                    placeholder={t('name@example.com')} 
+                                    autoComplete="email" 
+                                    spellCheck={false}
+                                    className="h-10"
+                                    {...field} 
+                                />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -99,7 +115,12 @@ export default function SignUpForm() {
                         <FormItem>
                             <FormLabel className="text-foreground">{t('password')}</FormLabel>
                             <FormControl>
-                                <PasswordInput placeholder={t('••••••••')} {...field} />
+                                <PasswordInput 
+                                    placeholder={t('••••••••')} 
+                                    autoComplete="new-password"
+                                    className="h-10"
+                                    {...field} 
+                                />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -113,15 +134,24 @@ export default function SignUpForm() {
                         <FormItem>
                             <FormLabel className="text-foreground">{t('confirm password')}</FormLabel>
                             <FormControl>
-                                <PasswordInput placeholder={t('••••••••')} {...field} />
+                                <PasswordInput 
+                                    placeholder={t('••••••••')} 
+                                    autoComplete="new-password"
+                                    className="h-10"
+                                    {...field} 
+                                />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
 
-                <Button type="submit" className="w-full bg-primary text-primary-foreground" disabled={isLoading}>
-                    {isLoading ? t('creating account...') : t('create account')}
+                <Button 
+                    type="submit" 
+                    className="w-full h-10 bg-primary text-primary-foreground hover:bg-primary/90" 
+                    disabled={isLoading}
+                >
+                    {isLoading ? t('creating account') + " …" : t('create account')}
                 </Button>
             </form>
         </Form>

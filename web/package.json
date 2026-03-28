@@ -33,6 +33,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.20",
+    "framer-motion": "^12.38.0",
     "input-otp": "^1.4.2",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.560.0",
@@ -51,9 +52,9 @@
     "zustand": "^5.0.10"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
     "@types/accept-language-parser": "^1.5.8",
     "@types/js-cookie": "^3.0.6",
-    "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "^20.19.27",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",

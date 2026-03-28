@@ -42,7 +42,13 @@ export default function SignInForm() {
                         <FormItem>
                             <FormLabel className="text-foreground">{t('email')}</FormLabel>
                             <FormControl>
-                                <Input placeholder="name@example.com" {...field} />
+                                <Input 
+                                    placeholder="name@example.com" 
+                                    autoComplete="email" 
+                                    spellCheck={false} 
+                                    className="h-10"
+                                    {...field} 
+                                />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -56,22 +62,31 @@ export default function SignInForm() {
                         <FormItem>
                             <div className="flex items-center justify-between">
                                 <FormLabel className="text-foreground">{t('password')}</FormLabel>
-                                <Link href="/forgot-password">
-                                    <Button variant="link" className="px-0 font-normal h-auto text-xs text-muted-foreground" type="button">
+                                <Link href="/auth/forgot-password">
+                                    <Button variant="link" className="px-0 font-normal h-auto text-xs text-muted-foreground hover:text-primary" type="button">
                                         {t('forgot password')}?
                                     </Button>
                                 </Link>
                             </div>
                             <FormControl>
-                                <PasswordInput placeholder="••••••••" {...field} />
+                                <PasswordInput 
+                                    placeholder="••••••••" 
+                                    autoComplete="current-password" 
+                                    className="h-10"
+                                    {...field} 
+                                />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
 
-                <Button type="submit" className="w-full bg-primary text-primary-foreground" disabled={isLoading}>
-                    {isLoading ? t("signing in") + "..." : t("sign in")}
+                <Button 
+                    type="submit" 
+                    className="w-full h-10 bg-primary text-primary-foreground hover:bg-primary/90" 
+                    disabled={isLoading}
+                >
+                    {isLoading ? t("signing in") + " …" : t("sign in")}
                 </Button>
             </form>
         </Form>
