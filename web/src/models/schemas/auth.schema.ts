@@ -4,7 +4,7 @@ import { Type, Static } from "@sinclair/typebox";
 
 export const SignInSchema = Type.Object({
   email: Type.String({ format: "email" }),
-  password: Type.String(),
+  password: Type.String({ minLength: 5 }),
 });
 
 export type SignInType = Static<typeof SignInSchema>;

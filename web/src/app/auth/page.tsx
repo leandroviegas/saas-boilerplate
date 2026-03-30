@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { Mail, Github } from "lucide-react";
+import { Mail } from "lucide-react";
 import SignInForm from "./signin-form";
 import SignUpForm from "./signup-form";
 
@@ -47,24 +47,14 @@ export default function AuthTabs() {
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-4">
-                            <div className="grid grid-cols-2 gap-3">
-                                <Button
-                                    variant="outline"
-                                    className="w-full"
-                                    type="button"
-                                >
-                                    <Mail className="mr-2 h-4 w-4" />
-                                    Google
-                                </Button>
-                                <Button
-                                    variant="outline"
-                                    className="w-full"
-                                    type="button"
-                                >
-                                    <Github className="mr-2 h-4 w-4" />
-                                    GitHub
-                                </Button>
-                            </div>
+                            <Button
+                                variant="outline"
+                                className="w-full"
+                                type="button"
+                            >
+                                <Mail className="mr-2 h-4 w-4" />
+                                Google
+                            </Button>
 
                             <div className="relative">
                                 <div className="absolute inset-0 flex items-center">
@@ -77,20 +67,20 @@ export default function AuthTabs() {
                                 </div>
                             </div>
 
-                            <Tabs 
-                                value={activeTab} 
-                                onValueChange={handleTabChange} 
+                            <Tabs
+                                value={activeTab}
+                                onValueChange={handleTabChange}
                                 className="w-full"
                             >
                                 <TabsList className="grid w-full grid-cols-2 mb-4">
-                                    <TabsTrigger 
-                                        value="signIn" 
+                                    <TabsTrigger
+                                        value="signIn"
                                         className="text-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
                                     >
                                         {t('sign in')}
                                     </TabsTrigger>
-                                    <TabsTrigger 
-                                        value="signUp" 
+                                    <TabsTrigger
+                                        value="signUp"
                                         className="text-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
                                     >
                                         {t('sign up')}

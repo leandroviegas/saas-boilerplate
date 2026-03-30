@@ -5,7 +5,13 @@ import "dotenv/config";
 import { PrismaTransactionContext } from "@/plugins/prisma-transaction-context";
 
 const pool = new pg.Pool({
-    connectionString: process.env.DATABASE_URL
+    connectionString: process.env.DATABASE_URL,
+    max: 40,
+    min: 5,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
+    maxUses: 7500,
+    allowExitOnIdle: false,
 });
 
 const adapter = new PrismaPg(pool);
