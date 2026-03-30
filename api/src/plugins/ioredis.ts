@@ -1,5 +1,5 @@
 import IORedis from 'ioredis';
-import logger from './logger';
+import logger from '@/plugins/logger';
 import { redisConfig } from '../config';
 
 export const ioredis = new IORedis({

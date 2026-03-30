@@ -1,4 +1,4 @@
-import logger from './logger';
+import logger from '@/plugins/logger';
 import { Server as SocketIOServer } from 'socket.io';
 import { createAdapter } from '@socket.io/redis-adapter';
 import { pubClient, subClient } from './ioredis';
