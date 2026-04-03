@@ -33,16 +33,12 @@ export const auth = betterAuth({
       domain: cookieDomain,
     },
     disableOriginCheck: true, 
-    disableCSRFCheck: true,
-    cookies: {
-      sessionToken: {
-        attributes: {
-          sameSite: "lax",
-          secure: false,
-          domain: cookieDomain,
-        }
-      }
-    }
+    disableCSRFCheck: false, 
+    useSecureCookies: true,
+    cookiePrefix: "saas",
+    ipAddress: {
+      ipAddressHeaders: ["x-forwarded-for", "x-real-ip"],
+    },
   },
 
   database: prismaAdapter(prisma, {
@@ -79,12 +75,24 @@ export const auth = betterAuth({
     autoSignIn: true,
   },
 
-  session: {
-    expiresIn: 60 * 60 * 24 * 30, // 30 days
-    cookieCache: {
-      enabled: false
+  rateLimit: {
+    enabled: false,
+    storage: "database",
+    customRules: {
+      "/api/auth/sign-in/email": { window: 60, max: 5 },
+      "/api/auth/sign-up/email": { window: 60, max: 3 },
     },
-    updateAge: 0 
+  },
+
+  session: {
+    expiresIn: 60 * 60 * 24 * 7, // 7 days
+    updateAge: 60 * 60 * 24, // 24 hours
+    freshAge: 60 * 60, // 1 hour for sensitive actions
+    cookieCache: {
+      enabled: true,
+      maxAge: 60 * 5, // 5 minutes
+      strategy: "compact",
+    },
   },
 
   databaseHooks: {
@@ -128,6 +136,10 @@ export const auth = betterAuth({
       defaultRole: "member",
       allowUserToCreateOrganization: true,
       disableOrganizationDeletion: true,
+      organizationLimit: 10,
+      membershipLimit: 100,
+      invitationExpiresIn: 60 * 60 * 24 * 7,
+      invitationLimit: 50,
     })
   ],
 });
