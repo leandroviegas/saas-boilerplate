@@ -5,8 +5,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "tsx src/server.ts",
-    "dev": "tsx watch src/server.ts",
+    "start": "tsx src/interfaces/http/server.ts",
+    "dev": "tsx watch src/interfaces/http/server.ts",
     "build": "tsc",
     "db:generate": "prisma generate",
     "db:seed": "npx prisma db seed",

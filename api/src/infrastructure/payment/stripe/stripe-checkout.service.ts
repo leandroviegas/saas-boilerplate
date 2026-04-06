@@ -1,0 +1,53 @@
+import { CreateCheckoutSessionOptions } from "@/domain/payment/payment-provider.interface";
+import { PrismaTransactionContext } from "@/infrastructure/database/prisma/transaction-context";
+import { StripeAbstractService } from "./stripe-abstract.service";
+import { StripeCustomerService } from "./stripe-customer.service";
+
+
+export class StripeCheckoutService extends StripeAbstractService {
+  private customerService: StripeCustomerService;
+
+  constructor(transaction: PrismaTransactionContext) {
+    super(transaction);
+    this.customerService = new StripeCustomerService(transaction);
+  }
+
+  async createCheckoutSession(options: CreateCheckoutSessionOptions) {
+    const customerId = await this.customerService.getOrCreateCustomer(options.userId, options.email);
+
+    const { stripe } = await this.getStripe();
+
+    const session = await stripe.checkout.sessions.create({
+      customer: customerId,
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price: options.priceId,
+          quantity: 1
+        },
+      ],
+      mode: "subscription",
+      success_url: options.successUrl,
+      cancel_url: options.cancelUrl,
+      metadata: {
+        userId: options.userId,
+        organization: options.organizationId,
+        ...options.metadata,
+      },
+      allow_promotion_codes: true,
+    });
+
+    return {
+      id: session.id,
+      url: session.url ?? "",
+    };
+  }
+
+  async cancelSubscription(subscriptionId: string) {
+    const { stripe } = await this.getStripe();
+
+    await stripe.subscriptions.update(subscriptionId, {
+      cancel_at_period_end: true,
+    });
+  }
+}
