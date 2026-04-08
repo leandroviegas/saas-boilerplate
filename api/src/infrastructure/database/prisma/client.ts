@@ -67,15 +67,10 @@ export const paginationExtension = Prisma.defineExtension(client => {
     });
 });
 
-function InitializeExtendedPrisma() {
-    const client = new PrismaClient({ adapter });
-    return client.$extends(paginationExtension);
-}
 
-const prismaBase = new PrismaClient({ adapter });
-
-export const prisma = prismaBase.$extends(paginationExtension);
-
-export type ExtendedPrismaClient = ReturnType<typeof InitializeExtendedPrisma>;
+export const prisma = new PrismaClient({ adapter }).$extends(paginationExtension);
 
 export const transactionContext = new PrismaTransactionContext(prisma);
+
+export type ExtendedPrismaClient = typeof prisma;
+

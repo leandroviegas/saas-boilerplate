@@ -72,35 +72,75 @@ import type { TransactionClient } from "@/core/types/prisma";
 export type TransactionOptions = {
   timeout?: number;
   maxWait?: number;
-  isolationLevel?: "ReadUncommitted" | "ReadCommitted" | "RepeatableRead" | "Serializable";
+  isolationLevel?: "ReadCommitted" | "RepeatableRead" | "Serializable";
+};
+
+const MAX_TIMEOUT_MS = 30_000;
+const DEFAULT_TIMEOUT_MS = 5_000;
+
+type TransactionStore = {
+  client: TransactionClient;
+  id: string;
 };
 
 export class PrismaTransactionContext {
-  private storage = new AsyncLocalStorage<TransactionClient>();
+  private storage = new AsyncLocalStorage<TransactionStore>();
 
-  constructor(private readonly prisma: ExtendedPrismaClient) {}
+  constructor(private readonly prisma: ExtendedPrismaClient) {
+    if (!prisma) {
+      throw new Error(
+        "PrismaTransactionContext: prisma client is required but received undefined/null."
+      );
+    }
+  }
 
-  getClient(): TransactionClient {
-    // The transaction client satisfies PrismaClient's query API
-    return (this.storage.getStore() ?? this.prisma) as TransactionClient;
+  _getClient(): TransactionClient {
+    return this.storage.getStore()?.client ?? (this.prisma as unknown as TransactionClient);
   }
 
   isInTransaction(): boolean {
     return this.storage.getStore() !== undefined;
   }
 
+  currentTransactionId(): string | undefined {
+    return this.storage.getStore()?.id;
+  }
+
   async run<T>(
     callback: () => Promise<T>,
     options?: TransactionOptions
   ): Promise<T> {
-    // Already inside a transaction — reuse it (REQUIRED semantics)
     if (this.isInTransaction()) {
+      if (process.env.NODE_ENV !== "production") {
+        console.debug(
+          `[PrismaTransactionContext] Reusing transaction ${this.currentTransactionId()} — nested run() call detected.`
+        );
+      }
       return callback();
     }
 
+    const resolvedTimeout = Math.min(
+      options?.timeout ?? DEFAULT_TIMEOUT_MS,
+      MAX_TIMEOUT_MS
+    );
+
+    if (options?.timeout !== undefined && options.timeout > MAX_TIMEOUT_MS) {
+      console.warn(
+        `[PrismaTransactionContext] Requested timeout ${options.timeout}ms exceeds the maximum of ${MAX_TIMEOUT_MS}ms. Clamping to ${MAX_TIMEOUT_MS}ms.`
+      );
+    }
+
+    const txId = crypto.randomUUID();
+
     return this.prisma.$transaction(
-      (tx: TransactionClient) => this.storage.run(tx, () => callback()),
-      options
+      (tx: TransactionClient) => {
+        const store: TransactionStore = { client: tx, id: txId };
+        return this.storage.run(store, () => callback());
+      },
+      {
+        ...options,
+        timeout: resolvedTimeout,
+      }
     );
   }
 }
@@ -110,31 +150,52 @@ export class PrismaTransactionContext {
 ```typescript
 import type { PrismaTransactionContext, TransactionOptions } from "@/infrastructure/database/prisma/transaction-context";
 
-/**
- * Wraps the decorated service method inside a Prisma transaction.
- * The method must belong to a class that has a `transaction` property
- * of type `PrismaTransactionContext` (i.e. extends `AbstractService`).
- *
- * Nested calls are safe: if a transaction is already active the same
- * client is reused instead of opening a new one.
- *
- * @example
- * ```ts
- * @Transactional()
- * async update(id: string, data: UpdateUserBodyType) { ... }
- * ```
- */
 export function Transactional(options?: TransactionOptions) {
   return function (
     _target: object,
-    _propertyKey: string | symbol,
+    propertyKey: string | symbol,
     descriptor: PropertyDescriptor
   ): PropertyDescriptor {
-    const originalMethod: (...args: Parameters<typeof descriptor.value>) => ReturnType<typeof descriptor.value> =
-      descriptor.value;
+    const originalMethod: (...args: unknown[]) => Promise<unknown> = descriptor.value;
 
-    descriptor.value = function (this: Record<string, PrismaTransactionContext>, ...args: Parameters<typeof originalMethod>) {
-      return this["transaction"].run(() => originalMethod.apply(this, args), options);
+    if (typeof originalMethod !== "function") {
+      throw new Error(
+        `@Transactional() can only decorate methods. ` +
+        `"${String(propertyKey)}" is not a function.`
+      );
+    }
+
+    if (originalMethod.constructor.name !== "AsyncFunction") {
+      throw new Error(
+        `@Transactional() requires an async method. ` +
+        `"${String(propertyKey)}" is synchronous. ` +
+        "Wrap the method body in async or return a Promise."
+      );
+    }
+
+    descriptor.value = async function (
+      this: Record<string, unknown>,
+      ...args: unknown[]
+    ): Promise<unknown> {
+      const txContext = this["transaction"];
+
+      if (
+        txContext === undefined ||
+        txContext === null ||
+        typeof (txContext as PrismaTransactionContext).run !== "function"
+      ) {
+        throw new Error(
+          `@Transactional() on "${String(propertyKey)}": the host class must have a ` +
+          "'transaction' property of type PrismaTransactionContext " +
+          "(i.e. it must extend AbstractService). " +
+          "Check your class definition and dependency injection setup."
+        );
+      }
+
+      return (txContext as PrismaTransactionContext).run(
+        () => originalMethod.apply(this, args),
+        options
+      );
     };
 
     return descriptor;
@@ -150,13 +211,72 @@ import { PrismaTransactionContext } from "@/infrastructure/database/prisma/trans
 export abstract class AbstractService {
   constructor(
     protected readonly transaction: PrismaTransactionContext
-  ) {}
+  ) {
+    if (!transaction) {
+      throw new Error(
+        `${new.target.name}: PrismaTransactionContext is required but received undefined/null. ` +
+        "Check your dependency injection configuration."
+      );
+    }
+  }
 
   protected get prisma(): TransactionClient {
-    return this.transaction.getClient();
+    return this.transaction._getClient();
   }
 }
 ```
+
+#### Transactional Decorator Usage
+
+The `@Transactional()` decorator provides automatic transaction management for service methods:
+
+**Requirements:**
+- Methods must be `async`
+- Host class must extend `AbstractService` (or have a `transaction` property of type `PrismaTransactionContext`)
+
+**Features:**
+- **Nested Safety**: Multiple `@Transactional` calls reuse the same transaction
+- **Automatic Rollback**: Exceptions automatically rollback the transaction
+- **Timeout Control**: Configurable timeouts with sensible defaults (5s default, 30s max)
+- **Debug Logging**: Transaction IDs logged in development mode
+
+**Example:**
+```typescript
+export class UserService extends AbstractService {
+  // Single operation transaction
+  @Transactional()
+  async updateProfile(id: string, data: UpdateProfileData) {
+    const user = await this.prisma.user.findUniqueOrThrow({ where: { id } });
+    return this.prisma.user.update({
+      where: { id },
+      data: { ...data, updatedAt: new Date() }
+    });
+  }
+
+  // Multiple operations in one transaction
+  @Transactional({ isolationLevel: "Serializable" })
+  async transferCredits(fromUserId: string, toUserId: string, amount: number) {
+    await this.prisma.user.update({
+      where: { id: fromUserId },
+      data: { credits: { decrement: amount } }
+    });
+
+    await this.prisma.user.update({
+      where: { id: toUserId },
+      data: { credits: { increment: amount } }
+    });
+
+    await this.prisma.transactionLog.create({
+      data: { fromUserId, toUserId, amount, type: "TRANSFER" }
+    });
+  }
+}
+```
+
+**Transaction Options:**
+- `timeout`: Transaction timeout in milliseconds (max 30,000ms)
+- `maxWait`: Maximum wait time for acquiring connection
+- `isolationLevel`: Transaction isolation level
 
 ### Error Handling
 

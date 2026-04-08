@@ -1,30 +1,51 @@
 import type { PrismaTransactionContext, TransactionOptions } from "@/infrastructure/database/prisma/transaction-context";
 
-/**
- * Wraps the decorated service method inside a Prisma transaction.
- * The method must belong to a class that has a `transaction` property
- * of type `PrismaTransactionContext` (i.e. extends `AbstractService`).
- *
- * Nested calls are safe: if a transaction is already active the same
- * client is reused instead of opening a new one.
- *
- * @example
- * ```ts
- * @Transactional()
- * async update(id: string, data: UpdateUserBodyType) { ... }
- * ```
- */
 export function Transactional(options?: TransactionOptions) {
   return function (
     _target: object,
-    _propertyKey: string | symbol,
+    propertyKey: string | symbol,
     descriptor: PropertyDescriptor
   ): PropertyDescriptor {
-    const originalMethod: (...args: Parameters<typeof descriptor.value>) => ReturnType<typeof descriptor.value> =
-      descriptor.value;
+    const originalMethod: (...args: unknown[]) => Promise<unknown> = descriptor.value;
 
-    descriptor.value = function (this: Record<string, PrismaTransactionContext>, ...args: Parameters<typeof originalMethod>) {
-      return this["transaction"].run(() => originalMethod.apply(this, args), options);
+    if (typeof originalMethod !== "function") {
+      throw new Error(
+        `@Transactional() can only decorate methods. ` +
+        `"${String(propertyKey)}" is not a function.`
+      );
+    }
+
+    if (originalMethod.constructor.name !== "AsyncFunction") {
+      throw new Error(
+        `@Transactional() requires an async method. ` +
+        `"${String(propertyKey)}" is synchronous. ` +
+        "Wrap the method body in async or return a Promise."
+      );
+    }
+
+    descriptor.value = async function (
+      this: Record<string, unknown>,
+      ...args: unknown[]
+    ): Promise<unknown> {
+      const txContext = this["transaction"];
+
+      if (
+        txContext === undefined ||
+        txContext === null ||
+        typeof (txContext as PrismaTransactionContext).run !== "function"
+      ) {
+        throw new Error(
+          `@Transactional() on "${String(propertyKey)}": the host class must have a ` +
+          "'transaction' property of type PrismaTransactionContext " +
+          "(i.e. it must extend AbstractService). " +
+          "Check your class definition and dependency injection setup."
+        );
+      }
+
+      return (txContext as PrismaTransactionContext).run(
+        () => originalMethod.apply(this, args),
+        options
+      );
     };
 
     return descriptor;

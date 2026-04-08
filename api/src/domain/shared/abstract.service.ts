@@ -4,9 +4,16 @@ import { PrismaTransactionContext } from "@/infrastructure/database/prisma/trans
 export abstract class AbstractService {
   constructor(
     protected readonly transaction: PrismaTransactionContext
-  ) {}
+  ) {
+    if (!transaction) {
+      throw new Error(
+        `${new.target.name}: PrismaTransactionContext is required but received undefined/null. ` +
+        "Check your dependency injection configuration."
+      );
+    }
+  }
 
   protected get prisma(): TransactionClient {
-    return this.transaction.getClient();
+    return this.transaction._getClient();
   }
 }
