@@ -4,8 +4,8 @@ export const SessionSchema = t.Object({
   id: t.String(),
   userId: t.String(),
   expiresAt: t.Date(),
-  ipAddress: t.Optional(t.Union([t.String(), t.Null()])),
-  userAgent: t.Optional(t.Union([t.String(), t.Null()])),
+  ipAddress: t.MaybeEmpty(t.String()),
+  userAgent: t.MaybeEmpty(t.String()),
   createdAt: t.Date(),
   updatedAt: t.Date(),
 });

@@ -20,13 +20,7 @@ const UpdateUserResponse = t.Object({
     data: UserSchema
 });
 
-export const UpdateUserBodySchema = t.Object({
-    email: t.String({ format: "email" }),
-    name: t.String(),
-    username: t.String(),
-    image: t.Optional(t.Union([t.String(), t.Null()])),
-    preferences: t.Optional(t.Union([t.String(), t.Null()])),
-});
+export const UpdateUserBodySchema = t.Pick(UserSchema, ['email', 'name', 'username', 'image', 'preferences']);
 
 export type UpdateUserBodyType = typeof UpdateUserBodySchema.static;
 

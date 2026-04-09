@@ -6,7 +6,7 @@ export const NotificationSchema = t.Object({
   title: t.String(),
   message: t.String(),
   type: t.String(),
-  link: t.Optional(t.Union([t.String(), t.Null()])),
+  link: t.MaybeEmpty(t.String()),
   read: t.Boolean(),
   createdAt: t.Date(),
   updatedAt: t.Date(),

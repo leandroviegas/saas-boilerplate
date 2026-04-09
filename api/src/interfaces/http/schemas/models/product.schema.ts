@@ -19,7 +19,7 @@ export const ProductPriceSchema = t.Object({
   productId: t.String(),
   amount: t.Numeric(),
   currencyCode: t.Union([CurrencySchema, t.String()]),
-  stripePriceId: t.Optional(t.Union([t.String(), t.Null()])),
+  stripePriceId: t.MaybeEmpty(t.String()),
   active: t.Boolean(),
   archived: t.Boolean(),
   intervalType: PriceIntervalSchema,
@@ -32,12 +32,12 @@ export const ProductPriceSchema = t.Object({
 export const ProductSchema = t.Object({
   id: t.String(),
   name: t.String({ minLength: 2, maxLength: 100 }),
-  description: t.Optional(t.Union([t.String(), t.Null()])),
+  description: t.MaybeEmpty(t.String()),
   features: t.Array(t.String()),
   active: t.Boolean(),
   archived: t.Boolean(),
   permissions: t.Record(t.String(), t.Array(t.String())),
-  stripeProductId: t.Optional(t.Union([t.String(), t.Null()])),
+  stripeProductId: t.MaybeEmpty(t.String()),
   createdAt: t.Date(),
   updatedAt: t.Date(),
 });

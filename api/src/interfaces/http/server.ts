@@ -3,7 +3,7 @@ import { node } from '@elysiajs/node';
 import { swagger } from '@elysiajs/swagger';
 import { cors } from '@elysiajs/cors';
 import logger from '@/infrastructure/logger/logger';
-import { controllers } from './routes';
+import { routes } from './routes';
 import { serverConfig, corsConfig, websocketsConfig } from '@/infrastructure/config/env';
 import { mainMiddleware } from './middleware/main.middleware';
 import { processError } from '@/core/errors/error.handler';
@@ -19,7 +19,7 @@ seed();
 let app = new Elysia({ adapter: node() })
     .use(mainMiddleware)
     .onError(async ({ error, set, lang }) => {
-        const language = (lang as languageEnum) ?? languageEnum.EN;
+        const language = lang ?? languageEnum.EN;
 
         const { status, response } = await processError(error, language);
 
@@ -45,7 +45,7 @@ let app = new Elysia({ adapter: node() })
             }
         }
     }))
-    .use(controllers)
+    .use(routes)
     .listen(serverConfig.port);
 
 const ioServer = createServer();

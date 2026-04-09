@@ -16,7 +16,7 @@ const GetProductsResponse = t.Object({
 const CreateCheckoutResponse = t.Object({
     code: t.String(),
     data: t.Object({
-        url: t.Union([t.String(), t.Null()])
+        url: t.Nullable(t.String())
     })
 });
 

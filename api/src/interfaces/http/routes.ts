@@ -14,7 +14,7 @@ import { memberUserController } from './controllers/member/user.controller';
 import { webhookController } from './controllers/webhook/webhook.controller';
 import { systemController } from './controllers/system.controller';
 
-export const controllers = new Elysia()
+export const routes = new Elysia()
     .use(webhookController)
     .use(systemController)
     .use(authController)

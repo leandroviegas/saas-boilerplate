@@ -2,12 +2,12 @@ import { t, Static } from "elysia";
 
 export const TransactionSchema = t.Object({
   id: t.String(),
-  userId: t.Union([t.String(), t.Null()]),
+  userId: t.Nullable(t.String()),
   amount: t.Numeric(),
   currencyCode: t.String(),
   status: t.String(),
-  paymentMethod: t.Optional(t.Union([t.String(), t.Null()])),
-  stripePaymentIntentId: t.Optional(t.Union([t.String(), t.Null()])),
+  paymentMethod: t.MaybeEmpty(t.String()),
+  stripePaymentIntentId: t.MaybeEmpty(t.String()),
   createdAt: t.Date(),
   updatedAt: t.Date(),
 });

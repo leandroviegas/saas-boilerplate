@@ -20,7 +20,7 @@ export const SubscriptionSchema = t.Object({
   currentPeriodStart: t.Date(),
   currentPeriodEnd: t.Date(),
   cancelAtPeriodEnd: t.Boolean(),
-  stripeSubscriptionId: t.Optional(t.Union([t.String(), t.Null()])),
+  stripeSubscriptionId: t.MaybeEmpty(t.String()),
   createdAt: t.Date(),
   updatedAt: t.Date(),
 });
