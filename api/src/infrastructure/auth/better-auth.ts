@@ -3,7 +3,7 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { jwt, twoFactor, username, multiSession, organization } from "better-auth/plugins";
 import { prisma } from "@/infrastructure/database/prisma/client";
 import { notificationService } from "@/application";
-import { betterAuthConfig, corsConfig } from "@/infrastructure/config/env";
+import { betterAuthConfig, corsConfig } from "@/infrastructure/config";
 
 function getCookieDomain(): string | undefined {
   if (!corsConfig.origin) return undefined;

@@ -1,7 +1,7 @@
 import { IncomingHttpHeaders } from "http";
 import { auth } from "@/infrastructure/auth/better-auth";
 import { AbstractService } from "@/domain/shared/abstract.service";
-import { betterAuthConfig } from "@/infrastructure/config/env";
+import { betterAuthConfig } from "@/infrastructure/config";
 
 export class AuthService extends AbstractService {
   buildHeaders(reqHeaders: IncomingHttpHeaders) {

@@ -1,7 +1,7 @@
 import { Elysia } from 'elysia';
 import acceptLanguageParser from 'accept-language-parser';
 import { languageEnum } from '@/core/constants/language.enum';
-import { publicConfig } from '@/infrastructure/config/env';
+import { publicConfig } from '@/infrastructure/config';
 
 export const mainMiddleware = new Elysia({ name: 'mainMiddleware' })
     .derive({ as: 'global' }, ({ headers, cookie: { lang: cookieLang } }) => {

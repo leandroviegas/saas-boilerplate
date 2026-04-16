@@ -4,7 +4,7 @@ import { swagger } from '@elysiajs/swagger';
 import { cors } from '@elysiajs/cors';
 import logger from '@/infrastructure/logger/logger';
 import { routes } from './routes';
-import { serverConfig, corsConfig, websocketsConfig } from '@/infrastructure/config/env';
+import { serverConfig, corsConfig, websocketsConfig } from '@/infrastructure/config';
 import { mainMiddleware } from './middleware/main.middleware';
 import { processError } from '@/core/errors/error.handler';
 import { errorSchema } from './schemas';
@@ -48,10 +48,12 @@ let app = new Elysia({ adapter: node() })
     .use(routes)
     .listen(serverConfig.port);
 
+logger.info(`Elysia is running at port ${serverConfig.port}`);
+
+
 const ioServer = createServer();
 const io = new SocketIOServer(ioServer, { cors: corsConfig, path: '/ws' });
 socketio(io);
 ioServer.listen(websocketsConfig.port);
 
-logger.info(`Elysia is running at port ${serverConfig.port}`);
 logger.info(`Websockets is running at port ${websocketsConfig.port}`);

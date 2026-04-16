@@ -1,6 +1,6 @@
 import IORedis from 'ioredis';
 import logger from '@/infrastructure/logger/logger';
-import { redisConfig } from '../config/env';
+import { redisConfig } from '../config';
 
 export const ioredis = new IORedis({
     host: redisConfig.host,

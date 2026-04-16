@@ -1,6 +1,6 @@
 import { AbstractService } from "@/domain/shared/abstract.service";
 import { ioredis } from "@/infrastructure/cache/redis";
-import { webUrl } from "@/infrastructure/config/env";
+import { webUrl } from "@/infrastructure/config";
 
 
 export class SystemVariableService extends AbstractService {
